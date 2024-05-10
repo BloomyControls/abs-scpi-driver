@@ -28,9 +28,9 @@ if (NOT Boost_FOUND)
   set(BOOST_INCLUDE_LIBRARIES system asio)
   set(BOOST_ENABLE_CMAKE ON)
   FetchContent_Declare(Boost
-    SYSTEM
-    URL https://github.com/boostorg/boost/releases/download/boost-1.81.0/boost-1.81.0.tar.gz
-    URL_HASH "SHA1=f71f661f893f39b7b82d66c54980349716f874a2"
+    GIT_REPOSITORY https://github.com/boostorg/boost.git
+    GIT_TAG boost-1.81.0
+    GIT_SHALLOW TRUE
   )
   FetchContent_GetProperties(Boost)
   if(NOT Boost_POPULATED)
@@ -62,6 +62,6 @@ target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(bciabs_scpi PRIVATE
   fmt::fmt-header-only
-  ${Boost_LIBRARIES}
   fast_float
+  Boost::system
 )
