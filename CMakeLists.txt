@@ -42,7 +42,11 @@ add_library(bciabs_scpi src/ScpiDriver.cpp)
 
 target_compile_features(bciabs_scpi PUBLIC cxx_std_20)
 
-target_compile_options(bciabs_scpi PRIVATE -Wall -Wextra)
+if(MSVC)
+  target_compile_options(bciabs_scpi PRIVATE /W3)
+else()
+  target_compile_options(bciabs_scpi PRIVATE -Wall -Wextra)
+endif()
 
 target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
