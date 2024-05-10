@@ -2,6 +2,8 @@
 #define ABS_SCPI_DRIVER_SRC_STRINGUTIL_H
 
 #include <algorithm>
+#include <charconv>
+#include <concepts>
 #include <optional>
 #include <string_view>
 #include <system_error>
@@ -32,6 +34,8 @@ inline constexpr std::string_view Trim(std::string_view v) noexcept {
 }
 
 inline constexpr std::optional<float> StrViewToFloat(std::string_view sv) {
+  sv = Trim(sv);
+
   if (sv.empty()) {
     return std::nullopt;
   }
@@ -43,6 +47,42 @@ inline constexpr std::optional<float> StrViewToFloat(std::string_view sv) {
   } else {
     return std::nullopt;
   }
+}
+
+inline constexpr std::optional<bool> StrViewToBool(std::string_view sv) {
+  sv = Trim(sv);
+
+  if (sv.size() != 1) {
+    return std::nullopt;
+  }
+
+  switch (sv[0]) {
+    case '0':
+      return false;
+    case '1':
+      return true;
+    default:
+      return std::nullopt;
+  }
+}
+
+template <std::integral T>
+inline constexpr std::optional<T> StrViewToInt(std::string_view sv) {
+  sv = Trim(sv);
+
+  if (sv.empty()) {
+    return std::nullopt;
+  }
+
+  // TODO: handle bases other than 10 with SCPI prefixes (e.g. #H, #Q, #B)
+  T val{};
+
+  auto [ptr, ec] = std::from_chars(sv.data(), sv.data() + sv.size(), val, 10);
+  if (ec == std::errc()) {
+    return val;
+  }
+
+  return std::nullopt;
 }
 
 }  // namespace bci::abs::util

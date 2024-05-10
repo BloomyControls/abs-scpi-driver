@@ -8,6 +8,10 @@
 namespace bci::abs {
 
 inline constexpr unsigned int kCellCount = 8U;
+inline constexpr unsigned int kAnalogInputCount = 8U;
+inline constexpr unsigned int kAnalogOutputCount = 8U;
+inline constexpr unsigned int kDigitalInputCount = 4U;
+inline constexpr unsigned int kDigitalOutputCount = 4U;
 
 enum class CellFault {
   kNone,
@@ -41,6 +45,8 @@ enum class ErrorCode : int {
   kNotConnected = -9,
   kAddressResolutionFailed = -10,
   kInvalidResponse = -11,
+  kInvalidFaultType = -12,
+  kInvalidSenseRange = -13,
 };
 
 template <class T>
