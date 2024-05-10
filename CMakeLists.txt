@@ -4,7 +4,11 @@ project("ABS SCPI Driver" VERSION 0.0.1)
 
 include(FetchContent)
 
-find_package(fmt 10.2.0 QUIET)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+  cmake_policy(SET CMP0135 NEW)
+endif()
+
+find_package(fmt 10.2.1 QUIET)
 if(NOT fmt_FOUND)
   FetchContent_Declare(fmt
     GIT_REPOSITORY https://github.com/fmtlib/fmt.git
@@ -23,9 +27,6 @@ find_package(Boost 1.81.0 COMPONENTS system QUIET)
 if (NOT Boost_FOUND)
   set(BOOST_INCLUDE_LIBRARIES system asio)
   set(BOOST_ENABLE_CMAKE ON)
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
-    cmake_policy(SET CMP0135 NEW)
-  endif()
   FetchContent_Declare(Boost
     SYSTEM
     URL https://github.com/boostorg/boost/releases/download/boost-1.81.0/boost-1.81.0.tar.gz
@@ -38,7 +39,16 @@ if (NOT Boost_FOUND)
   endif()
 endif()
 
-add_library(bciabs_scpi src/ScpiDriver.cpp)
+FetchContent_Declare(fast_float
+  GIT_REPOSITORY https://github.com/fastfloat/fast_float.git
+  GIT_TAG v6.1.1
+  GIT_SHALLOW TRUE
+)
+message(STATUS "Fetch fast_float")
+FetchContent_MakeAvailable(fast_float)
+
+
+add_library(bciabs_scpi src/ScpiClient.cpp src/TcpDriver.cpp)
 
 target_compile_features(bciabs_scpi PUBLIC cxx_std_20)
 
@@ -53,4 +63,5 @@ target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(bciabs_scpi PRIVATE
   fmt::fmt-header-only
   ${Boost_LIBRARIES}
+  fast_float
 )

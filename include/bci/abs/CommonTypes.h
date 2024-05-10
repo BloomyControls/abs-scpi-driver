@@ -1,0 +1,50 @@
+#ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H
+#define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H
+
+#include <string>
+
+#include "util/expected.hpp"
+
+namespace bci::abs {
+
+inline constexpr unsigned int kCellCount = 8U;
+
+enum class CellFault {
+  kNone,
+  kOpenCircuit,
+  kShortCircuit,
+  kPolarity,
+};
+
+enum class CellSenseRange {
+  kAuto,
+  kLow,
+  kHigh,
+};
+
+struct DeviceInfo {
+  std::string part_number;
+  std::string serial;
+  std::string version;
+};
+
+enum class ErrorCode : int {
+  kSuccess = 0,
+  kChannelIndexOutOfRange = -1,
+  kInvalidIPAddress = -2,
+  kConnectionTimedOut = -3,
+  kConnectionFailed = -4,
+  kSendFailed = -5,
+  kSendTimedOut = -6,
+  kReadFailed = -7,
+  kReadTimedOut = -8,
+  kNotConnected = -9,
+  kAddressResolutionFailed = -10,
+};
+
+template <class T>
+using Result = tl::expected<T, ErrorCode>;
+
+}  // namespace bci::abs
+
+#endif  /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H */
