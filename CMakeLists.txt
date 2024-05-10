@@ -35,8 +35,11 @@ if (NOT Boost_FOUND)
   if(NOT Boost_POPULATED)
     message(STATUS "Fetch Boost (may take a while)")
     FetchContent_MakeAvailable(Boost)
-    add_subdirectory(${Boost_SOURCE_DIR} ${Boost_BINARY_DIR} EXCLUDE_FROM_ALL)
   endif()
+  # workaround an issue with fetched boost asio
+  set(BOOST_LIBS ${Boost_LIBRARIES} Boost::asio)
+else()
+  set(BOOST_LIBS ${Boost_LIBRARIES})
 endif()
 
 FetchContent_Declare(fast_float
@@ -63,5 +66,5 @@ target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(bciabs_scpi PRIVATE
   fmt::fmt-header-only
   fast_float
-  ${Boost_LIBRARIES}
+  ${BOOST_LIBS}
 )
