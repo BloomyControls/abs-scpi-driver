@@ -19,7 +19,7 @@ namespace bci::abs::drivers {
 
 using util::Err;
 
-struct TcpDriver::Impl : public std::enable_shared_from_this<TcpDriver::Impl> {
+struct TcpDriver::Impl {
   Impl();
 
   ~Impl();
@@ -184,12 +184,7 @@ void TcpDriver::Impl::CheckDeadline() {
     deadline_.expires_at(boost::posix_time::pos_infin);
   }
 
-  auto weak_self = weak_from_this();
-  deadline_.async_wait([weak_self](auto&&) {
-    if (auto self = weak_self.lock()) {
-      self->CheckDeadline();
-    }
-  });
+  deadline_.async_wait([&](auto&&) { this->CheckDeadline(); });
 }
 
 }  // namespace bci::abs::drivers
