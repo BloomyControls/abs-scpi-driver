@@ -35,6 +35,7 @@ if (NOT Boost_FOUND)
   if(NOT Boost_POPULATED)
     message(STATUS "Fetch Boost (may take a while)")
     FetchContent_MakeAvailable(Boost)
+    add_subdirectory(${Boost_SOURCE_DIR} ${Boost_BINARY_DIR} EXCLUDE_FROM_ALL)
   endif()
 endif()
 
@@ -57,10 +58,7 @@ else()
   target_compile_options(bciabs_scpi PRIVATE -Wall -Wextra)
 endif()
 
-target_include_directories(bciabs_scpi
-  PUBLIC ${PROJECT_SOURCE_DIR}/include
-  PRIVATE ${Boost_INCLUDE_DIRS}
-)
+target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(bciabs_scpi PRIVATE
   fmt::fmt-header-only
