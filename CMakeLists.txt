@@ -28,7 +28,6 @@ set(BOOST_ENABLE_CMAKE ON)
 find_package(Boost 1.81.0 COMPONENTS system QUIET)
 if (NOT Boost_FOUND)
   FetchContent_Declare(Boost
-    SYSTEM
     URL https://github.com/boostorg/boost/releases/download/boost-1.81.0/boost-1.81.0.tar.gz
     URL_HASH "SHA1=f71f661f893f39b7b82d66c54980349716f874a2"
   )
@@ -58,11 +57,13 @@ else()
   target_compile_options(bciabs_scpi PRIVATE -Wall -Wextra)
 endif()
 
-target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(bciabs_scpi
+  PUBLIC ${PROJECT_SOURCE_DIR}/include
+  PRIVATE ${Boost_INCLUDE_DIRS}
+)
 
 target_link_libraries(bciabs_scpi PRIVATE
   fmt::fmt-header-only
   fast_float
-  Boost::boost
-  Boost::system
+  ${Boost_LIBRARIES}
 )
