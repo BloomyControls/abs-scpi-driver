@@ -50,4 +50,7 @@ endif()
 
 target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-target_link_libraries(bciabs_scpi PRIVATE fmt::fmt-header-only)
+target_link_libraries(bciabs_scpi PRIVATE
+  fmt::fmt-header-only
+  ${Boost_LIBRARIES}
+)
