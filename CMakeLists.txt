@@ -23,10 +23,10 @@ if(NOT fmt_FOUND)
   endif()
 endif()
 
+set(BOOST_INCLUDE_LIBRARIES system asio)
+set(BOOST_ENABLE_CMAKE ON)
 find_package(Boost 1.81.0 COMPONENTS system QUIET)
 if (NOT Boost_FOUND)
-  set(BOOST_INCLUDE_LIBRARIES system asio)
-  set(BOOST_ENABLE_CMAKE ON)
   FetchContent_Declare(Boost
     SYSTEM
     URL https://github.com/boostorg/boost/releases/download/boost-1.81.0/boost-1.81.0.tar.gz
@@ -63,5 +63,6 @@ target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(bciabs_scpi PRIVATE
   fmt::fmt-header-only
   fast_float
+  Boost::boost
   Boost::system
 )
