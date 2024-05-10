@@ -2,9 +2,14 @@ name: CMake Build
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - '**.h'
+      - '**.cpp'
+      - '**.c'
+      - '**.hpp'
+      - '**.cmake'
+      - '**/CMakeLists.txt'
+      - '.github/workflows/**'
 
 jobs:
   build:
