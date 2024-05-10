@@ -30,7 +30,7 @@ ErrorCode ScpiClient::EnableCell(unsigned int cell, bool en) const {
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{} {:d}\r\n", cell, en);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{} {:d}\r\n", cell + 1, en);
 
   return driver_->Write(buf, kWriteTimeoutMs);
 
@@ -43,7 +43,7 @@ Result<float> ScpiClient::MeasureCellVoltage(unsigned int cell) const {
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS{}:VOLT?\r\n", cell);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS{}:VOLT?\r\n", cell + 1);
 
   return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
 }
