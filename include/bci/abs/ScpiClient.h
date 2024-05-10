@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <string_view>
 
 #include "CommDriver.h"
@@ -23,6 +24,8 @@ class ScpiClient {
 
  private:
   std::shared_ptr<drivers::CommDriver> driver_;
+
+  Result<std::string> WriteAndRead(std::string_view buf) const;
 };
 
 }  // namespace bci::abs

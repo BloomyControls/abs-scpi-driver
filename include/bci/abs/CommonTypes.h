@@ -40,6 +40,7 @@ enum class ErrorCode : int {
   kReadTimedOut = -8,
   kNotConnected = -9,
   kAddressResolutionFailed = -10,
+  kInvalidResponse = -11,
 };
 
 template <class T>

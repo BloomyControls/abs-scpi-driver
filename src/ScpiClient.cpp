@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "Util.h"
+#include "ScpiUtil.h"
 
 namespace bci::abs {
 
@@ -44,10 +45,15 @@ Result<float> ScpiClient::MeasureCellVoltage(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS{}:VOLT?\r\n", cell);
 
-  // TODO: send command with timeout and parse response
-  // (use fast_float)
+  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+}
 
-  return 0.0f;
+Result<std::string> ScpiClient::WriteAndRead(std::string_view buf) const {
+  auto res = driver_->Write(buf, kWriteTimeoutMs);
+  if (res != ErrorCode::kSuccess) {
+    return Err(res);
+  }
+  return driver_->ReadLine(kReadTimeoutMs);
 }
 
 }  // namespace bci::abs
