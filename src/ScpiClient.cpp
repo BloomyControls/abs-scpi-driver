@@ -1,15 +1,11 @@
 #include <bci/abs/ScpiClient.h>
 #include <fmt/core.h>
 
-#include <array>
-#include <cstdint>
 #include <memory>
-#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
 
-#include "ScpiUtil.h"
 #include "Util.h"
 
 namespace bci::abs {
@@ -36,6 +32,10 @@ ErrorCode ScpiClient::Send(std::string_view buf) const {
 Result<std::string> ScpiClient::SendAndRecv(std::string_view buf) const {
   if (!driver_) {
     return Err(ec::kInvalidDriverHandle);
+  }
+
+  if (driver_->IsSendOnly()) {
+    return Err(ec::kReceiveNotAllowed);
   }
 
   auto res = driver_->Write(buf, kWriteTimeoutMs);

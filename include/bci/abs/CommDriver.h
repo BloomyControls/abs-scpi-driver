@@ -18,7 +18,11 @@ class CommDriver {
 
   virtual Result<std::string> ReadLine(unsigned int timeout_ms) const = 0;
 
-  void SetDeviceID(std::uint8_t id) { static_cast<void>(id); }
+  virtual void SetDeviceID(std::uint8_t id) { static_cast<void>(id); }
+
+  // useful for things like UDP broadcast and multicast, or RS-485 with an ID
+  // higher than 255
+  virtual bool IsSendOnly() const { return false; }
 };
 
 }  // namespace bci::abs::drivers
