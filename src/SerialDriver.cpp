@@ -2,6 +2,7 @@
 #include <fmt/core.h>
 
 #include <algorithm>
+#include <atomic>
 #include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/read_until.hpp>
@@ -45,6 +46,7 @@ struct SerialDriver::Impl {
   boost::asio::deadline_timer deadline_;
   boost::asio::streambuf input_buffer_;
   unsigned int dev_id_;
+  std::atomic<bool> timeout_;
 
   void CheckDeadline();
 };
@@ -79,7 +81,8 @@ SerialDriver::Impl::Impl()
       port_(io_service_),
       deadline_(io_service_),
       input_buffer_(),
-      dev_id_{} {
+      dev_id_{},
+      timeout_{} {
   deadline_.expires_at(boost::posix_time::pos_infin);
   CheckDeadline();
 }
@@ -167,6 +170,7 @@ Result<std::string> SerialDriver::Impl::ReadLine(unsigned int timeout_ms) {
     return Err(ErrorCode::kNotConnected);
   }
 
+  timeout_ = false;
   deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
 
   boost::system::error_code ec = boost::asio::error::would_block;
@@ -182,7 +186,7 @@ Result<std::string> SerialDriver::Impl::ReadLine(unsigned int timeout_ms) {
     return Err(ErrorCode::kReadFailed);
   }
 
-  if (!port_.is_open()) {
+  if (timeout_) {
     return Err(ErrorCode::kReadTimedOut);
   }
 
@@ -203,7 +207,8 @@ bool SerialDriver::Impl::IsBroadcast() const { return dev_id_ > 255; }
 
 void SerialDriver::Impl::CheckDeadline() {
   if (deadline_.expires_at() <= deadline_timer::traits_type::now()) {
-    Close();
+    timeout_ = true;
+    port_.cancel();
     deadline_.expires_at(boost::posix_time::pos_infin);
   }
 
