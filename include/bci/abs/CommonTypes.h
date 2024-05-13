@@ -48,6 +48,7 @@ enum class ErrorCode : int {
   kInvalidFaultType = -12,
   kInvalidSenseRange = -13,
   kInvalidArgument = -14,
+  kInvalidDriverHandle = -15,
 };
 
 template <class T>

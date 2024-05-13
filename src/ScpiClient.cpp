@@ -33,7 +33,7 @@ ScpiClient::ScpiClient(std::shared_ptr<drivers::CommDriver> driver)
 ScpiClient::~ScpiClient() {}
 
 Result<DeviceInfo> ScpiClient::GetDeviceInfo() const {
-  auto res = WriteAndRead("*IDN?\r\n");
+  auto res = SendAndRecv("*IDN?\r\n");
   if (!res) {
     return Err(res.error());
   }
@@ -48,18 +48,16 @@ Result<DeviceInfo> ScpiClient::GetDeviceInfo() const {
 }
 
 Result<std::uint8_t> ScpiClient::GetDeviceId() const {
-  return WriteAndRead("CONF:COMM:SER:ID?\r\n")
+  return SendAndRecv("CONF:COMM:SER:ID?\r\n")
       .and_then(scpi::ParseIntResponse<std::uint8_t>);
 }
 
 Result<int> ScpiClient::GetErrorCount() const {
-  return WriteAndRead("SYST:ERR:COUN?\r\n")
+  return SendAndRecv("SYST:ERR:COUN?\r\n")
       .and_then(scpi::ParseIntResponse<int>);
 }
 
-ErrorCode ScpiClient::Reboot() const {
-  return driver_->Write("*RST\r\n", kWriteTimeoutMs);
-}
+ErrorCode ScpiClient::Reboot() const { return Send("*RST\r\n"); }
 
 ErrorCode ScpiClient::EnableCell(unsigned int cell, bool en) const {
   if (cell >= kCellCount) {
@@ -69,7 +67,7 @@ ErrorCode ScpiClient::EnableCell(unsigned int cell, bool en) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{} {:d}\r\n", cell + 1, en);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 Result<bool> ScpiClient::GetCellEnabled(unsigned int cell) const {
@@ -80,7 +78,7 @@ Result<bool> ScpiClient::GetCellEnabled(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{}?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseBoolResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseBoolResponse);
 }
 
 ErrorCode ScpiClient::EnableCellsMasked(unsigned int cells, bool en) const {
@@ -94,7 +92,7 @@ ErrorCode ScpiClient::EnableCellsMasked(unsigned int cells, bool en) const {
       }
     }
     buf += ")\r\n";
-    return driver_->Write(buf, kWriteTimeoutMs);
+    return Send(buf);
   }
   return ec::kSuccess;
 }
@@ -110,7 +108,7 @@ ErrorCode ScpiClient::SetCellVoltage(unsigned int cell, float voltage) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR{}:VOLT {:.4f}\r\n", cell + 1,
                    voltage);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellVoltage(float voltage) const {
@@ -120,7 +118,7 @@ ErrorCode ScpiClient::SetAllCellVoltage(float voltage) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:VOLT {:.4f},(@1:{})\r\n",
                    voltage, kCellCount);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellVoltage(const float* voltages,
@@ -142,7 +140,7 @@ ErrorCode ScpiClient::SetAllCellVoltage(const float* voltages,
   }
   buf += "\r\n";
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellVoltage(std::span<const float> voltages) const {
@@ -162,7 +160,7 @@ Result<float> ScpiClient::GetCellVoltageTarget(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR{}:VOLT?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
 ErrorCode ScpiClient::SetCellSourcing(unsigned int cell, float limit) const {
@@ -176,7 +174,7 @@ ErrorCode ScpiClient::SetCellSourcing(unsigned int cell, float limit) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR{}:CURR:SRC {:.4f}\r\n", cell + 1,
                    limit);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSourcing(float limit) const {
@@ -186,7 +184,7 @@ ErrorCode ScpiClient::SetAllCellSourcing(float limit) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SRC {:.4f},(@1:{})\r\n",
                    limit, kCellCount);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSourcing(const float* limits,
@@ -208,7 +206,7 @@ ErrorCode ScpiClient::SetAllCellSourcing(const float* limits,
   }
   buf += "\r\n";
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSourcing(std::span<const float> limits) const {
@@ -228,7 +226,7 @@ Result<float> ScpiClient::GetCellSourcingLimit(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR{}:CURR:SRC?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
 ErrorCode ScpiClient::SetCellSinking(unsigned int cell, float limit) const {
@@ -242,7 +240,7 @@ ErrorCode ScpiClient::SetCellSinking(unsigned int cell, float limit) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR{}:CURR:SNK {:.4f}\r\n", cell + 1,
                    limit);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSinking(float limit) const {
@@ -252,7 +250,7 @@ ErrorCode ScpiClient::SetAllCellSinking(float limit) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SNK {:.4f},(@1:{})\r\n",
                    limit, kCellCount);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSinking(const float* limits,
@@ -274,7 +272,7 @@ ErrorCode ScpiClient::SetAllCellSinking(const float* limits,
   }
   buf += "\r\n";
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSinking(std::span<const float> limits) const {
@@ -294,7 +292,7 @@ Result<float> ScpiClient::GetCellSinkingLimit(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR{}:CURR:SNK?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
 ErrorCode ScpiClient::SetCellFault(unsigned int cell, CellFault fault) const {
@@ -310,7 +308,7 @@ ErrorCode ScpiClient::SetCellFault(unsigned int cell, CellFault fault) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{}:FAUL {}\r\n", cell + 1, fstr);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellFault(CellFault fault) const {
@@ -323,7 +321,7 @@ ErrorCode ScpiClient::SetAllCellFault(CellFault fault) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP:FAUL {},(@1:{})\r\n", fstr,
                    kCellCount);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellFault(const CellFault* faults,
@@ -348,7 +346,7 @@ ErrorCode ScpiClient::SetAllCellFault(const CellFault* faults,
   }
   buf += "\r\n";
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellFault(std::span<const CellFault> faults) const {
@@ -368,7 +366,7 @@ Result<CellFault> ScpiClient::GetCellFault(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{}:FAUL?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseCellFault);
+  return SendAndRecv(buf).and_then(scpi::ParseCellFault);
 }
 
 ErrorCode ScpiClient::SetCellSenseRange(unsigned int cell,
@@ -385,7 +383,7 @@ ErrorCode ScpiClient::SetCellSenseRange(unsigned int cell,
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SENS{}:RANG {}\r\n", cell + 1, rstr);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSenseRange(CellSenseRange range) const {
@@ -398,7 +396,7 @@ ErrorCode ScpiClient::SetAllCellSenseRange(CellSenseRange range) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SENS:RANG {},(@1:{})\r\n", rstr,
                    kCellCount);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSenseRange(const CellSenseRange* ranges,
@@ -423,7 +421,7 @@ ErrorCode ScpiClient::SetAllCellSenseRange(const CellSenseRange* ranges,
   }
   buf += "\r\n";
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllCellSenseRange(
@@ -444,7 +442,7 @@ Result<CellSenseRange> ScpiClient::GetCellSenseRange(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SENS{}:RANG?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseCellSenseRange);
+  return SendAndRecv(buf).and_then(scpi::ParseCellSenseRange);
 }
 
 Result<float> ScpiClient::MeasureCellVoltage(unsigned int cell) const {
@@ -455,7 +453,7 @@ Result<float> ScpiClient::MeasureCellVoltage(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS{}:VOLT?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
 Result<float> ScpiClient::MeasureCellCurrent(unsigned int cell) const {
@@ -466,7 +464,7 @@ Result<float> ScpiClient::MeasureCellCurrent(unsigned int cell) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS{}:CURR?\r\n", cell + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
 ErrorCode ScpiClient::SetAnalogOutput(unsigned int channel,
@@ -481,7 +479,7 @@ ErrorCode ScpiClient::SetAnalogOutput(unsigned int channel,
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT{} {:.3f}\r\n",
                    channel + 1, voltage);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 Result<float> ScpiClient::GetAnalogOutput(unsigned int channel) const {
@@ -492,7 +490,7 @@ Result<float> ScpiClient::GetAnalogOutput(unsigned int channel) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT{}?\r\n", channel + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
 ErrorCode ScpiClient::SetDigitalOutput(unsigned int channel, bool level) const {
@@ -504,7 +502,7 @@ ErrorCode ScpiClient::SetDigitalOutput(unsigned int channel, bool level) const {
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:DAUX:OUT{} {:d}\r\n",
                    channel + 1, level);
 
-  return driver_->Write(buf, kWriteTimeoutMs);
+  return Send(buf);
 }
 
 Result<bool> ScpiClient::GetDigitalOutput(unsigned int channel) const {
@@ -515,7 +513,7 @@ Result<bool> ScpiClient::GetDigitalOutput(unsigned int channel) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:DAUX:OUT{}?\r\n", channel + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseBoolResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseBoolResponse);
 }
 
 Result<float> ScpiClient::MeasureAnalogInput(unsigned int channel) const {
@@ -526,7 +524,7 @@ Result<float> ScpiClient::MeasureAnalogInput(unsigned int channel) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:AUX:IN{}?\r\n", channel + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseFloatResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
 Result<bool> ScpiClient::MeasureDigitalInput(unsigned int channel) const {
@@ -537,10 +535,22 @@ Result<bool> ScpiClient::MeasureDigitalInput(unsigned int channel) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:DAUX:IN{}?\r\n", channel + 1);
 
-  return WriteAndRead(buf).and_then(scpi::ParseBoolResponse);
+  return SendAndRecv(buf).and_then(scpi::ParseBoolResponse);
 }
 
-Result<std::string> ScpiClient::WriteAndRead(std::string_view buf) const {
+ErrorCode ScpiClient::Send(std::string_view buf) const {
+  if (!driver_) {
+    return ec::kInvalidDriverHandle;
+  }
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+Result<std::string> ScpiClient::SendAndRecv(std::string_view buf) const {
+  if (!driver_) {
+    return Err(ec::kInvalidDriverHandle);
+  }
+
   auto res = driver_->Write(buf, kWriteTimeoutMs);
   if (res != ErrorCode::kSuccess) {
     return Err(res);

@@ -17,7 +17,9 @@ class ScpiClient {
  public:
   ScpiClient(std::shared_ptr<drivers::CommDriver> driver);
 
-  virtual ~ScpiClient();
+  ScpiClient(std::nullptr_t) = delete;
+
+  ~ScpiClient();
 
   /* System */
 
@@ -120,7 +122,9 @@ class ScpiClient {
  private:
   std::shared_ptr<drivers::CommDriver> driver_;
 
-  Result<std::string> WriteAndRead(std::string_view buf) const;
+  ErrorCode Send(std::string_view buf) const;
+
+  Result<std::string> SendAndRecv(std::string_view buf) const;
 };
 
 }  // namespace bci::abs
