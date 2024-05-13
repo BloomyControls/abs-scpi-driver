@@ -8,6 +8,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
   cmake_policy(SET CMP0135 NEW)
 endif()
 
+set(FMT_SYSTEM_HEADERS TRUE)
 find_package(fmt 10.2.1 QUIET)
 if(NOT fmt_FOUND)
   FetchContent_Declare(fmt
