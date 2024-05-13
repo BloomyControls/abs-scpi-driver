@@ -57,6 +57,14 @@ Result<int> ScpiClient::GetErrorCount() const {
       .and_then(scpi::ParseIntResponse<int>);
 }
 
+Result<ScpiError> ScpiClient::GetNextError() const {
+  return SendAndRecv("SYST:ERR?\r\n").and_then(scpi::ParseScpiError);
+}
+
+ErrorCode ScpiClient::ClearErrors() const {
+  return Send("*CLS\r\n");
+}
+
 ErrorCode ScpiClient::Reboot() const { return Send("*RST\r\n"); }
 
 ErrorCode ScpiClient::EnableCell(unsigned int cell, bool en) const {

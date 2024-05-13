@@ -29,6 +29,10 @@ class ScpiClient {
 
   Result<int> GetErrorCount() const;
 
+  Result<ScpiError> GetNextError() const;
+
+  ErrorCode ClearErrors() const;
+
   ErrorCode Reboot() const;
 
   /* Cells */

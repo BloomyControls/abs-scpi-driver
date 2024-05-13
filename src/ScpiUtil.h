@@ -4,8 +4,10 @@
 #include <bci/abs/CommonTypes.h>
 
 #include <concepts>
+#include <optional>
 #include <ranges>
 #include <span>
+#include <string>
 #include <string_view>
 #include <utility>
 
@@ -174,6 +176,11 @@ constexpr Result<CellSenseRange> ParseCellSenseRange(
 
   return util::Err(ErrorCode::kInvalidResponse);
 }
+
+// Parse quoted SCPI <String> data.
+std::optional<std::string> ParseQuotedString(std::string_view str);
+
+Result<ScpiError> ParseScpiError(std::string_view str);
 
 }  // namespace bci::abs::scpi
 

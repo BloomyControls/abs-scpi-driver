@@ -1,6 +1,7 @@
 #ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H
 #define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H
 
+#include <cstdint>
 #include <string>
 
 #include "util/expected.hpp"
@@ -30,6 +31,11 @@ struct DeviceInfo {
   std::string part_number;
   std::string serial;
   std::string version;
+};
+
+struct ScpiError {
+  std::int16_t err_code;
+  std::string err_msg;
 };
 
 enum class ErrorCode : int {
