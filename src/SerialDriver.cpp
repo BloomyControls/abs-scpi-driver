@@ -14,11 +14,6 @@
 
 #include "Util.h"
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#endif  // _WIN32
-
 using boost::asio::deadline_timer;
 
 namespace bci::abs::drivers {
@@ -127,11 +122,6 @@ ErrorCode SerialDriver::Impl::Open(const std::string& port) {
   if (ec) {
     return ErrorCode::kFailedToConfigurePort;
   }
-
-#ifdef _WIN32
-  ::COMMTIMEOUTS timeouts{MAXDWORD, 0, 0, 0, 0};
-  SetCommTimeouts(port_.native_handle(), &timeouts);
-#endif  // _WIN32
 
   return ErrorCode::kSuccess;
 }
