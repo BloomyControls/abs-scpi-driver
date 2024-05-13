@@ -52,7 +52,14 @@ message(STATUS "Fetch fast_float")
 FetchContent_MakeAvailable(fast_float)
 
 
-add_library(bciabs_scpi src/ScpiClient.cpp src/TcpDriver.cpp src/ScpiUtil.cpp)
+add_library(bciabs_scpi
+  src/TcpDriver.cpp
+  src/ScpiUtil.cpp
+  src/ScpiClient.cpp
+  src/ScpiClient_System.cpp
+  src/ScpiClient_Cells.cpp
+  src/ScpiClient_AuxIO.cpp
+)
 
 target_compile_features(bciabs_scpi PUBLIC cxx_std_20)
 
