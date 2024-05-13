@@ -318,6 +318,8 @@ constexpr Result<std::array<CellMode, kLen>> ParseCellOperatingModeArray(
 // Parse quoted SCPI <String> data.
 std::optional<std::string> ParseQuotedString(std::string_view str);
 
+Result<std::string> ParseStringResponse(std::string_view str);
+
 Result<ScpiError> ParseScpiError(std::string_view str);
 
 }  // namespace bci::abs::scpi

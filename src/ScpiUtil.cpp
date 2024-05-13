@@ -54,6 +54,15 @@ std::optional<std::string> ParseQuotedString(std::string_view str) {
   return ret;
 }
 
+Result<std::string> ParseStringResponse(std::string_view str) {
+  auto e = ParseQuotedString(util::Trim(str));
+  if (e) {
+    return *std::move(e);
+  } else {
+    return Err(ec::kInvalidResponse);
+  }
+}
+
 Result<ScpiError> ParseScpiError(std::string_view str) {
   str = util::Trim(str);
 

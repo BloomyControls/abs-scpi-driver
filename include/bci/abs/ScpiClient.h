@@ -27,6 +27,8 @@ class ScpiClient {
 
   Result<std::uint8_t> GetDeviceId() const;
 
+  Result<std::string> GetCalibrationDate() const;
+
   Result<int> GetErrorCount() const;
 
   Result<ScpiError> GetNextError() const;

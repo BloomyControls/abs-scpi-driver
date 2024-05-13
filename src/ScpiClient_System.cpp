@@ -34,6 +34,10 @@ Result<std::uint8_t> ScpiClient::GetDeviceId() const {
       .and_then(scpi::ParseIntResponse<std::uint8_t>);
 }
 
+Result<std::string> ScpiClient::GetCalibrationDate() const {
+  return SendAndRecv("CAL:DATE?\r\n").and_then(scpi::ParseStringResponse);
+}
+
 Result<int> ScpiClient::GetErrorCount() const {
   return SendAndRecv("SYST:ERR:COUN?\r\n")
       .and_then(scpi::ParseIntResponse<int>);
