@@ -24,9 +24,7 @@ using util::Err;
 struct UdpMcastDriver::Impl {
   Impl();
 
-  ErrorCode Open();
-
-  ErrorCode Open(std::string_view local_ip);
+  ErrorCode Open(std::string_view interface_ip);
 
   void Close() noexcept;
 
@@ -50,7 +48,9 @@ UdpMcastDriver::UdpMcastDriver() : impl_(std::make_shared<Impl>()) {}
 
 UdpMcastDriver::~UdpMcastDriver() { Close(); }
 
-ErrorCode UdpMcastDriver::Open() { return impl_->Open(); }
+ErrorCode UdpMcastDriver::Open(std::string_view interface_ip) {
+  return impl_->Open(interface_ip);
+}
 
 void UdpMcastDriver::Close() noexcept { impl_->Close(); }
 
@@ -73,17 +73,13 @@ UdpMcastDriver::Impl::Impl()
   CheckDeadline();
 }
 
-ErrorCode UdpMcastDriver::Impl::Open() {
-  return Open("0.0.0.0");
-}
-
-ErrorCode UdpMcastDriver::Impl::Open(std::string_view local_ip) {
+ErrorCode UdpMcastDriver::Impl::Open(std::string_view interface_ip) {
   if (socket_.is_open()) {
     return ErrorCode::kAlreadyConnected;
   }
 
   boost::system::error_code ec{};
-  auto local_address = boost::asio::ip::make_address_v4(local_ip, ec);
+  auto local_address = boost::asio::ip::make_address_v4(interface_ip, ec);
   if (ec) {
     return ErrorCode::kInvalidIPAddress;
   }
@@ -95,7 +91,7 @@ ErrorCode UdpMcastDriver::Impl::Open(std::string_view local_ip) {
 
   endpoint_ = boost::asio::ip::udp::endpoint(remote_address, 5025);
 
-  socket_.open(endpoint_.protocol(), ec);
+  socket_.open(boost::asio::ip::udp::v4(), ec);
   if (ec) {
     return ErrorCode::kSocketError;
   }
@@ -108,15 +104,19 @@ ErrorCode UdpMcastDriver::Impl::Open(std::string_view local_ip) {
     return ErrorCode::kSocketError;
   }
 
-#if 0
-  boost::asio::ip::udp::endpoint local_endpoint(local_address, 0);
-
-  socket_.bind(local_endpoint, ec);
+  boost::asio::ip::multicast::outbound_interface iface_opt(local_address);
+  socket_.set_option(iface_opt, ec);
   if (ec) {
     socket_.close();
-    return ErrorCode::kFailedToBindSocket;
+    return ErrorCode::kSocketError;
   }
-#endif
+
+  boost::asio::ip::multicast::join_group join_opt(remote_address);
+  socket_.set_option(join_opt, ec);
+  if (ec) {
+    socket_.close();
+    return ErrorCode::kFailedToJoinGroup;
+  }
 
   return ErrorCode::kSuccess;
 }

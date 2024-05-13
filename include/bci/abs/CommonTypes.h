@@ -66,6 +66,7 @@ enum class ErrorCode : int {
   kFailedToBindSocket = -19,
   kOpeningSerialPortFailed = -20,
   kFailedToConfigurePort = -21,
+  kFailedToJoinGroup = -22,
 };
 
 template <class T>

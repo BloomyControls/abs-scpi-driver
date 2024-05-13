@@ -16,7 +16,7 @@ class UdpMcastDriver final : public CommDriver {
 
   ~UdpMcastDriver();
 
-  ErrorCode Open();
+  ErrorCode Open(std::string_view interface_ip);
 
   void Close() noexcept;
 
