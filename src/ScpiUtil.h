@@ -25,8 +25,8 @@ constexpr ErrorCode SplitRespFloats(std::string_view resp,
       return ErrorCode::kInvalidResponse;
     }
 
-    if (auto v =
-            util::StrViewToFloat(std::string_view(val.data(), val.size()))) {
+    if (auto v = util::StrViewToFloat(
+            std::string_view(&*val.begin(), std::ranges::distance(val)))) {
       out[i++] = *v;
     } else {
       return ErrorCode::kInvalidResponse;
@@ -57,7 +57,7 @@ ErrorCode SplitRespMnemonics(std::string_view resp,
       return ErrorCode::kInvalidResponse;
     }
 
-    out[i++] = std::string(val.begin(), val.end());
+    out[i++] = std::string(&*val.begin(), std::ranges::distance(val));
   }
 
   if (i < out.size()) {
@@ -78,7 +78,7 @@ constexpr ErrorCode SplitRespMnemonics(
       return ErrorCode::kInvalidResponse;
     }
 
-    out[i++] = std::string_view(val.begin(), val.end());
+    out[i++] = std::string_view(&*val.begin(), std::ranges::distance(val));
   }
 
   if (i < out.size()) {
