@@ -47,6 +47,7 @@ enum class ErrorCode : int {
   kInvalidResponse = -11,
   kInvalidFaultType = -12,
   kInvalidSenseRange = -13,
+  kInvalidArgument = -14,
 };
 
 template <class T>

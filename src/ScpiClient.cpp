@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -112,6 +113,47 @@ ErrorCode ScpiClient::SetCellVoltage(unsigned int cell, float voltage) const {
   return driver_->Write(buf, kWriteTimeoutMs);
 }
 
+ErrorCode ScpiClient::SetAllCellVoltage(float voltage) const {
+  voltage = std::clamp(voltage, 0.0f, kMaxVoltage);
+
+  char buf[64]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:VOLT {:.4f},(@1:{})\r\n",
+                   voltage, kCellCount);
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellVoltage(const float* voltages,
+                                        std::size_t count) const {
+  if ((count > 0 && !voltages) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  std::string buf;
+  // try to do only one allocation
+  buf.reserve(count * 18 + 2);
+  for (std::size_t i = 0; i < count; ++i) {
+    buf += fmt::format("SOUR{}:VOLT {:.4f};", i + 1,
+                       std::clamp(voltages[i], 0.0f, kMaxVoltage));
+  }
+  buf += "\r\n";
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellVoltage(std::span<const float> voltages) const {
+  return SetAllCellVoltage(voltages.data(), voltages.size());
+}
+
+ErrorCode ScpiClient::SetAllCellVoltage(
+    const std::array<float, 8>& voltages) const {
+  return SetAllCellVoltage(voltages.data(), voltages.size());
+}
+
 Result<float> ScpiClient::GetCellVoltageTarget(unsigned int cell) const {
   if (cell >= kCellCount) {
     return Err(ec::kChannelIndexOutOfRange);
@@ -137,6 +179,47 @@ ErrorCode ScpiClient::SetCellSourcing(unsigned int cell, float limit) const {
   return driver_->Write(buf, kWriteTimeoutMs);
 }
 
+ErrorCode ScpiClient::SetAllCellSourcing(float limit) const {
+  limit = std::clamp(limit, 0.0f, kMaxSourcing);
+
+  char buf[64]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SRC {:.4f},(@1:{})\r\n",
+                   limit, kCellCount);
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSourcing(const float* limits,
+                                         std::size_t count) const {
+  if ((count > 0 && !limits) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  std::string buf;
+  // try to do only one allocation
+  buf.reserve(count * 22 + 2);
+  for (std::size_t i = 0; i < count; ++i) {
+    buf += fmt::format("SOUR{}:CURR:SRC {:.4f};", i + 1,
+                       std::clamp(limits[i], 0.0f, kMaxSourcing));
+  }
+  buf += "\r\n";
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSourcing(std::span<const float> limits) const {
+  return SetAllCellSourcing(limits.data(), limits.size());
+}
+
+ErrorCode ScpiClient::SetAllCellSourcing(
+    const std::array<float, 8>& limits) const {
+  return SetAllCellSourcing(limits.data(), limits.size());
+}
+
 Result<float> ScpiClient::GetCellSourcingLimit(unsigned int cell) const {
   if (cell >= kCellCount) {
     return Err(ec::kChannelIndexOutOfRange);
@@ -160,6 +243,47 @@ ErrorCode ScpiClient::SetCellSinking(unsigned int cell, float limit) const {
                    limit);
 
   return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSinking(float limit) const {
+  limit = std::clamp(limit, -kMaxSinking, kMaxSinking);
+
+  char buf[64]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SNK {:.4f},(@1:{})\r\n",
+                   limit, kCellCount);
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSinking(const float* limits,
+                                        std::size_t count) const {
+  if ((count > 0 && !limits) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  std::string buf;
+  // try to do only one allocation
+  buf.reserve(count * 22 + 2);
+  for (std::size_t i = 0; i < count; ++i) {
+    buf += fmt::format("SOUR{}:CURR:SNK {:.4f};", i + 1,
+                       std::clamp(limits[i], -kMaxSinking, kMaxSinking));
+  }
+  buf += "\r\n";
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSinking(std::span<const float> limits) const {
+  return SetAllCellSinking(limits.data(), limits.size());
+}
+
+ErrorCode ScpiClient::SetAllCellSinking(
+    const std::array<float, 8>& limits) const {
+  return SetAllCellSinking(limits.data(), limits.size());
 }
 
 Result<float> ScpiClient::GetCellSinkingLimit(unsigned int cell) const {
@@ -189,6 +313,53 @@ ErrorCode ScpiClient::SetCellFault(unsigned int cell, CellFault fault) const {
   return driver_->Write(buf, kWriteTimeoutMs);
 }
 
+ErrorCode ScpiClient::SetAllCellFault(CellFault fault) const {
+  auto fstr = scpi::CellFaultMnemonic(fault);
+  if (fstr.empty()) {
+    return ec::kInvalidFaultType;
+  }
+
+  char buf[64]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP:FAUL {},(@1:{})\r\n", fstr,
+                   kCellCount);
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellFault(const CellFault* faults,
+                                      std::size_t count) const {
+  if ((count > 0 && !faults) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  std::string buf;
+  // try to do only one allocation
+  buf.reserve(count * 17 + 2);
+  for (std::size_t i = 0; i < count; ++i) {
+    auto fstr = scpi::CellFaultMnemonic(faults[i]);
+    if (fstr.empty()) {
+      return ec::kInvalidFaultType;
+    }
+    buf += fmt::format("OUTP{}:FAUL {};", i + 1, fstr);
+  }
+  buf += "\r\n";
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellFault(std::span<const CellFault> faults) const {
+  return SetAllCellFault(faults.data(), faults.size());
+}
+
+ErrorCode ScpiClient::SetAllCellFault(
+    const std::array<CellFault, 8>& faults) const {
+  return SetAllCellFault(faults.data(), faults.size());
+}
+
 Result<CellFault> ScpiClient::GetCellFault(unsigned int cell) const {
   if (cell >= kCellCount) {
     return Err(ec::kChannelIndexOutOfRange);
@@ -215,6 +386,54 @@ ErrorCode ScpiClient::SetCellSenseRange(unsigned int cell,
   fmt::format_to_n(buf, sizeof(buf) - 1, "SENS{}:RANG {}\r\n", cell + 1, rstr);
 
   return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSenseRange(CellSenseRange range) const {
+  auto rstr = scpi::CellSenseRangeMnemonic(range);
+  if (rstr.empty()) {
+    return ec::kInvalidSenseRange;
+  }
+
+  char buf[64]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "SENS:RANG {},(@1:{})\r\n", rstr,
+                   kCellCount);
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSenseRange(const CellSenseRange* ranges,
+                                           std::size_t count) const {
+  if ((count > 0 && !ranges) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  std::string buf;
+  // try to do only one allocation
+  buf.reserve(count * 16 + 2);
+  for (std::size_t i = 0; i < count; ++i) {
+    auto rstr = scpi::CellSenseRangeMnemonic(ranges[i]);
+    if (rstr.empty()) {
+      return ec::kInvalidSenseRange;
+    }
+    buf += fmt::format("SENS{}:RANG {};", i + 1, rstr);
+  }
+  buf += "\r\n";
+
+  return driver_->Write(buf, kWriteTimeoutMs);
+}
+
+ErrorCode ScpiClient::SetAllCellSenseRange(
+    std::span<const CellSenseRange> ranges) const {
+  return SetAllCellSenseRange(ranges.data(), ranges.size());
+}
+
+ErrorCode ScpiClient::SetAllCellSenseRange(
+    const std::array<CellSenseRange, 8>& ranges) const {
+  return SetAllCellSenseRange(ranges.data(), ranges.size());
 }
 
 Result<CellSenseRange> ScpiClient::GetCellSenseRange(unsigned int cell) const {

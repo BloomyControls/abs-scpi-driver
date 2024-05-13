@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <span>
 #include <string>
 #include <string_view>
 
@@ -38,21 +39,63 @@ class ScpiClient {
 
   ErrorCode SetCellVoltage(unsigned int cell, float voltage) const;
 
+  ErrorCode SetAllCellVoltage(float voltage) const;
+
+  ErrorCode SetAllCellVoltage(const float* voltages, std::size_t count) const;
+
+  ErrorCode SetAllCellVoltage(std::span<const float> voltages) const;
+
+  ErrorCode SetAllCellVoltage(const std::array<float, 8>& voltages) const;
+
   Result<float> GetCellVoltageTarget(unsigned int cell) const;
 
   ErrorCode SetCellSourcing(unsigned int cell, float limit) const;
+
+  ErrorCode SetAllCellSourcing(float limit) const;
+
+  ErrorCode SetAllCellSourcing(const float* limits, std::size_t count) const;
+
+  ErrorCode SetAllCellSourcing(std::span<const float> limits) const;
+
+  ErrorCode SetAllCellSourcing(const std::array<float, 8>& limits) const;
 
   Result<float> GetCellSourcingLimit(unsigned int cell) const;
 
   ErrorCode SetCellSinking(unsigned int cell, float limit) const;
 
+  ErrorCode SetAllCellSinking(float limit) const;
+
+  ErrorCode SetAllCellSinking(const float* limits, std::size_t count) const;
+
+  ErrorCode SetAllCellSinking(std::span<const float> limits) const;
+
+  ErrorCode SetAllCellSinking(const std::array<float, 8>& limits) const;
+
   Result<float> GetCellSinkingLimit(unsigned int cell) const;
 
   ErrorCode SetCellFault(unsigned int cell, CellFault fault) const;
 
+  ErrorCode SetAllCellFault(CellFault fault) const;
+
+  ErrorCode SetAllCellFault(const CellFault* faults, std::size_t count) const;
+
+  ErrorCode SetAllCellFault(std::span<const CellFault> faults) const;
+
+  ErrorCode SetAllCellFault(const std::array<CellFault, 8>& faults) const;
+
   Result<CellFault> GetCellFault(unsigned int cell) const;
 
   ErrorCode SetCellSenseRange(unsigned int cell, CellSenseRange range) const;
+
+  ErrorCode SetAllCellSenseRange(CellSenseRange range) const;
+
+  ErrorCode SetAllCellSenseRange(const CellSenseRange* ranges,
+                                 std::size_t count) const;
+
+  ErrorCode SetAllCellSenseRange(std::span<const CellSenseRange> ranges) const;
+
+  ErrorCode SetAllCellSenseRange(
+      const std::array<CellSenseRange, 8>& ranges) const;
 
   Result<CellSenseRange> GetCellSenseRange(unsigned int cell) const;
 
@@ -82,4 +125,4 @@ class ScpiClient {
 
 }  // namespace bci::abs
 
-#endif  /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_SCPICLIENT_H */
+#endif /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_SCPICLIENT_H */
