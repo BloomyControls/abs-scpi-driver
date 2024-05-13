@@ -55,6 +55,7 @@ FetchContent_MakeAvailable(fast_float)
 add_library(bciabs_scpi
   src/TcpDriver.cpp
   src/UdpDriver.cpp
+  src/UdpMulticastDriver.cpp
   src/SerialDriver.cpp
   src/ScpiUtil.cpp
   src/ScpiClient.cpp
