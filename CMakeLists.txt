@@ -63,6 +63,7 @@ add_library(bciabs_scpi
   src/ScpiClient_Cells.cpp
   src/ScpiClient_AuxIO.cpp
 )
+add_library(bci::abs-scpi ALIAS bciabs_scpi)
 
 target_compile_features(bciabs_scpi PUBLIC cxx_std_20)
 
