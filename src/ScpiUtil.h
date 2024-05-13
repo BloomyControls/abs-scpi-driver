@@ -60,6 +60,49 @@ constexpr Result<std::array<float, kLen>> ParseRespFloatArray(
 }
 
 template <std::size_t kLen>
+constexpr ErrorCode SplitRespBools(std::string_view resp,
+                                   std::span<bool, kLen> out) {
+  resp = util::Trim(resp);
+
+  std::size_t i = 0;
+  for (const auto val : std::views::split(resp, ',')) {
+    if (i >= out.size()) {
+      return ErrorCode::kInvalidResponse;
+    }
+
+    if (auto v = util::StrViewToBool(
+            std::string_view(&*val.begin(), std::ranges::distance(val)))) {
+      out[i++] = *v;
+    } else {
+      return ErrorCode::kInvalidResponse;
+    }
+  }
+
+  if (i < out.size()) {
+    return ErrorCode::kInvalidResponse;
+  }
+
+  return ErrorCode::kSuccess;
+}
+
+template <std::size_t kLen>
+constexpr ErrorCode SplitRespBools(std::string_view resp,
+                                   std::array<bool, kLen>& out) {
+  return SplitRespBools(resp, std::span{out});
+}
+
+template <std::size_t kLen>
+constexpr Result<std::array<bool, kLen>> ParseRespBoolArray(
+    std::string_view resp) {
+  std::array<bool, kLen> res{};
+  auto e = SplitRespBools(resp, res);
+  if (e != ErrorCode::kSuccess) {
+    return util::Err(e);
+  }
+  return res;
+}
+
+template <std::size_t kLen>
 constexpr ErrorCode SplitRespMnemonics(std::string_view resp,
                                        std::span<std::string_view, kLen> out) {
   resp = util::Trim(resp);

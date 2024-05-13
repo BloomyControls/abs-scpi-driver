@@ -179,15 +179,54 @@ class ScpiClient {
 
   ErrorCode SetAnalogOutput(unsigned int channel, float voltage) const;
 
+  ErrorCode SetAllAnalogOutput(float voltage) const;
+
+  ErrorCode SetAllAnalogOutput(const float* voltages, std::size_t count) const;
+
+  ErrorCode SetAllAnalogOutput(std::span<const float> voltages) const;
+
+  ErrorCode SetAllAnalogOutput(
+      const std::array<float, kAnalogOutputCount>& voltages) const;
+
   Result<float> GetAnalogOutput(unsigned int channel) const;
+
+  Result<std::array<float, kAnalogOutputCount>> GetAllAnalogOutput() const;
+
+  ErrorCode GetAllAnalogOutput(float* voltages, std::size_t count) const;
+
+  ErrorCode GetAllAnalogOutput(
+      std::array<float, kAnalogOutputCount>& voltages) const;
+
+  ErrorCode GetAllAnalogOutput(std::span<float> voltages) const;
 
   ErrorCode SetDigitalOutput(unsigned int channel, bool level) const;
 
+  ErrorCode SetAllDigitalOutput(bool level) const;
+
+  ErrorCode SetAllDigitalOutputMasked(unsigned int channels, bool level) const;
+
   Result<bool> GetDigitalOutput(unsigned int channel) const;
+
+  Result<std::array<bool, kDigitalOutputCount>> GetAllDigitalOutput() const;
+
+  Result<unsigned int> GetAllDigitalOutputMasked() const;
 
   Result<float> MeasureAnalogInput(unsigned int channel) const;
 
+  Result<std::array<float, kAnalogInputCount>> MeasureAllAnalogInput() const;
+
+  ErrorCode MeasureAllAnalogInput(float* voltages, std::size_t count) const;
+
+  ErrorCode MeasureAllAnalogInput(
+      std::array<float, kAnalogInputCount>& voltages) const;
+
+  ErrorCode MeasureAllAnalogInput(std::span<float> voltages) const;
+
   Result<bool> MeasureDigitalInput(unsigned int channel) const;
+
+  Result<std::array<bool, kDigitalInputCount>> MeasureAllDigitalInput() const;
+
+  Result<unsigned int> MeasureAllDigitalInputMasked() const;
 
  private:
   std::shared_ptr<drivers::CommDriver> driver_;
