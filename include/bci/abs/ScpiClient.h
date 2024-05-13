@@ -205,6 +205,11 @@ class ScpiClient {
 
   ErrorCode SetAllDigitalOutputMasked(unsigned int channels, bool level) const;
 
+  ErrorCode SetAllDigitalOutput(
+      const std::array<bool, kDigitalOutputCount>& levels) const;
+
+  ErrorCode SetAllDigitalOutput(std::span<const bool> levels) const;
+
   Result<bool> GetDigitalOutput(unsigned int channel) const;
 
   Result<std::array<bool, kDigitalOutputCount>> GetAllDigitalOutput() const;

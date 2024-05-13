@@ -170,6 +170,46 @@ ErrorCode ScpiClient::SetAllDigitalOutputMasked(unsigned int channels,
   return ec::kSuccess;
 }
 
+ErrorCode ScpiClient::SetAllDigitalOutput(
+    const std::array<bool, kDigitalOutputCount>& levels) const {
+  return SetAllDigitalOutput(std::span{levels});
+}
+
+ErrorCode ScpiClient::SetAllDigitalOutput(std::span<const bool> levels) const {
+  const auto count =
+      std::min(levels.size(), static_cast<std::size_t>(kDigitalOutputCount));
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  unsigned int mask_high{};
+  unsigned int mask_low{};
+
+  for (std::size_t i = 0; i < count; ++i) {
+    if (levels[i]) {
+      mask_high |= (1U << i);
+    } else {
+      mask_low |= (1U << i);
+    }
+  }
+
+  if (mask_high) {
+    auto e = SetAllDigitalOutputMasked(mask_high, true);
+    if (e != ec::kSuccess) {
+      return e;
+    }
+  }
+
+  if (mask_low) {
+    auto e = SetAllDigitalOutputMasked(mask_low, false);
+    if (e != ec::kSuccess) {
+      return e;
+    }
+  }
+
+  return ec::kSuccess;
+}
+
 Result<bool> ScpiClient::GetDigitalOutput(unsigned int channel) const {
   if (channel >= kDigitalOutputCount) {
     return Err(ec::kChannelIndexOutOfRange);
