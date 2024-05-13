@@ -25,8 +25,8 @@ constexpr ErrorCode SplitRespFloats(std::string_view resp,
       return ErrorCode::kInvalidResponse;
     }
 
-    if (auto v = util::StrViewToFloat(
-            std::string_view(&*val.begin(), &*val.end()))) {
+    if (auto v =
+            util::StrViewToFloat(std::string_view(val.data(), val.size()))) {
       out[i++] = *v;
     } else {
       return ErrorCode::kInvalidResponse;
