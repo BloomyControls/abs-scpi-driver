@@ -148,7 +148,7 @@ ErrorCode ScpiClient::SetAllCellVoltage(std::span<const float> voltages) const {
 }
 
 ErrorCode ScpiClient::SetAllCellVoltage(
-    const std::array<float, 8>& voltages) const {
+    const std::array<float, kCellCount>& voltages) const {
   return SetAllCellVoltage(voltages.data(), voltages.size());
 }
 
@@ -214,7 +214,7 @@ ErrorCode ScpiClient::SetAllCellSourcing(std::span<const float> limits) const {
 }
 
 ErrorCode ScpiClient::SetAllCellSourcing(
-    const std::array<float, 8>& limits) const {
+    const std::array<float, kCellCount>& limits) const {
   return SetAllCellSourcing(limits.data(), limits.size());
 }
 
@@ -280,7 +280,7 @@ ErrorCode ScpiClient::SetAllCellSinking(std::span<const float> limits) const {
 }
 
 ErrorCode ScpiClient::SetAllCellSinking(
-    const std::array<float, 8>& limits) const {
+    const std::array<float, kCellCount>& limits) const {
   return SetAllCellSinking(limits.data(), limits.size());
 }
 
@@ -354,7 +354,7 @@ ErrorCode ScpiClient::SetAllCellFault(std::span<const CellFault> faults) const {
 }
 
 ErrorCode ScpiClient::SetAllCellFault(
-    const std::array<CellFault, 8>& faults) const {
+    const std::array<CellFault, kCellCount>& faults) const {
   return SetAllCellFault(faults.data(), faults.size());
 }
 
@@ -430,7 +430,7 @@ ErrorCode ScpiClient::SetAllCellSenseRange(
 }
 
 ErrorCode ScpiClient::SetAllCellSenseRange(
-    const std::array<CellSenseRange, 8>& ranges) const {
+    const std::array<CellSenseRange, kCellCount>& ranges) const {
   return SetAllCellSenseRange(ranges.data(), ranges.size());
 }
 
