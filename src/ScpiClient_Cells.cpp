@@ -1,5 +1,6 @@
 #include <bci/abs/ScpiClient.h>
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 
 #include <array>
 #include <span>
@@ -45,14 +46,18 @@ Result<bool> ScpiClient::GetCellEnabled(unsigned int cell) const {
 ErrorCode ScpiClient::EnableCellsMasked(unsigned int cells, bool en) const {
   cells &= kCellsMask;
   if (cells != 0) {
-    // TODO: rewrite without allocation
-    std::string buf = fmt::format("OUTP {:d},(@", en);
+    // we can avoid allocations by using an array of indices
+    std::array<unsigned int, kCellCount> which_cells{};
+    std::size_t count = 0;
     for (unsigned int i = 0; i < kCellCount && cells != 0; ++i, cells >>= 1) {
       if (cells & 1) {
-        buf += fmt::format("{}{}", (i > 0) ? "," : "", i + 1);
+        which_cells[count++] = i + 1;
       }
     }
-    buf += ")\r\n";
+    std::span chan_list{which_cells.data(), count};
+    char buf[64]{};
+    fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP {:d},(@{})\r\n", en,
+                     fmt::join(chan_list, ","));
     return Send(buf);
   }
   return ec::kSuccess;
