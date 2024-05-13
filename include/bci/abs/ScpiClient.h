@@ -56,6 +56,15 @@ class ScpiClient {
 
   Result<float> GetCellVoltageTarget(unsigned int cell) const;
 
+  Result<std::array<float, kCellCount>> GetAllCellVoltageTarget() const;
+
+  ErrorCode GetAllCellVoltageTarget(float* voltages, std::size_t count) const;
+
+  ErrorCode GetAllCellVoltageTarget(
+      std::array<float, kCellCount>& voltages) const;
+
+  ErrorCode GetAllCellVoltageTarget(std::span<float> voltages) const;
+
   ErrorCode SetCellSourcing(unsigned int cell, float limit) const;
 
   ErrorCode SetAllCellSourcing(float limit) const;
@@ -68,6 +77,15 @@ class ScpiClient {
       const std::array<float, kCellCount>& limits) const;
 
   Result<float> GetCellSourcingLimit(unsigned int cell) const;
+
+  Result<std::array<float, kCellCount>> GetAllCellSourcingLimit() const;
+
+  ErrorCode GetAllCellSourcingLimit(float* limits, std::size_t count) const;
+
+  ErrorCode GetAllCellSourcingLimit(
+      std::array<float, kCellCount>& limits) const;
+
+  ErrorCode GetAllCellSourcingLimit(std::span<float> limits) const;
 
   ErrorCode SetCellSinking(unsigned int cell, float limit) const;
 
@@ -82,6 +100,14 @@ class ScpiClient {
 
   Result<float> GetCellSinkingLimit(unsigned int cell) const;
 
+  Result<std::array<float, kCellCount>> GetAllCellSinkingLimit() const;
+
+  ErrorCode GetAllCellSinkingLimit(float* limits, std::size_t count) const;
+
+  ErrorCode GetAllCellSinkingLimit(std::array<float, kCellCount>& limits) const;
+
+  ErrorCode GetAllCellSinkingLimit(std::span<float> limits) const;
+
   ErrorCode SetCellFault(unsigned int cell, CellFault fault) const;
 
   ErrorCode SetAllCellFault(CellFault fault) const;
@@ -94,6 +120,14 @@ class ScpiClient {
       const std::array<CellFault, kCellCount>& faults) const;
 
   Result<CellFault> GetCellFault(unsigned int cell) const;
+
+  Result<std::array<CellFault, kCellCount>> GetAllCellFault() const;
+
+  ErrorCode GetAllCellFault(CellFault* faults, std::size_t count) const;
+
+  ErrorCode GetAllCellFault(std::array<CellFault, kCellCount>& faults) const;
+
+  ErrorCode GetAllCellFault(std::span<CellFault> faults) const;
 
   ErrorCode SetCellSenseRange(unsigned int cell, CellSenseRange range) const;
 
@@ -109,9 +143,37 @@ class ScpiClient {
 
   Result<CellSenseRange> GetCellSenseRange(unsigned int cell) const;
 
+  Result<std::array<CellSenseRange, kCellCount>> GetAllCellSenseRange() const;
+
+  ErrorCode GetAllCellSenseRange(CellSenseRange* ranges,
+                                 std::size_t count) const;
+
+  ErrorCode GetAllCellSenseRange(
+      std::array<CellSenseRange, kCellCount>& ranges) const;
+
+  ErrorCode GetAllCellSenseRange(std::span<CellSenseRange> ranges) const;
+
   Result<float> MeasureCellVoltage(unsigned int cell) const;
 
+  Result<std::array<float, kCellCount>> MeasureAllCellVoltage() const;
+
+  ErrorCode MeasureAllCellVoltage(float* voltages, std::size_t count) const;
+
+  ErrorCode MeasureAllCellVoltage(
+      std::array<float, kCellCount>& voltages) const;
+
+  ErrorCode MeasureAllCellVoltage(std::span<float> voltages) const;
+
   Result<float> MeasureCellCurrent(unsigned int cell) const;
+
+  Result<std::array<float, kCellCount>> MeasureAllCellCurrent() const;
+
+  ErrorCode MeasureAllCellCurrent(float* currents, std::size_t count) const;
+
+  ErrorCode MeasureAllCellCurrent(
+      std::array<float, kCellCount>& currents) const;
+
+  ErrorCode MeasureAllCellCurrent(std::span<float> currents) const;
 
   /* Aux IO */
 

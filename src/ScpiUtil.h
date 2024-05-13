@@ -49,8 +49,19 @@ constexpr ErrorCode SplitRespFloats(std::string_view resp,
 }
 
 template <std::size_t kLen>
-ErrorCode SplitRespMnemonics(std::string_view resp,
-                             std::array<std::string, kLen>& out) {
+constexpr Result<std::array<float, kLen>> ParseRespFloatArray(
+    std::string_view resp) {
+  std::array<float, kLen> res{};
+  auto e = SplitRespFloats(resp, res);
+  if (e != ErrorCode::kSuccess) {
+    return util::Err(e);
+  }
+  return res;
+}
+
+template <std::size_t kLen>
+constexpr ErrorCode SplitRespMnemonics(std::string_view resp,
+                                       std::span<std::string_view, kLen> out) {
   resp = util::Trim(resp);
 
   std::size_t i = 0;
@@ -59,7 +70,7 @@ ErrorCode SplitRespMnemonics(std::string_view resp,
       return ErrorCode::kInvalidResponse;
     }
 
-    out[i++] = std::string(&*val.begin(), std::ranges::distance(val));
+    out[i++] = std::string_view(&*val.begin(), std::ranges::distance(val));
   }
 
   if (i < out.size()) {
@@ -70,8 +81,35 @@ ErrorCode SplitRespMnemonics(std::string_view resp,
 }
 
 template <std::size_t kLen>
+static ErrorCode SplitRespMnemonics(std::string_view resp,
+                                    std::array<std::string, kLen>& out) {
+  std::array<std::string_view, kLen> split;
+  auto e = SplitRespMnemonics(resp, std::span{split});
+  if (e != ErrorCode::kSuccess) {
+    return e;
+  }
+
+  for (std::size_t i = 0; i < kLen; ++i) {
+    out[i] = std::string{split[i].begin(), split[i].end()};
+  }
+
+  return ErrorCode::kSuccess;
+}
+
+template <std::size_t kLen>
 constexpr ErrorCode SplitRespMnemonics(
     std::string_view resp, std::array<std::string_view, kLen>& out) {
+  return SplitRespMnemonics(resp, std::span{out});
+}
+
+template <class T, std::size_t kLen>
+constexpr ErrorCode ParseRespMnemonics(std::string_view resp,
+                                       std::span<T, kLen> out,
+                                       Result<T> (*func)(std::string_view)) {
+  if (!func) {
+    return ErrorCode::kInvalidArgument;
+  }
+
   resp = util::Trim(resp);
 
   std::size_t i = 0;
@@ -80,7 +118,13 @@ constexpr ErrorCode SplitRespMnemonics(
       return ErrorCode::kInvalidResponse;
     }
 
-    out[i++] = std::string_view(&*val.begin(), std::ranges::distance(val));
+    std::string_view elem_str(&*val.begin(), std::ranges::distance(val));
+
+    if (auto r = func(elem_str)) {
+      out[i++] = *r;
+    } else {
+      return r.error();
+    }
   }
 
   if (i < out.size()) {
@@ -145,6 +189,17 @@ constexpr Result<CellFault> ParseCellFault(std::string_view str) noexcept {
   return util::Err(ErrorCode::kInvalidResponse);
 }
 
+template <std::size_t kLen>
+constexpr Result<std::array<CellFault, kLen>> ParseCellFaultArray(
+    std::string_view str) noexcept {
+  std::array<CellFault, kLen> res;
+  auto e = ParseRespMnemonics(str, std::span{res}, ParseCellFault);
+  if (e != ErrorCode::kSuccess) {
+    return util::Err(e);
+  }
+  return res;
+}
+
 constexpr std::string_view CellSenseRangeMnemonic(
     CellSenseRange range) noexcept {
   switch (range) {
@@ -175,6 +230,17 @@ constexpr Result<CellSenseRange> ParseCellSenseRange(
   }
 
   return util::Err(ErrorCode::kInvalidResponse);
+}
+
+template <std::size_t kLen>
+constexpr Result<std::array<CellSenseRange, kLen>> ParseCellSenseRangeArray(
+    std::string_view str) noexcept {
+  std::array<CellSenseRange, kLen> res;
+  auto e = ParseRespMnemonics(str, std::span{res}, ParseCellSenseRange);
+  if (e != ErrorCode::kSuccess) {
+    return util::Err(e);
+  }
+  return res;
 }
 
 // Parse quoted SCPI <String> data.
