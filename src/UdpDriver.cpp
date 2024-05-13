@@ -141,7 +141,7 @@ ErrorCode UdpDriver::Impl::Write(std::string_view data,
   boost::system::error_code ec = boost::asio::error::would_block;
 
   const auto write_handler = [&](auto&& e, auto&&) { ec = e; };
-  socket_.async_send(boost::asio::buffer(data), write_handler);
+  socket_.async_send_to(boost::asio::buffer(data), endpoint_, write_handler);
 
   do {
     io_service_.run_one();
