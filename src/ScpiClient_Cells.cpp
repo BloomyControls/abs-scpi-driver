@@ -696,4 +696,54 @@ ErrorCode ScpiClient::MeasureAllCellCurrent(std::span<float> currents) const {
   return MeasureAllCellCurrent(currents.data(), currents.size());
 }
 
+Result<CellMode> ScpiClient::GetCellOperatingMode(unsigned int cell) const {
+  if (cell >= kCellCount) {
+    return Err(ec::kChannelIndexOutOfRange);
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{}:MODE?\r\n", cell + 1);
+
+  return SendAndRecv(buf).and_then(scpi::ParseCellOperatingMode);
+}
+
+Result<std::array<CellMode, kCellCount>> ScpiClient::GetAllCellOperatingMode()
+    const {
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP:MODE? (@1:{})\r\n", kCellCount);
+  return SendAndRecv(buf).and_then(
+      scpi::ParseCellOperatingModeArray<kCellCount>);
+}
+
+ErrorCode ScpiClient::GetAllCellOperatingMode(CellMode* modes,
+                                              std::size_t count) const {
+  if ((!modes && count > 0) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP:MODE? (@1:{})\r\n", count);
+
+  auto resp = SendAndRecv(buf);
+  if (!resp) {
+    return resp.error();
+  }
+
+  return scpi::ParseRespMnemonics(*resp, std::span{modes, count},
+                                  scpi::ParseCellOperatingMode);
+}
+
+ErrorCode ScpiClient::GetAllCellOperatingMode(
+    std::array<CellMode, kCellCount>& modes) const {
+  return GetAllCellOperatingMode(modes.data(), modes.size());
+}
+
+ErrorCode ScpiClient::GetAllCellOperatingMode(std::span<CellMode> modes) const {
+  return GetAllCellOperatingMode(modes.data(), modes.size());
+}
+
 }  // namespace bci::abs

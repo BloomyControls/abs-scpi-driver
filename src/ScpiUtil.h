@@ -286,6 +286,35 @@ constexpr Result<std::array<CellSenseRange, kLen>> ParseCellSenseRangeArray(
   return res;
 }
 
+constexpr Result<CellMode> ParseCellOperatingMode(
+    std::string_view str) noexcept {
+  constexpr std::pair<std::string_view, CellMode> kOpts[] = {
+      {"CV", CellMode::kConstantVoltage},
+      {"ILIM", CellMode::kCurrentLimited},
+  };
+
+  str = util::Trim(str);
+
+  for (auto [text, range] : kOpts) {
+    if (str == text) {
+      return range;
+    }
+  }
+
+  return util::Err(ErrorCode::kInvalidResponse);
+}
+
+template <std::size_t kLen>
+constexpr Result<std::array<CellMode, kLen>> ParseCellOperatingModeArray(
+    std::string_view str) noexcept {
+  std::array<CellMode, kLen> res;
+  auto e = ParseRespMnemonics(str, std::span{res}, ParseCellOperatingMode);
+  if (e != ErrorCode::kSuccess) {
+    return util::Err(e);
+  }
+  return res;
+}
+
 // Parse quoted SCPI <String> data.
 std::optional<std::string> ParseQuotedString(std::string_view str);
 

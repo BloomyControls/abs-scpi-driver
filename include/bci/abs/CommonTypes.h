@@ -27,6 +27,11 @@ enum class CellSenseRange {
   kHigh,
 };
 
+enum class CellMode {
+  kConstantVoltage,
+  kCurrentLimited,
+};
+
 struct DeviceInfo {
   std::string part_number;
   std::string serial;

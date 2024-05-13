@@ -175,6 +175,17 @@ class ScpiClient {
 
   ErrorCode MeasureAllCellCurrent(std::span<float> currents) const;
 
+  Result<CellMode> GetCellOperatingMode(unsigned int cell) const;
+
+  Result<std::array<CellMode, kCellCount>> GetAllCellOperatingMode() const;
+
+  ErrorCode GetAllCellOperatingMode(CellMode* modes, std::size_t count) const;
+
+  ErrorCode GetAllCellOperatingMode(
+      std::array<CellMode, kCellCount>& modes) const;
+
+  ErrorCode GetAllCellOperatingMode(std::span<CellMode> modes) const;
+
   /* Aux IO */
 
   ErrorCode SetAnalogOutput(unsigned int channel, float voltage) const;
