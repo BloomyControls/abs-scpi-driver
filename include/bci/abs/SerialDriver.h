@@ -26,6 +26,8 @@ class SerialDriver final : public CommDriver {
 
   void SetDeviceID(unsigned int id);
 
+  unsigned int GetDeviceID() const;
+
   bool IsSendOnly() const;
 
  private:

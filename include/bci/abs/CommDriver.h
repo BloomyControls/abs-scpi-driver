@@ -19,6 +19,8 @@ class CommDriver {
 
   virtual void SetDeviceID(unsigned int id) { static_cast<void>(id); }
 
+  virtual unsigned int GetDeviceID() const { return 0; }
+
   // useful for things like UDP broadcast and multicast, or RS-485 with an ID
   // higher than 255
   virtual bool IsSendOnly() const { return false; }

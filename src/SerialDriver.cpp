@@ -35,6 +35,8 @@ struct SerialDriver::Impl {
 
   void SetDeviceID(unsigned int id);
 
+  unsigned int GetDeviceID() const;
+
   bool IsBroadcast() const;
 
  private:
@@ -67,6 +69,8 @@ Result<std::string> SerialDriver::ReadLine(unsigned int timeout_ms) const {
 }
 
 void SerialDriver::SetDeviceID(unsigned int id) { impl_->SetDeviceID(id); }
+
+unsigned int SerialDriver::GetDeviceID() const { return impl_->GetDeviceID(); }
 
 bool SerialDriver::IsSendOnly() const { return impl_->IsBroadcast(); }
 
@@ -192,6 +196,8 @@ Result<std::string> SerialDriver::Impl::ReadLine(unsigned int timeout_ms) {
 void SerialDriver::Impl::SetDeviceID(unsigned int id) {
   dev_id_ = std::clamp(id, 0U, 255U);
 }
+
+unsigned int SerialDriver::Impl::GetDeviceID() const { return dev_id_; }
 
 bool SerialDriver::Impl::IsBroadcast() const { return dev_id_ > 255; }
 
