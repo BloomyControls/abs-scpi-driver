@@ -1,7 +1,6 @@
 #ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMDRIVER_H
 #define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMDRIVER_H
 
-#include <cstdint>
 #include <string>
 #include <string_view>
 
@@ -18,7 +17,7 @@ class CommDriver {
 
   virtual Result<std::string> ReadLine(unsigned int timeout_ms) const = 0;
 
-  virtual void SetDeviceID(std::uint8_t id) { static_cast<void>(id); }
+  virtual void SetDeviceID(unsigned int id) { static_cast<void>(id); }
 
   // useful for things like UDP broadcast and multicast, or RS-485 with an ID
   // higher than 255

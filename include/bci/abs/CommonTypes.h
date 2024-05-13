@@ -64,6 +64,8 @@ enum class ErrorCode : int {
   kAlreadyConnected = -17,
   kSocketError = -18,
   kFailedToBindSocket = -19,
+  kOpeningSerialPortFailed = -20,
+  kFailedToConfigurePort = -21,
 };
 
 template <class T>
