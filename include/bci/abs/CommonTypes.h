@@ -61,6 +61,9 @@ enum class ErrorCode : int {
   kInvalidArgument = -14,
   kInvalidDriverHandle = -15,
   kReceiveNotAllowed = -16,
+  kAlreadyConnected = -17,
+  kSocketError = -18,
+  kFailedToBindSocket = -19,
 };
 
 template <class T>

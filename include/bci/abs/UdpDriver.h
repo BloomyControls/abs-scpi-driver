@@ -1,5 +1,5 @@
-#ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_TCPDRIVER_H
-#define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_TCPDRIVER_H
+#ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_UDPDRIVER_H
+#define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_UDPDRIVER_H
 
 #include <memory>
 #include <string>
@@ -10,13 +10,15 @@
 
 namespace bci::abs::drivers {
 
-class TcpDriver final : public CommDriver {
+class UdpDriver final : public CommDriver {
  public:
-  TcpDriver();
+  UdpDriver();
 
-  ~TcpDriver();
+  ~UdpDriver();
 
-  ErrorCode Connect(std::string_view ip, unsigned int timeout_ms);
+  ErrorCode Open(std::string_view ip);
+
+  ErrorCode Open(std::string_view local_ip, std::string_view target_ip);
 
   void Close() noexcept;
 
@@ -31,4 +33,4 @@ class TcpDriver final : public CommDriver {
 
 }  // namespace bci::abs::drivers
 
-#endif /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_TCPDRIVER_H */
+#endif  /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_UDPDRIVER_H */
