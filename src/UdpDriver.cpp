@@ -1,6 +1,7 @@
 #include <bci/abs/UdpDriver.h>
 
 #include <array>
+#include <atomic>
 #include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/ip/udp.hpp>
@@ -40,6 +41,7 @@ struct UdpDriver::Impl {
   boost::asio::deadline_timer deadline_;
   boost::asio::ip::udp::endpoint endpoint_;
   std::array<std::uint8_t, kBufLen> buf_;
+  std::atomic<bool> timeout_;
 
   void CheckDeadline();
 };
@@ -71,7 +73,8 @@ UdpDriver::Impl::Impl()
       socket_(io_service_),
       deadline_(io_service_),
       endpoint_(),
-      buf_{} {
+      buf_{},
+      timeout_{} {
   deadline_.expires_at(boost::posix_time::pos_infin);
   CheckDeadline();
 }
@@ -136,6 +139,7 @@ ErrorCode UdpDriver::Impl::Write(std::string_view data,
     return ErrorCode::kNotConnected;
   }
 
+  timeout_ = false;
   deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
 
   boost::system::error_code ec = boost::asio::error::would_block;
@@ -151,7 +155,7 @@ ErrorCode UdpDriver::Impl::Write(std::string_view data,
     return ErrorCode::kSendFailed;
   }
 
-  if (!socket_.is_open()) {
+  if (timeout_) {
     return ErrorCode::kSendTimedOut;
   }
 
@@ -163,6 +167,7 @@ Result<std::string> UdpDriver::Impl::ReadLine(unsigned int timeout_ms) {
     return Err(ErrorCode::kNotConnected);
   }
 
+  timeout_ = false;
   deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
 
   boost::system::error_code ec = boost::asio::error::would_block;
@@ -183,7 +188,7 @@ Result<std::string> UdpDriver::Impl::ReadLine(unsigned int timeout_ms) {
     return Err(ErrorCode::kReadFailed);
   }
 
-  if (!socket_.is_open()) {
+  if (timeout_) {
     return Err(ErrorCode::kReadTimedOut);
   }
 
@@ -194,7 +199,8 @@ Result<std::string> UdpDriver::Impl::ReadLine(unsigned int timeout_ms) {
 
 void UdpDriver::Impl::CheckDeadline() {
   if (deadline_.expires_at() <= deadline_timer::traits_type::now()) {
-    Close();
+    timeout_ = true;
+    socket_.cancel();
     deadline_.expires_at(boost::posix_time::pos_infin);
   }
 
