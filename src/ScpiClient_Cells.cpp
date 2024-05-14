@@ -32,17 +32,6 @@ ErrorCode ScpiClient::EnableCell(unsigned int cell, bool en) const {
   return Send(buf);
 }
 
-Result<bool> ScpiClient::GetCellEnabled(unsigned int cell) const {
-  if (cell >= kCellCount) {
-    return Err(ec::kChannelIndexOutOfRange);
-  }
-
-  char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{}?\r\n", cell + 1);
-
-  return SendAndRecv(buf).and_then(scpi::ParseBoolResponse);
-}
-
 ErrorCode ScpiClient::EnableCellsMasked(unsigned int cells, bool en) const {
   cells &= kCellsMask;
   if (cells != 0) {
@@ -61,6 +50,39 @@ ErrorCode ScpiClient::EnableCellsMasked(unsigned int cells, bool en) const {
     return Send(buf);
   }
   return ec::kSuccess;
+}
+
+Result<bool> ScpiClient::GetCellEnabled(unsigned int cell) const {
+  if (cell >= kCellCount) {
+    return Err(ec::kChannelIndexOutOfRange);
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP{}?\r\n", cell + 1);
+
+  return SendAndRecv(buf).and_then(scpi::ParseBoolResponse);
+}
+
+Result<std::array<bool, kCellCount>> ScpiClient::GetAllCellsEnabled() const {
+  char buf[64]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP? (@1:{})\r\n", kCellCount);
+  return SendAndRecv(buf).and_then(scpi::ParseRespBoolArray<kCellCount>);
+}
+
+Result<unsigned int> ScpiClient::GetAllCellsEnabledMasked() const {
+  auto resp = GetAllCellsEnabled();
+  if (!resp) {
+    return Err(resp.error());
+  }
+
+  unsigned int mask{};
+  for (std::size_t i = 0; i < resp->size(); ++i) {
+    if (resp->at(i)) {
+      mask |= (1U << i);
+    }
+  }
+
+  return mask;
 }
 
 ErrorCode ScpiClient::SetCellVoltage(unsigned int cell, float voltage) const {

@@ -47,9 +47,13 @@ class ScpiClient {
 
   ErrorCode EnableCell(unsigned int cell, bool en) const;
 
+  ErrorCode EnableCellsMasked(unsigned int cells, bool en) const;
+
   Result<bool> GetCellEnabled(unsigned int cell) const;
 
-  ErrorCode EnableCellsMasked(unsigned int cells, bool en) const;
+  Result<std::array<bool, kCellCount>> GetAllCellsEnabled() const;
+
+  Result<unsigned int> GetAllCellsEnabledMasked() const;
 
   ErrorCode SetCellVoltage(unsigned int cell, float voltage) const;
 
