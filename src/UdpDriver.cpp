@@ -115,6 +115,12 @@ ErrorCode UdpDriver::Impl::Open(std::string_view local_ip,
     return ErrorCode::kSocketError;
   }
 
+  socket_.set_option(udp::socket::reuse_address(true), ec);
+  if (ec) {
+    socket_.close();
+    return ErrorCode::kSocketError;
+  }
+
   boost::asio::ip::udp::endpoint local_endpoint(local_address, 0);
 
   socket_.bind(local_endpoint, ec);
