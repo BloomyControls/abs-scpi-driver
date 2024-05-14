@@ -50,11 +50,12 @@ Result<EthernetDeviceList> MulticastDiscovery(std::string_view interface_ip) {
 }
 
 Result<SerialDeviceList> SerialDiscovery(std::string_view port,
-                                         unsigned int max_devices) {
+                                         std::uint8_t first_id,
+                                         std::uint8_t last_id) {
   SerialDeviceList devices;
 
-  if (max_devices == 0 || max_devices > 256) {
-    max_devices = 256;
+  if (last_id < first_id) {
+    return Err(ec::kInvalidArgument);
   }
 
   drivers::SerialDriver driver;
@@ -64,15 +65,17 @@ Result<SerialDeviceList> SerialDiscovery(std::string_view port,
     return Err(ret);
   }
 
-  for (std::uint8_t id = 0; max_devices > 0; ++id, --max_devices) {
-    driver.SetDeviceID(id);
+  int total = last_id - first_id + 1;
+
+  for (int i = 0; i < total; ++i) {
+    driver.SetDeviceID(first_id + i);
     ret = driver.Write("*IDN?\r\n", 100);
     if (auto resp = driver.ReadLine(50)) {
       std::array<std::string_view, 4> idn;
       if (scpi::SplitRespMnemonics(*resp, idn) != ErrorCode::kSuccess) {
         return Err(ErrorCode::kInvalidResponse);
       }
-      devices.emplace_back(id, std::string(idn[2]));
+      devices.emplace_back(first_id + i, std::string(idn[2]));
     } else {
       if (resp.error() != ec::kReadTimedOut) {
         return Err(resp.error());

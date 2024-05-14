@@ -27,7 +27,8 @@ using SerialDeviceList = std::vector<SerialDevice>;
 Result<EthernetDeviceList> MulticastDiscovery(std::string_view interface_ip);
 
 Result<SerialDeviceList> SerialDiscovery(std::string_view port,
-                                         unsigned int max_devices);
+                                         std::uint8_t first_id,
+                                         std::uint8_t last_id);
 
 }  // namespace bci::abs
 
