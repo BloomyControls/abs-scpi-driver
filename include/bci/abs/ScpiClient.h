@@ -35,9 +35,9 @@ class ScpiClient {
 
   void SetDriver(std::shared_ptr<drivers::CommDriver> driver) noexcept;
 
-  void SetDeviceID(unsigned int id);
+  void SetTargetDeviceID(unsigned int id);
 
-  unsigned int GetDeviceID() const;
+  unsigned int GetTargetDeviceID() const;
 
   /* System */
 

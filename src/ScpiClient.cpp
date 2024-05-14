@@ -41,13 +41,13 @@ void ScpiClient::SetDriver(
   driver_ = std::move(driver);
 }
 
-void ScpiClient::SetDeviceID(unsigned int id) {
+void ScpiClient::SetTargetDeviceID(unsigned int id) {
   if (driver_) {
     driver_->SetDeviceID(id);
   }
 }
 
-unsigned int ScpiClient::GetDeviceID() const {
+unsigned int ScpiClient::GetTargetDeviceID() const {
   if (!driver_) {
     return 0;
   }
