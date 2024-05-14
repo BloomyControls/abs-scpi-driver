@@ -1,6 +1,8 @@
 #include <bci/abs/Discovery.h>
 
+#include <array>
 #include <memory>
+#include <string>
 #include <string_view>
 
 #include <bci/abs/CommonTypes.h>
