@@ -182,12 +182,12 @@ Result<std::string> SerialDriver::Impl::ReadLine(unsigned int timeout_ms) {
     io_service_.run_one();
   } while (ec == boost::asio::error::would_block);
 
-  if (ec) {
-    return Err(ErrorCode::kReadFailed);
-  }
-
   if (timeout_) {
     return Err(ErrorCode::kReadTimedOut);
+  }
+
+  if (ec) {
+    return Err(ErrorCode::kReadFailed);
   }
 
   std::string line;

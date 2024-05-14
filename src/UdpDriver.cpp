@@ -151,12 +151,12 @@ ErrorCode UdpDriver::Impl::Write(std::string_view data,
     io_service_.run_one();
   } while (ec == boost::asio::error::would_block);
 
-  if (ec) {
-    return ErrorCode::kSendFailed;
-  }
-
   if (timeout_) {
     return ErrorCode::kSendTimedOut;
+  }
+
+  if (ec) {
+    return ErrorCode::kSendFailed;
   }
 
   return ErrorCode::kSuccess;
@@ -184,12 +184,12 @@ Result<std::string> UdpDriver::Impl::ReadLine(unsigned int timeout_ms) {
     io_service_.run_one();
   } while (ec == boost::asio::error::would_block);
 
-  if (ec) {
-    return Err(ErrorCode::kReadFailed);
-  }
-
   if (timeout_) {
     return Err(ErrorCode::kReadTimedOut);
+  }
+
+  if (ec) {
+    return Err(ErrorCode::kReadFailed);
   }
 
   std::string line((const char*)buf_.data(), read_len);
