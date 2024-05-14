@@ -34,6 +34,32 @@ Result<std::uint8_t> ScpiClient::GetDeviceId() const {
       .and_then(scpi::ParseIntResponse<std::uint8_t>);
 }
 
+Result<EthernetConfig> ScpiClient::GetIPAddress() const {
+  auto resp = SendAndRecv("CONF:COMM:SOCK:ADDR?\r\n")
+                  .and_then(scpi::ParseStringArrayResponse<2>);
+  if (!resp) {
+    return Err(resp.error());
+  }
+  return EthernetConfig{std::move(resp->at(0)), std::move(resp->at(1))};
+}
+
+ErrorCode ScpiClient::SetIPAddress(std::string_view ip,
+                                   std::string_view netmask) const {
+  if (ip.size() > 15 || netmask.size() > 15) {
+    return ec::kInvalidIPAddress;
+  }
+
+  if (ip.find('"') != ip.npos || netmask.find('"') != ip.npos) {
+    return ec::kInvalidIPAddress;
+  }
+
+  char buf[128]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1,
+                   "CONF:COMM:SOCK:ADDR \"{}\",\"{}\"\r\n", ip, netmask);
+
+  return Send(buf);
+}
+
 Result<std::string> ScpiClient::GetCalibrationDate() const {
   return SendAndRecv("CAL:DATE?\r\n").and_then(scpi::ParseStringResponse);
 }

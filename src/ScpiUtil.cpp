@@ -54,6 +54,44 @@ std::optional<std::string> ParseQuotedString(std::string_view str) {
   return ret;
 }
 
+std::optional<std::string> ParseQuotedStringUntil(std::string_view str,
+                                                  std::string_view& suffix) {
+  str = util::Trim(str);
+  if (str.size() < 2) {
+    return std::nullopt;
+  }
+
+  const char delim = str[0];
+  if (delim != '"' && delim != '\'') {
+    return std::nullopt;
+  }
+
+  str.remove_prefix(1);
+
+  std::string ret;
+
+  for (std::size_t i = 0; i < str.size(); ++i) {
+    if (str[i] != delim) {
+      ret += str[i];
+    } else {
+      if (i < str.size() - 1) {
+        if (str[i + 1] == delim) {
+          ret += str[i];
+          ++i;
+        } else {
+          suffix = str.substr(i + 1);
+          break;
+        }
+      } else {
+        suffix = {};
+        break;
+      }
+    }
+  }
+
+  return ret;
+}
+
 Result<std::string> ParseStringResponse(std::string_view str) {
   auto e = ParseQuotedString(util::Trim(str));
   if (e) {

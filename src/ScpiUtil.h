@@ -318,9 +318,37 @@ constexpr Result<std::array<CellMode, kLen>> ParseCellOperatingModeArray(
 // Parse quoted SCPI <String> data.
 std::optional<std::string> ParseQuotedString(std::string_view str);
 
+// Parse a quoted string, but return a string view containing the rest of the
+// string, if any.
+std::optional<std::string> ParseQuotedStringUntil(std::string_view str,
+                                                  std::string_view& suffix);
+
 Result<std::string> ParseStringResponse(std::string_view str);
 
 Result<ScpiError> ParseScpiError(std::string_view str);
+
+template <std::size_t kLen>
+static Result<std::array<std::string, kLen>> ParseStringArrayResponse(
+    std::string_view str) {
+  std::array<std::string, kLen> res{};
+  for (std::size_t i = 0; i < kLen; ++i) {
+    std::string_view suffix;
+    if (auto s = ParseQuotedStringUntil(str, suffix)) {
+      res[i] = *std::move(s);
+      if (i < kLen - 1) {
+        suffix = util::Trim(suffix);
+        if (suffix.empty() || suffix[0] != ',') {
+          return util::Err(ErrorCode::kInvalidResponse);
+        }
+        suffix.remove_prefix(1);
+        str = suffix;
+      }
+    } else {
+      return util::Err(ErrorCode::kInvalidResponse);
+    }
+  }
+  return res;
+}
 
 }  // namespace bci::abs::scpi
 

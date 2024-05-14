@@ -27,6 +27,10 @@ class ScpiClient {
 
   Result<std::uint8_t> GetDeviceId() const;
 
+  Result<EthernetConfig> GetIPAddress() const;
+
+  ErrorCode SetIPAddress(std::string_view ip, std::string_view netmask) const;
+
   Result<std::string> GetCalibrationDate() const;
 
   Result<int> GetErrorCount() const;

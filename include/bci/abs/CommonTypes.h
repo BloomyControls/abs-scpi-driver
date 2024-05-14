@@ -38,6 +38,11 @@ struct DeviceInfo {
   std::string version;
 };
 
+struct EthernetConfig {
+  std::string ip;
+  std::string netmask;
+};
+
 struct ScpiError {
   std::int16_t err_code;
   std::string err_msg;
