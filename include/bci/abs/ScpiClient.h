@@ -35,6 +35,12 @@ class ScpiClient {
 
   ErrorCode ClearErrors() const;
 
+  Result<std::uint32_t> GetAlarms() const;
+
+  ErrorCode AssertSoftwareInterlock() const;
+
+  ErrorCode ClearRecoverableAlarms() const;
+
   ErrorCode Reboot() const;
 
   /* Cells */

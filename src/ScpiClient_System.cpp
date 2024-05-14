@@ -49,6 +49,19 @@ Result<ScpiError> ScpiClient::GetNextError() const {
 
 ErrorCode ScpiClient::ClearErrors() const { return Send("*CLS\r\n"); }
 
+Result<std::uint32_t> ScpiClient::GetAlarms() const {
+  return SendAndRecv("SYST:ALARM?\r\n")
+      .and_then(scpi::ParseIntResponse<std::uint32_t>);
+}
+
+ErrorCode ScpiClient::AssertSoftwareInterlock() const {
+  return Send("SYST:ALARM:RAISE\r\n");
+}
+
+ErrorCode ScpiClient::ClearRecoverableAlarms() const {
+  return Send("SYST:ALARM:CLEAR\r\n");
+}
+
 ErrorCode ScpiClient::Reboot() const { return Send("*RST\r\n"); }
 
 }  // namespace bci::abs

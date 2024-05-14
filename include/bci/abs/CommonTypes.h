@@ -43,6 +43,28 @@ struct ScpiError {
   std::string err_msg;
 };
 
+namespace alarms {
+
+inline constexpr std::uint32_t kRecoverableMask = 0x0000FF;
+inline constexpr std::uint32_t kCriticalMask = 0x00FF00;
+inline constexpr std::uint32_t kFatalMask = 0xFF0000;
+
+/* Recoverable */
+inline constexpr std::uint32_t kSoftInterlock = 0x000001;
+
+/* Critical */
+inline constexpr std::uint32_t kFan0Fault = 0x000100;
+inline constexpr std::uint32_t kFan1Fault = 0x000200;
+inline constexpr std::uint32_t kFan2Fault = 0x000400;
+inline constexpr std::uint32_t kFan3Fault = 0x000800;
+
+/* Fatal */
+inline constexpr std::uint32_t kFan4Fault = 0x010000;
+inline constexpr std::uint32_t kHardwareFault = 0x020000;
+
+}  // namespace alarms
+
+
 enum class ErrorCode : int {
   kSuccess = 0,
   kChannelIndexOutOfRange = -1,

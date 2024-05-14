@@ -74,10 +74,26 @@ inline constexpr std::optional<T> StrViewToInt(std::string_view sv) {
     return std::nullopt;
   }
 
-  // TODO: handle bases other than 10 with SCPI prefixes (e.g. #H, #Q, #B)
+  int base = 10;
+  // check for a SCPI base prefix
+  if (sv.starts_with("#H") || sv.starts_with("#h")) {
+    base = 16;
+  } else if (sv.starts_with("#Q") || sv.starts_with("#q")) {
+    base = 8;
+  } else if (sv.starts_with("#B") || sv.starts_with("#b")) {
+    base = 2;
+  }
+
+  if (base != 10) {
+    sv.remove_prefix(2);
+    if (sv.empty()) {
+      return std::nullopt;
+    }
+  }
+
   T val{};
 
-  auto [ptr, ec] = std::from_chars(sv.data(), sv.data() + sv.size(), val, 10);
+  auto [ptr, ec] = std::from_chars(sv.data(), sv.data() + sv.size(), val, base);
   if (ec == std::errc()) {
     return val;
   }
