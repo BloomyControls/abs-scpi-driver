@@ -15,11 +15,29 @@ namespace bci::abs {
 
 class ScpiClient {
  public:
-  ScpiClient(std::shared_ptr<drivers::CommDriver> driver);
+  ScpiClient() = default;
 
-  ScpiClient(std::nullptr_t) = delete;
+  explicit ScpiClient(std::shared_ptr<drivers::CommDriver> driver) noexcept;
 
-  ~ScpiClient();
+  ScpiClient(ScpiClient&& other) noexcept;
+
+  ScpiClient(const ScpiClient&) = delete;
+
+  ScpiClient& operator=(ScpiClient&& rhs) noexcept;
+
+  ScpiClient& operator=(const ScpiClient&) = delete;
+
+  ~ScpiClient() = default;
+
+  std::shared_ptr<drivers::CommDriver> GetDriver() noexcept;
+
+  std::shared_ptr<const drivers::CommDriver> GetDriver() const noexcept;
+
+  void SetDriver(std::shared_ptr<drivers::CommDriver> driver) noexcept;
+
+  void SetDeviceID(unsigned int id);
+
+  unsigned int GetDeviceID() const;
 
   /* System */
 
