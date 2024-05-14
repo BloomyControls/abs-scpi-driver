@@ -12,6 +12,11 @@ namespace bci::abs::drivers {
 
 class UdpMcastDriver final : public CommDriver {
  public:
+  struct AddressedResponse {
+    std::string ip;
+    std::string data;
+  };
+
   UdpMcastDriver();
 
   ~UdpMcastDriver();
@@ -23,6 +28,8 @@ class UdpMcastDriver final : public CommDriver {
   ErrorCode Write(std::string_view data, unsigned int timeout_ms) const;
 
   Result<std::string> ReadLine(unsigned int timeout_ms) const;
+
+  Result<AddressedResponse> ReadLineFrom(unsigned int timeout_ms) const;
 
   bool IsSendOnly() const { return true; }
 

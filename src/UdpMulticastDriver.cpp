@@ -33,6 +33,8 @@ struct UdpMcastDriver::Impl {
 
   Result<std::string> ReadLine(unsigned int timeout_ms);
 
+  Result<AddressedResponse> ReadLineFrom(unsigned int timeout_ms);
+
  private:
   static constexpr std::size_t kBufLen = 8192;
 
@@ -57,12 +59,17 @@ ErrorCode UdpMcastDriver::Open(std::string_view interface_ip) {
 void UdpMcastDriver::Close() noexcept { impl_->Close(); }
 
 ErrorCode UdpMcastDriver::Write(std::string_view data,
-                           unsigned int timeout_ms) const {
+                                unsigned int timeout_ms) const {
   return impl_->Write(data, timeout_ms);
 }
 
 Result<std::string> UdpMcastDriver::ReadLine(unsigned int timeout_ms) const {
   return impl_->ReadLine(timeout_ms);
+}
+
+Result<UdpMcastDriver::AddressedResponse> UdpMcastDriver::ReadLineFrom(
+    unsigned int timeout_ms) const {
+  return impl_->ReadLineFrom(timeout_ms);
 }
 
 UdpMcastDriver::Impl::Impl()
@@ -193,6 +200,43 @@ Result<std::string> UdpMcastDriver::Impl::ReadLine(unsigned int timeout_ms) {
   std::string line((const char*)buf_.data(), read_len);
 
   return line;
+}
+
+Result<UdpMcastDriver::AddressedResponse> UdpMcastDriver::Impl::ReadLineFrom(
+    unsigned int timeout_ms) {
+  if (!socket_.is_open()) {
+    return Err(ErrorCode::kNotConnected);
+  }
+
+  timeout_ = false;
+  deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
+
+  boost::system::error_code ec = boost::asio::error::would_block;
+
+  std::size_t read_len{};
+  udp::endpoint source;
+
+  const auto read_handler = [&](auto&& e, std::size_t len) {
+    ec = e;
+    read_len = len;
+  };
+  socket_.async_receive_from(boost::asio::buffer(buf_), source, read_handler);
+
+  do {
+    io_service_.run_one();
+  } while (ec == boost::asio::error::would_block);
+
+  if (ec) {
+    return Err(ErrorCode::kReadFailed);
+  }
+
+  if (timeout_) {
+    return Err(ErrorCode::kReadTimedOut);
+  }
+
+  std::string line((const char*)buf_.data(), read_len);
+
+  return AddressedResponse{source.address().to_string(), std::move(line)};
 }
 
 void UdpMcastDriver::Impl::CheckDeadline() {
