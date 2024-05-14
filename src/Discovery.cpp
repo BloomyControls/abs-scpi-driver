@@ -1,12 +1,11 @@
+#include <bci/abs/CommonTypes.h>
 #include <bci/abs/Discovery.h>
+#include <bci/abs/SerialDriver.h>
+#include <bci/abs/UdpMulticastDriver.h>
 
 #include <array>
 #include <string>
 #include <string_view>
-
-#include <bci/abs/CommonTypes.h>
-#include <bci/abs/SerialDriver.h>
-#include <bci/abs/UdpMulticastDriver.h>
 
 #include "ScpiUtil.h"
 #include "Util.h"
@@ -68,7 +67,7 @@ Result<SerialDeviceList> SerialDiscovery(std::string_view port,
   for (std::uint8_t id = 0; max_devices > 0; ++id, --max_devices) {
     driver.SetDeviceID(id);
     ret = driver.Write("*IDN?\r\n", 100);
-    if (auto resp = driver.ReadLine(10)) {
+    if (auto resp = driver.ReadLine(50)) {
       std::array<std::string_view, 4> idn;
       if (scpi::SplitRespMnemonics(*resp, idn) != ErrorCode::kSuccess) {
         return Err(ErrorCode::kInvalidResponse);
