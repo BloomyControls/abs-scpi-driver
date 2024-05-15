@@ -23,66 +23,66 @@ int AbsScpiClient_Init(AbsScpiClientHandle* handle_out);
 
 void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
 
-int ScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* local_ip,
+int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* local_ip,
                        const char* target_ip);
 
-int ScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out);
+int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out);
 
-int ScpiClient_EnableCell(AbsScpiClientHandle handle, unsigned int cell,
+int AbsScpiClient_EnableCell(AbsScpiClientHandle handle, unsigned int cell,
                           bool en);
 
-int ScpiClient_EnableCellsMasked(AbsScpiClientHandle handle, unsigned int cells,
+int AbsScpiClient_EnableCellsMasked(AbsScpiClientHandle handle, unsigned int cells,
                                  bool en);
 
-int ScpiClient_GetCellEnabled(AbsScpiClientHandle handle, unsigned int cell,
+int AbsScpiClient_GetCellEnabled(AbsScpiClientHandle handle, unsigned int cell,
                               bool* en_out);
 
-int ScpiClient_GetCellsEnabledMasked(AbsScpiClientHandle handle,
+int AbsScpiClient_GetCellsEnabledMasked(AbsScpiClientHandle handle,
                                      unsigned int* cells_out);
 
-int ScpiClient_SetCellVoltage(AbsScpiClientHandle handle, unsigned int cell,
+int AbsScpiClient_SetCellVoltage(AbsScpiClientHandle handle, unsigned int cell,
                               float voltage);
 
-int ScpiClient_SetAllCellVoltage(AbsScpiClientHandle handle,
+int AbsScpiClient_SetAllCellVoltage(AbsScpiClientHandle handle,
                                  const float* voltages, unsigned int count);
 
-int ScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
+int AbsScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
                                     unsigned int cell, float* voltage_out);
 
-int ScpiClient_GetAllCellVoltageTarget(AbsScpiClientHandle handle,
+int AbsScpiClient_GetAllCellVoltageTarget(AbsScpiClientHandle handle,
                                        float* voltages_out, unsigned int count);
 
-int ScpiClient_SetCellSourcing(AbsScpiClientHandle handle, unsigned int cell, float limit);
+int AbsScpiClient_SetCellSourcing(AbsScpiClientHandle handle, unsigned int cell, float limit);
 
-int ScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle, const float* limits, unsigned int count);
+int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle, const float* limits, unsigned int count);
 
-int ScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle, unsigned int cell, float* limit_out);
+int AbsScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle, unsigned int cell, float* limit_out);
 
-int ScpiClient_GetAllCellSourcingLimit(AbsScpiClientHandle handle, float* limits_out, unsigned int count);
+int AbsScpiClient_GetAllCellSourcingLimit(AbsScpiClientHandle handle, float* limits_out, unsigned int count);
 
-int ScpiClient_SetCellSinking(AbsScpiClientHandle handle, unsigned int cell, float limit);
+int AbsScpiClient_SetCellSinking(AbsScpiClientHandle handle, unsigned int cell, float limit);
 
-int ScpiClient_SetAllCellSinking(AbsScpiClientHandle handle, const float* limits, unsigned int count);
+int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle, const float* limits, unsigned int count);
 
-int ScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle, unsigned int cell, float* limit_out);
+int AbsScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle, unsigned int cell, float* limit_out);
 
-int ScpiClient_GetAllCellSinkingLimit(AbsScpiClientHandle handle, float* limits_out, unsigned int count);
+int AbsScpiClient_GetAllCellSinkingLimit(AbsScpiClientHandle handle, float* limits_out, unsigned int count);
 
-int ScpiClient_SetCellFault(AbsScpiClientHandle handle, unsigned int cell, int fault);
+int AbsScpiClient_SetCellFault(AbsScpiClientHandle handle, unsigned int cell, int fault);
 
-int ScpiClient_SetAllCellFault(AbsScpiClientHandle handle, const int* faults, unsigned int count);
+int AbsScpiClient_SetAllCellFault(AbsScpiClientHandle handle, const int* faults, unsigned int count);
 
-int ScpiClient_GetCellFault(AbsScpiClientHandle handle, unsigned int cell, int* fault_out);
+int AbsScpiClient_GetCellFault(AbsScpiClientHandle handle, unsigned int cell, int* fault_out);
 
-int ScpiClient_GetAllCellFault(AbsScpiClientHandle handle, int* faults_out, unsigned int count);
+int AbsScpiClient_GetAllCellFault(AbsScpiClientHandle handle, int* faults_out, unsigned int count);
 
-int ScpiClient_SetCellSenseRange(AbsScpiClientHandle handle, unsigned int cell, int range);
+int AbsScpiClient_SetCellSenseRange(AbsScpiClientHandle handle, unsigned int cell, int range);
 
-int ScpiClient_SetAllCellSenseRange(AbsScpiClientHandle handle, const int* ranges, unsigned int count);
+int AbsScpiClient_SetAllCellSenseRange(AbsScpiClientHandle handle, const int* ranges, unsigned int count);
 
-int ScpiClient_GetCellSenseRange(AbsScpiClientHandle handle, unsigned int cell, int* range_out);
+int AbsScpiClient_GetCellSenseRange(AbsScpiClientHandle handle, unsigned int cell, int* range_out);
 
-int ScpiClient_GetAllCellSenseRange(AbsScpiClientHandle handle, int* ranges_out, unsigned int count);
+int AbsScpiClient_GetAllCellSenseRange(AbsScpiClientHandle handle, int* ranges_out, unsigned int count);
 
 #ifdef __cplusplus
 }
