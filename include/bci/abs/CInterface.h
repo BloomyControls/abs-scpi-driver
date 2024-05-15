@@ -17,15 +17,47 @@ extern "C" {
 #define ABS_CELL_SENSE_RANGE_1A 1
 #define ABS_CELL_SENSE_RANGE_5A 2
 
+/// ABS SCPI client handle.
 typedef void* AbsScpiClientHandle;
 
+/**
+ * @brief Initialize a SCPI client. Must be destroyed by the caller!
+ *
+ * @param[out] handle_out pointer to a handle to initialize (handle should be
+ * zeroed)
+ *
+ * @return 0 on success or a negative error code.
+ */
 int AbsScpiClient_Init(AbsScpiClientHandle* handle_out);
 
+/**
+ * @brief Destroy a SCPI client.
+ *
+ * @param[in,out] handle pointer to a handle to destroy
+ */
 void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
 
+/**
+ * @brief Open a UDP connection to the ABS.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] target_ip ABS's IP address
+ * @param[in] interface_ip address of the local interface to bind the socket to
+ * (may be NULL to use any local address)
+ *
+ * @return 0 on success or a negative error code.
+ */
 int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
                           const char* interface_ip);
 
+/**
+ * @brief Query the ABS's device ID.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] id_out pointer to the resulting ID
+ *
+ * @return 0 on success or a negative error code.
+ */
 int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out);
 
 int AbsScpiClient_EnableCell(AbsScpiClientHandle handle, unsigned int cell,
