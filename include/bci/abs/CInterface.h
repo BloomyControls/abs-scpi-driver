@@ -23,8 +23,8 @@ int AbsScpiClient_Init(AbsScpiClientHandle* handle_out);
 
 void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
 
-int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* local_ip,
-                       const char* target_ip);
+int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
+                          const char* interface_ip);
 
 int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out);
 

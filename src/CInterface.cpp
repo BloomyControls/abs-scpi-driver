@@ -72,16 +72,21 @@ void AbsScpiClient_Destroy(AbsScpiClientHandle* handle) {
   }
 }
 
-int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* local_ip,
-                       const char* target_ip) {
-  if (!handle) {
+int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
+                          const char* interface_ip) {
+  if (!handle || !target_ip) {
     return static_cast<int>(ec::kInvalidArgument);
   }
 
   // TODO: what's the behavior if it's already got an open driver and this
   // fails?
   auto driver = std::make_shared<drivers::UdpDriver>();
-  ec ret = driver->Open(local_ip, target_ip);
+  ec ret;
+  if (interface_ip) {
+    ret = driver->Open(interface_ip, target_ip);
+  } else {
+    ret = driver->Open(target_ip);
+  }
   if (ret == ec::kSuccess) {
     GetClient(handle).SetDriver(driver);
   }
