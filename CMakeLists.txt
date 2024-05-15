@@ -68,6 +68,7 @@ add_library(bciabs_scpi
   src/ScpiClient_AuxIO.cpp
   src/Discovery.cpp
   src/Errors.cpp
+  src/CInterface.cpp
 )
 add_library(bci::abs-scpi ALIAS bciabs_scpi)
 
