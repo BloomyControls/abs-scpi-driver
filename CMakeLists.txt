@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 
-project("ABS SCPI Driver" VERSION 0.0.1)
+project(libbciabs_scpi VERSION 1.0.0)
+
+option(BCIABS_SCPI_INSTALL "Enable install" ON)
 
 include(FetchContent)
 
@@ -24,6 +26,7 @@ if(NOT fmt_FOUND)
   endif()
 endif()
 
+set(BOOST_USE_STATIC_LIBS ON)
 set(BOOST_INCLUDE_LIBRARIES system asio)
 set(BOOST_ENABLE_CMAKE ON)
 find_package(Boost 1.81.0 COMPONENTS system QUIET)
@@ -43,6 +46,7 @@ else()
   set(BOOST_LIBS ${Boost_LIBRARIES})
 endif()
 
+option(FASTFLOAT_INSTALL "" OFF)
 FetchContent_Declare(fast_float
   GIT_REPOSITORY https://github.com/fastfloat/fast_float.git
   GIT_TAG v6.1.1
@@ -78,10 +82,49 @@ else()
   endif()
 endif()
 
-target_include_directories(bciabs_scpi PUBLIC ${PROJECT_SOURCE_DIR}/include)
+if(BCIABS_SCPI_INSTALL)
+  include(GNUInstallDirs)
+endif()
+
+target_include_directories(bciabs_scpi PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
 
 target_link_libraries(bciabs_scpi PRIVATE
   fmt::fmt-header-only
   fast_float
   ${BOOST_LIBS}
 )
+
+if(BCIABS_SCPI_INSTALL)
+  include(CMakePackageConfigHelpers)
+
+  set(BCIABS_SCPI_VERSION_CONFIG
+    "${CMAKE_CURRENT_BINARY_DIR}/module/BciAbsScpiConfigVersion.cmake")
+  set(BCIABS_SCPI_PROJECT_CONFIG
+    "${CMAKE_CURRENT_BINARY_DIR}/module/BciAbsScpiConfig.cmake")
+  set(BCIABS_SCPI_CONFIG_INSTALL_DIR
+    "${CMAKE_INSTALL_DATAROOTDIR}/cmake/BciAbsScpi")
+
+  write_basic_package_version_file("${BCIABS_SCPI_VERSION_CONFIG}"
+    VERSION "${PROJECT_VERSION}"
+    COMPATIBILITY SameMajorVersion)
+
+  configure_package_config_file("cmake/config.cmake.in"
+    "${BCIABS_SCPI_PROJECT_CONFIG}"
+    INSTALL_DESTINATION "${BCIABS_SCPI_CONFIG_INSTALL_DIR}")
+
+  install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/bci"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(FILES "${BCIABS_SCPI_PROJECT_CONFIG}" "${BCIABS_SCPI_VERSION_CONFIG}"
+    DESTINATION "${BCIABS_SCPI_CONFIG_INSTALL_DIR}")
+  install(EXPORT ${PROJECT_NAME}-targets NAMESPACE bci::
+    DESTINATION "${BCIABS_SCPI_CONFIG_INSTALL_DIR}")
+
+  install(TARGETS bciabs_scpi
+    EXPORT ${PROJECT_NAME}-targets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
