@@ -20,7 +20,7 @@ inline constexpr unsigned int kDigitalInputCount = 4U;
 inline constexpr unsigned int kDigitalOutputCount = 4U;
 
 /// Cell fault states.
-enum class CellFault {
+enum class CellFault : int {
   kNone,          ///< No fault
   kOpenCircuit,   ///< Open circuit
   kShortCircuit,  ///< Short circuit
@@ -28,14 +28,14 @@ enum class CellFault {
 };
 
 /// Cell current sense ranges. Defaults to auto at power up.
-enum class CellSenseRange {
+enum class CellSenseRange : int {
   kAuto,  ///< Automatic based on current limit (default)
   kLow,   ///< Low range (1A)
   kHigh,  ///< High range (5A)
 };
 
 /// Cell operating modes.
-enum class CellMode {
+enum class CellMode : int {
   kConstantVoltage,  ///< Constant voltage (normal)
   kCurrentLimited,   ///< Current limited
 };
