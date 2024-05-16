@@ -55,6 +55,7 @@ FetchContent_Declare(fast_float
 message(STATUS "Fetch fast_float")
 FetchContent_MakeAvailable(fast_float)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 add_library(bciabs_scpi
   src/TcpDriver.cpp
