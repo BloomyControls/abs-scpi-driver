@@ -8,20 +8,93 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* SCPI Driver Error Codes */
+
+/// Success (no error)
+#define ABS_SCPI_ERR_SUCCESS (0)
+/// Channel index out of range
+#define ABS_SCPI_ERR_CHANNEL_INDEX_OUT_OF_RANGE (-1)
+/// Invalid IP address
+#define ABS_SCPI_ERR_INVALID_IP_ADDRESS (-2)
+/// Connection timed out
+#define ABS_SCPI_ERR_CONNECTION_TIMED_OUT (-3)
+/// Connection failed
+#define ABS_SCPI_ERR_CONNECTION_FAILED (-4)
+/// Failed to send message
+#define ABS_SCPI_ERR_SEND_FAILED (-5)
+/// Send timed out
+#define ABS_SCPI_ERR_SEND_TIMED_OUT (-6)
+/// Failed to read message
+#define ABS_SCPI_ERR_READ_FAILED (-7)
+/// Read timed out
+#define ABS_SCPI_ERR_READ_TIMED_OUT (-8)
+/// Not connected
+#define ABS_SCPI_ERR_NOT_CONNECTED (-9)
+/// Address resolution failed
+#define ABS_SCPI_ERR_ADDRESS_RESOLUTION_FAILED (-10)
+/// Invalid response from the unit
+#define ABS_SCPI_ERR_INVALID_RESPONSE (-11)
+/// Invalid fault type
+#define ABS_SCPI_ERR_INVALID_FAULT_TYPE (-12)
+/// Invalid sense range
+#define ABS_SCPI_ERR_INVALID_SENSE_RANGE (-13)
+/// Invalid argument
+#define ABS_SCPI_ERR_INVALID_ARGUMENT (-14)
+/// Invalid driver handle
+#define ABS_SCPI_ERR_INVALID_DRIVER_HANDLE (-15)
+/// Receive not allowed by driver
+#define ABS_SCPI_ERR_RECEIVE_NOT_ALLOWED (-16)
+/// Already connected
+#define ABS_SCPI_ERR_ALREADY_CONNECTED (-17)
+/// Unexpected socket error
+#define ABS_SCPI_ERR_SOCKET_ERROR (-18)
+/// Failed to bind socket
+#define ABS_SCPI_ERR_FAILED_TO_BIND_SOCKET (-19)
+/// Failed to open serial port
+#define ABS_SCPI_ERR_OPENING_SERIAL_PORT_FAILED (-20)
+/// Failed to configure serial port
+#define ABS_SCPI_ERR_FAILED_TO_CONFIGURE_PORT (-21)
+/// Failed to join multicast group
+#define ABS_SCPI_ERR_FAILED_TO_JOIN_GROUP (-22)
+/// Buffer too small
+#define ABS_SCPI_ERR_BUFFER_TOO_SMALL (-23)
+/// Invalid precision mode
+#define ABS_SCPI_ERR_INVALID_PRECISION_MODE (-24)
+
+/* Cell Fault Modes */
+
+/// No fault
 #define ABS_CELL_FAULT_NONE 0
+/// Open circuit fault
 #define ABS_CELL_FAULT_OPEN 1
+/// Short circuit fault
 #define ABS_CELL_FAULT_SHORT 2
+/// Polarity fault
 #define ABS_CELL_FAULT_POLARITY 3
 
+/* Cell Current Sense Ranges */
+
+/// Automatic based on current limits (default)
 #define ABS_CELL_SENSE_RANGE_AUTO 0
+/// Low range (1A)
 #define ABS_CELL_SENSE_RANGE_1A 1
+/// High range (5A)
 #define ABS_CELL_SENSE_RANGE_5A 2
 
+/* Cell Precision Modes */
+
+/// Normal precision mode (high speed)
 #define ABS_CELL_PREC_NORMAL 0
+/// High precision mode (low speed)
 #define ABS_CELL_PREC_HIGH 1
+/// Noise-rejection mode (low speed)
 #define ABS_CELL_PREC_FILTER 2
 
+/* Cell Operating Modes */
+
+/// Constant voltage (normal)
 #define ABS_CELL_MODE_CV 0
+/// Current limited
 #define ABS_CELL_MODE_ILIM 1
 
 /// ABS SCPI client handle.
@@ -40,6 +113,13 @@ typedef struct AbsEthernetConfig {
   char ip[32];       ///< IP address.
   char netmask[32];  ///< Subnet mask.
 } AbsEthernetConfig;
+
+/**
+ * @brief Get an error message to describe an error code returned by the driver.
+ *
+ * @return Null-terminated error message string.
+ */
+const char* AbsScpiClient_ErrorMessage(int error);
 
 /**
  * @brief Initialize a SCPI client. Must be destroyed by the caller!

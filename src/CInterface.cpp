@@ -58,6 +58,10 @@ inline constexpr std::string_view CharsView(const char (&str)[kLen]) {
   return std::string_view(str, ::strnlen(str, kLen));
 }
 
+const char* AbsScpiClient_ErrorMessage(int error) {
+  return bci::abs::ErrorMessage(static_cast<bci::abs::ErrorCode>(error));
+}
+
 int AbsScpiClient_Init(AbsScpiClientHandle* handle_out) {
   if (!handle_out) {
     return static_cast<int>(ec::kInvalidArgument);

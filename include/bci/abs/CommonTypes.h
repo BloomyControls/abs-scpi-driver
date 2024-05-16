@@ -102,6 +102,7 @@ inline constexpr std::uint32_t kHardwareFault = 0x020000;
 }  // namespace alarms
 
 /// Error codes returned by driver functions.
+/// @note These values must match the macros in CInterface.h!
 enum class ErrorCode : int {
   kSuccess = 0,                    ///< Success (no error)
   kChannelIndexOutOfRange = -1,    ///< Channel index out of range
