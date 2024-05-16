@@ -21,6 +21,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
+        lib_type: [Static, Shared]
         c_compiler: [gcc, clang, cl]
         include:
           - os: windows-latest
@@ -52,6 +53,7 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        echo "build-shared=${{ matrix.lib_type == 'Static' && 'OFF' || 'ON' }}" >> "$GITHUB_OUTPUT"
 
     - name: Configure CMake
       run: >
@@ -59,6 +61,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_SHARED_LIBS=${{ steps.strings.outputs.build-shared }}
         -S ${{ github.workspace }}
 
     - name: Build
