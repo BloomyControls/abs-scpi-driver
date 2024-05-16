@@ -68,11 +68,9 @@ int AbsScpiClient_Init(AbsScpiClientHandle* handle_out) {
   }
 
   ScpiClient*& client_ptr = *(ScpiClient**)handle_out;
-  if (client_ptr) {
-    // TODO
+  if (!client_ptr) {
+    client_ptr = new ScpiClient();
   }
-
-  client_ptr = new ScpiClient();
 
   return static_cast<int>(ec::kSuccess);
 }
