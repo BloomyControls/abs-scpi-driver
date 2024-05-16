@@ -50,6 +50,8 @@ const char* ErrorMessage(ErrorCode ec) noexcept {
       return "Failed to configure port";
     case ErrorCode::kFailedToJoinGroup:
       return "Failed to join multicast group";
+    case ErrorCode::kBufferTooSmall:
+      return "Insufficient buffer size";
   }
 
   return "Unknown error";

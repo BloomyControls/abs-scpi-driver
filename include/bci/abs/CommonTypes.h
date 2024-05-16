@@ -119,6 +119,7 @@ enum class ErrorCode : int {
   kOpeningSerialPortFailed = -20,  ///< Failed to open serial port
   kFailedToConfigurePort = -21,    ///< Failed to configure serial port
   kFailedToJoinGroup = -22,        ///< Failed to join multicast group
+  kBufferTooSmall = -23,           ///< Buffer too small
 };
 
 /**
