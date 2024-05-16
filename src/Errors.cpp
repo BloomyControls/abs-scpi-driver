@@ -52,6 +52,8 @@ const char* ErrorMessage(ErrorCode ec) noexcept {
       return "Failed to join multicast group";
     case ErrorCode::kBufferTooSmall:
       return "Insufficient buffer size";
+    case ErrorCode::kInvalidPrecisionMode:
+      return "Invalid cell precision mode";
   }
 
   return "Unknown error";

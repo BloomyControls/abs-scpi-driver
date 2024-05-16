@@ -17,6 +17,10 @@ extern "C" {
 #define ABS_CELL_SENSE_RANGE_1A 1
 #define ABS_CELL_SENSE_RANGE_5A 2
 
+#define ABS_CELL_PREC_NORMAL 0
+#define ABS_CELL_PREC_HIGH 1
+#define ABS_CELL_PREC_FILTER 2
+
 #define ABS_CELL_MODE_CV 0
 #define ABS_CELL_MODE_ILIM 1
 
@@ -179,6 +183,11 @@ int AbsScpiClient_GetCellSenseRange(AbsScpiClientHandle handle,
 
 int AbsScpiClient_GetAllCellSenseRange(AbsScpiClientHandle handle,
                                        int* ranges_out, unsigned int count);
+
+int AbsScpiClient_SetCellPrecisionMode(AbsScpiClientHandle handle, int mode);
+
+int AbsScpiClient_GetCellPrecisionMode(AbsScpiClientHandle handle,
+                                       int* mode_out);
 
 int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,
                                      unsigned int cell, float* voltage_out);

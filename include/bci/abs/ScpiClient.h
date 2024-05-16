@@ -767,6 +767,22 @@ class ScpiClient {
   ErrorCode GetAllCellSenseRange(std::span<CellSenseRange> ranges) const;
 
   /**
+   * @brief Set the cell precision mode.
+   *
+   * @param[in] mode desired cell precision mode
+   *
+   * @return An error code.
+   */
+  ErrorCode SetCellPrecisionMode(CellPrecisionMode mode) const;
+
+  /**
+   * @brief Query the cell precision mode.
+   *
+   * @return Result containing the precision mode or an error code.
+   */
+  Result<CellPrecisionMode> GetCellPrecisionMode() const;
+
+  /**
    * @brief Measure a single cell's voltage.
    *
    * @param[in] cell target cell index

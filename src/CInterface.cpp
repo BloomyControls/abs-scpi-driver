@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <type_traits>
 
 using namespace bci::abs;
 using ec = bci::abs::ErrorCode;
@@ -331,7 +332,7 @@ static_assert(ABS_CELL_FAULT_SHORT ==
               static_cast<int>(CellFault::kShortCircuit));
 static_assert(ABS_CELL_FAULT_POLARITY ==
               static_cast<int>(CellFault::kPolarity));
-static_assert(sizeof(CellFault) == sizeof(int));
+static_assert(std::is_same_v<std::underlying_type_t<CellFault>, int>);
 
 int AbsScpiClient_SetCellFault(AbsScpiClientHandle handle, unsigned int cell,
                                int fault) {
@@ -365,7 +366,7 @@ static_assert(ABS_CELL_SENSE_RANGE_1A ==
               static_cast<int>(CellSenseRange::kLow));
 static_assert(ABS_CELL_SENSE_RANGE_5A ==
               static_cast<int>(CellSenseRange::kHigh));
-static_assert(sizeof(CellSenseRange) == sizeof(int));
+static_assert(std::is_same_v<std::underlying_type_t<CellSenseRange>, int>);
 
 int AbsScpiClient_SetCellSenseRange(AbsScpiClientHandle handle,
                                     unsigned int cell, int range) {
@@ -391,6 +392,25 @@ int AbsScpiClient_GetAllCellSenseRange(AbsScpiClientHandle handle,
   return WrapGet(&sc::GetAllCellSenseRange, handle,
                  reinterpret_cast<CellSenseRange*>(ranges_out),
                  static_cast<std::size_t>(count));
+}
+
+static_assert(ABS_CELL_PREC_NORMAL ==
+              static_cast<int>(CellPrecisionMode::kNormal));
+static_assert(ABS_CELL_PREC_HIGH ==
+              static_cast<int>(CellPrecisionMode::kHighPrecision));
+static_assert(ABS_CELL_PREC_FILTER ==
+              static_cast<int>(CellPrecisionMode::kNoiseRejection));
+static_assert(std::is_same_v<std::underlying_type_t<CellPrecisionMode>, int>);
+
+int AbsScpiClient_SetCellPrecisionMode(AbsScpiClientHandle handle, int mode) {
+  return WrapSet(&sc::SetCellPrecisionMode, handle,
+                 static_cast<CellPrecisionMode>(mode));
+}
+
+int AbsScpiClient_GetCellPrecisionMode(AbsScpiClientHandle handle,
+                                       int* mode_out) {
+  return WrapGet(&sc::GetCellPrecisionMode, handle,
+                 reinterpret_cast<CellPrecisionMode*>(mode_out));
 }
 
 int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,
@@ -420,7 +440,7 @@ int AbsScpiClient_MeasureAllCellCurrent(AbsScpiClientHandle handle,
 static_assert(ABS_CELL_MODE_CV == static_cast<int>(CellMode::kConstantVoltage));
 static_assert(ABS_CELL_MODE_ILIM ==
               static_cast<int>(CellMode::kCurrentLimited));
-static_assert(sizeof(CellMode) == sizeof(int));
+static_assert(std::is_same_v<std::underlying_type_t<CellMode>, int>);
 
 int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
                                        unsigned int cell, int* mode_out) {
