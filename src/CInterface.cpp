@@ -1,6 +1,9 @@
 #include <bci/abs/CInterface.h>
 #include <bci/abs/ScpiClient.h>
+#include <bci/abs/SerialDriver.h>
+#include <bci/abs/TcpDriver.h>
 #include <bci/abs/UdpDriver.h>
+#include <bci/abs/UdpMulticastDriver.h>
 #include <string.h>  // for strnlen()
 
 #include <cstddef>
@@ -88,8 +91,8 @@ int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
     return static_cast<int>(ec::kInvalidArgument);
   }
 
-  // TODO: what's the behavior if it's already got an open driver and this
-  // fails?
+  GetClient(handle).SetDriver(nullptr);
+
   auto driver = std::make_shared<drivers::UdpDriver>();
   ec ret;
   if (interface_ip) {
@@ -97,6 +100,57 @@ int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
   } else {
     ret = driver->Open(target_ip);
   }
+  if (ret == ec::kSuccess) {
+    GetClient(handle).SetDriver(driver);
+  }
+
+  return static_cast<int>(ret);
+}
+
+int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle, const char* target_ip) {
+  if (!handle || !target_ip) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  GetClient(handle).SetDriver(nullptr);
+
+  auto driver = std::make_shared<drivers::TcpDriver>();
+  ec ret = driver->Connect(target_ip, 500);
+  if (ret == ec::kSuccess) {
+    GetClient(handle).SetDriver(driver);
+  }
+
+  return static_cast<int>(ret);
+}
+
+int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
+                             unsigned int device_id) {
+  if (!handle || !com_port) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  GetClient(handle).SetDriver(nullptr);
+
+  auto driver = std::make_shared<drivers::SerialDriver>();
+  ec ret = driver->Open(com_port);
+  if (ret == ec::kSuccess) {
+    driver->SetDeviceID(device_id);
+    GetClient(handle).SetDriver(driver);
+  }
+
+  return static_cast<int>(ret);
+}
+
+int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
+                                   const char* interface_ip) {
+  if (!handle || !interface_ip) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  GetClient(handle).SetDriver(nullptr);
+
+  auto driver = std::make_shared<drivers::UdpMcastDriver>();
+  ec ret = driver->Open(interface_ip);
   if (ret == ec::kSuccess) {
     GetClient(handle).SetDriver(driver);
   }

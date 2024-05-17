@@ -151,6 +151,14 @@ void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
 int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
                           const char* interface_ip);
 
+int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle, const char* target_ip);
+
+int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
+                             unsigned int device_id);
+
+int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
+                                   const char* interface_ip);
+
 int AbsScpiClient_GetDeviceInfo(AbsScpiClientHandle handle,
                                 AbsDeviceInfo* info_out);
 
