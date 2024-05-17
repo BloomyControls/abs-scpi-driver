@@ -265,7 +265,8 @@ int AbsScpiClient_SetCellVoltage(AbsScpiClientHandle handle, unsigned int cell,
 }
 
 int AbsScpiClient_SetAllCellVoltage(AbsScpiClientHandle handle,
-                                    const float* voltages, unsigned int count) {
+                                    const float voltages[],
+                                    unsigned int count) {
   return WrapSet(&sc::SetAllCellVoltage, handle, voltages,
                  static_cast<std::size_t>(count));
 }
@@ -276,7 +277,7 @@ int AbsScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetAllCellVoltageTarget(AbsScpiClientHandle handle,
-                                          float* voltages_out,
+                                          float voltages_out[],
                                           unsigned int count) {
   return WrapGet(&sc::GetAllCellVoltageTarget, handle, voltages_out,
                  static_cast<std::size_t>(count));
@@ -288,7 +289,7 @@ int AbsScpiClient_SetCellSourcing(AbsScpiClientHandle handle, unsigned int cell,
 }
 
 int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle,
-                                     const float* limits, unsigned int count) {
+                                     const float limits[], unsigned int count) {
   return WrapSet(&sc::SetAllCellSourcing, handle, limits,
                  static_cast<std::size_t>(count));
 }
@@ -299,7 +300,7 @@ int AbsScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetAllCellSourcingLimit(AbsScpiClientHandle handle,
-                                          float* limits_out,
+                                          float limits_out[],
                                           unsigned int count) {
   return WrapGet(&sc::GetAllCellSourcingLimit, handle, limits_out,
                  static_cast<std::size_t>(count));
@@ -311,7 +312,7 @@ int AbsScpiClient_SetCellSinking(AbsScpiClientHandle handle, unsigned int cell,
 }
 
 int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle,
-                                    const float* limits, unsigned int count) {
+                                    const float limits[], unsigned int count) {
   return WrapSet(&sc::SetAllCellSinking, handle, limits,
                  static_cast<std::size_t>(count));
 }
@@ -322,7 +323,7 @@ int AbsScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetAllCellSinkingLimit(AbsScpiClientHandle handle,
-                                         float* limits_out,
+                                         float limits_out[],
                                          unsigned int count) {
   return WrapGet(&sc::GetAllCellSinkingLimit, handle, limits_out,
                  static_cast<std::size_t>(count));
@@ -342,8 +343,8 @@ int AbsScpiClient_SetCellFault(AbsScpiClientHandle handle, unsigned int cell,
                  static_cast<CellFault>(fault));
 }
 
-int AbsScpiClient_SetAllCellFault(AbsScpiClientHandle handle, const int* faults,
-                                  unsigned int count) {
+int AbsScpiClient_SetAllCellFault(AbsScpiClientHandle handle,
+                                  const int faults[], unsigned int count) {
   return WrapSet(&sc::SetAllCellFault, handle,
                  reinterpret_cast<const CellFault*>(faults),
                  static_cast<std::size_t>(count));
@@ -355,7 +356,7 @@ int AbsScpiClient_GetCellFault(AbsScpiClientHandle handle, unsigned int cell,
                  reinterpret_cast<CellFault*>(fault_out), cell);
 }
 
-int AbsScpiClient_GetAllCellFault(AbsScpiClientHandle handle, int* faults_out,
+int AbsScpiClient_GetAllCellFault(AbsScpiClientHandle handle, int faults_out[],
                                   unsigned int count) {
   return WrapGet(&sc::GetAllCellFault, handle,
                  reinterpret_cast<CellFault*>(faults_out),
@@ -377,7 +378,7 @@ int AbsScpiClient_SetCellSenseRange(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_SetAllCellSenseRange(AbsScpiClientHandle handle,
-                                       const int* ranges, unsigned int count) {
+                                       const int ranges[], unsigned int count) {
   return WrapSet(&sc::SetAllCellSenseRange, handle,
                  reinterpret_cast<const CellSenseRange*>(ranges),
                  static_cast<std::size_t>(count));
@@ -390,7 +391,7 @@ int AbsScpiClient_GetCellSenseRange(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetAllCellSenseRange(AbsScpiClientHandle handle,
-                                       int* ranges_out, unsigned int count) {
+                                       int ranges_out[], unsigned int count) {
   return WrapGet(&sc::GetAllCellSenseRange, handle,
                  reinterpret_cast<CellSenseRange*>(ranges_out),
                  static_cast<std::size_t>(count));
@@ -421,7 +422,7 @@ int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_MeasureAllCellVoltage(AbsScpiClientHandle handle,
-                                        float* voltages_out,
+                                        float voltages_out[],
                                         unsigned int count) {
   return WrapGet(&sc::MeasureAllCellVoltage, handle, voltages_out,
                  static_cast<std::size_t>(count));
@@ -433,7 +434,7 @@ int AbsScpiClient_MeasureCellCurrent(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_MeasureAllCellCurrent(AbsScpiClientHandle handle,
-                                        float* currents_out,
+                                        float currents_out[],
                                         unsigned int count) {
   return WrapGet(&sc::MeasureAllCellCurrent, handle, currents_out,
                  static_cast<std::size_t>(count));
@@ -451,7 +452,7 @@ int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetAllCellOperatingMode(AbsScpiClientHandle handle,
-                                          int* modes_out, unsigned int count) {
+                                          int modes_out[], unsigned int count) {
   return WrapGet(&sc::GetAllCellOperatingMode, handle,
                  reinterpret_cast<CellMode*>(modes_out),
                  static_cast<std::size_t>(count));
@@ -463,7 +464,7 @@ int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_SetAllAnalogOutput(AbsScpiClientHandle handle,
-                                     const float* voltages,
+                                     const float voltages[],
                                      unsigned int count) {
   return WrapSet(&sc::SetAllAnalogOutput, handle, voltages,
                  static_cast<std::size_t>(count));
@@ -475,7 +476,7 @@ int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetAllAnalogOutput(AbsScpiClientHandle handle,
-                                     float* voltages_out, unsigned int count) {
+                                     float voltages_out[], unsigned int count) {
   return WrapGet(&sc::GetAllAnalogOutput, handle, voltages_out,
                  static_cast<std::size_t>(count));
 }
