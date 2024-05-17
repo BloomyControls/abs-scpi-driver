@@ -57,10 +57,10 @@ ErrorCode ScpiClient::SetAllAnalogOutput(const float* voltages,
 
   std::string buf;
   // try to do only one allocation
-  buf.reserve(count * 20 + 2);
+  buf.reserve(count * 21 + 2);
   for (std::size_t i = 0; i < count; ++i) {
     buf += fmt::format(
-        "SOUR:AUX:OUT{} {:.3f};", i + 1,
+        ":SOUR:AUX:OUT{} {:.3f};", i + 1,
         std::clamp(voltages[i], -kMaxAnalogOutVoltage, kMaxAnalogOutVoltage));
   }
   buf += "\r\n";

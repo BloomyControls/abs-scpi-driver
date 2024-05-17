@@ -121,9 +121,9 @@ ErrorCode ScpiClient::SetAllCellVoltage(const float* voltages,
 
   std::string buf;
   // try to do only one allocation
-  buf.reserve(count * 18 + 2);
+  buf.reserve(count * 19 + 2);
   for (std::size_t i = 0; i < count; ++i) {
-    buf += fmt::format("SOUR{}:VOLT {:.4f};", i + 1,
+    buf += fmt::format(":SOUR{}:VOLT {:.4f};", i + 1,
                        std::clamp(voltages[i], 0.0f, kMaxVoltage));
   }
   buf += "\r\n";
@@ -224,9 +224,9 @@ ErrorCode ScpiClient::SetAllCellSourcing(const float* limits,
 
   std::string buf;
   // try to do only one allocation
-  buf.reserve(count * 22 + 2);
+  buf.reserve(count * 23 + 2);
   for (std::size_t i = 0; i < count; ++i) {
-    buf += fmt::format("SOUR{}:CURR:SRC {:.4f};", i + 1,
+    buf += fmt::format(":SOUR{}:CURR:SRC {:.4f};", i + 1,
                        std::clamp(limits[i], 0.0f, kMaxSourcing));
   }
   buf += "\r\n";
@@ -328,9 +328,9 @@ ErrorCode ScpiClient::SetAllCellSinking(const float* limits,
 
   std::string buf;
   // try to do only one allocation
-  buf.reserve(count * 22 + 2);
+  buf.reserve(count * 23 + 2);
   for (std::size_t i = 0; i < count; ++i) {
-    buf += fmt::format("SOUR{}:CURR:SNK {:.4f};", i + 1,
+    buf += fmt::format(":SOUR{}:CURR:SNK {:.4f};", i + 1,
                        std::clamp(limits[i], -kMaxSinking, kMaxSinking));
   }
   buf += "\r\n";
@@ -437,13 +437,13 @@ ErrorCode ScpiClient::SetAllCellFault(const CellFault* faults,
 
   std::string buf;
   // try to do only one allocation
-  buf.reserve(count * 17 + 2);
+  buf.reserve(count * 18 + 2);
   for (std::size_t i = 0; i < count; ++i) {
     auto fstr = scpi::CellFaultMnemonic(faults[i]);
     if (fstr.empty()) {
       return ec::kInvalidFaultType;
     }
-    buf += fmt::format("OUTP{}:FAUL {};", i + 1, fstr);
+    buf += fmt::format(":OUTP{}:FAUL {};", i + 1, fstr);
   }
   buf += "\r\n";
 
@@ -549,13 +549,13 @@ ErrorCode ScpiClient::SetAllCellSenseRange(const CellSenseRange* ranges,
 
   std::string buf;
   // try to do only one allocation
-  buf.reserve(count * 16 + 2);
+  buf.reserve(count * 17 + 2);
   for (std::size_t i = 0; i < count; ++i) {
     auto rstr = scpi::CellSenseRangeMnemonic(ranges[i]);
     if (rstr.empty()) {
       return ec::kInvalidSenseRange;
     }
-    buf += fmt::format("SENS{}:RANG {};", i + 1, rstr);
+    buf += fmt::format(":SENS{}:RANG {};", i + 1, rstr);
   }
   buf += "\r\n";
 
