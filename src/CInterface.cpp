@@ -1,4 +1,5 @@
 #include <bci/abs/CInterface.h>
+#include <bci/abs/Discovery.h>
 #include <bci/abs/ScpiClient.h>
 #include <bci/abs/SerialDriver.h>
 #include <bci/abs/TcpDriver.h>
@@ -6,6 +7,7 @@
 #include <bci/abs/UdpMulticastDriver.h>
 #include <string.h>  // for strnlen()
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <memory>
@@ -582,4 +584,61 @@ int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
 int AbsScpiClient_MeasureAllDigitalInput(AbsScpiClientHandle handle,
                                          unsigned int* levels_out) {
   return WrapGet(&sc::MeasureAllDigitalInputMasked, handle, levels_out);
+}
+
+int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
+                                     AbsEthernetDiscoveryResult results_out[],
+                                     unsigned int* count) {
+  if (!interface_ip || !results_out || !count || *count == 0) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  ec ret = ec::kSuccess;
+  if (auto res = bci::abs::MulticastDiscovery(interface_ip)) {
+    if (res->size() > *count) {
+      ret = ec::kBufferTooSmall;
+    }
+
+    const auto n = std::min(*count, static_cast<unsigned int>(res->size()));
+    for (auto i = 0U; i < n; ++i) {
+      results_out[i] = {};
+      res->at(i).ip.copy(results_out[i].ip, sizeof(results_out[i].ip) - 1);
+      res->at(i).serial.copy(results_out[i].serial,
+                             sizeof(results_out[i].serial) - 1);
+    }
+    *count = static_cast<unsigned int>(n);
+  } else {
+    ret = res.error();
+  }
+
+  return static_cast<int>(ret);
+}
+
+int AbsScpiClient_SerialDiscovery(const char* port, uint8_t first_id,
+                                  uint8_t last_id,
+                                  AbsSerialDiscoveryResult results_out[],
+                                  unsigned int* count) {
+  if (!port || !results_out || !count || *count == 0) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  ec ret = ec::kSuccess;
+  if (auto res = bci::abs::SerialDiscovery(port, first_id, last_id)) {
+    if (res->size() > *count) {
+      ret = ec::kBufferTooSmall;
+    }
+
+    const auto n = std::min(*count, static_cast<unsigned int>(res->size()));
+    for (auto i = 0U; i < n; ++i) {
+      results_out[i] = {};
+      results_out[i].id = res->at(i).id;
+      res->at(i).serial.copy(results_out[i].serial,
+                             sizeof(results_out[i].serial) - 1);
+    }
+    *count = static_cast<unsigned int>(n);
+  } else {
+    ret = res.error();
+  }
+
+  return static_cast<int>(ret);
 }

@@ -114,6 +114,18 @@ typedef struct AbsEthernetConfig {
   char netmask[32];  ///< Subnet mask.
 } AbsEthernetConfig;
 
+/// ABS Ethernet discovery result.
+typedef struct AbsEthernetDiscoveryResult {
+  char ip[32];       ///< IP address.
+  char serial[128];  ///< Serial number.
+} AbsEthernetDiscoveryResult;
+
+/// ABS serial discovery result.
+typedef struct AbsSerialDiscoveryResult {
+  uint8_t id;        ///< IP address.
+  char serial[128];  ///< Serial number.
+} AbsSerialDiscoveryResult;
+
 /**
  * @brief Get an error message to describe an error code returned by the driver.
  *
@@ -335,6 +347,21 @@ int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
 
 int AbsScpiClient_MeasureAllDigitalInput(AbsScpiClientHandle handle,
                                          unsigned int* levels_out);
+
+// count is both an input and an output!
+// if results_out is not big enough, fills as much as possible and returns
+// a buffer too small error
+int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
+                                     AbsEthernetDiscoveryResult results_out[],
+                                     unsigned int* count);
+
+// count is both an input and an output!
+// if results_out is not big enough, fills as much as possible and returns
+// a buffer too small error
+int AbsScpiClient_SerialDiscovery(const char* port, uint8_t first_id,
+                                  uint8_t last_id,
+                                  AbsSerialDiscoveryResult results_out[],
+                                  unsigned int* count);
 
 #ifdef __cplusplus
 }
