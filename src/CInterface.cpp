@@ -456,3 +456,26 @@ int AbsScpiClient_GetAllCellOperatingMode(AbsScpiClientHandle handle,
                  reinterpret_cast<CellMode*>(modes_out),
                  static_cast<std::size_t>(count));
 }
+
+int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
+                                  unsigned int channel, float voltage) {
+  return WrapSet(&sc::SetAnalogOutput, handle, channel, voltage);
+}
+
+int AbsScpiClient_SetAllAnalogOutput(AbsScpiClientHandle handle,
+                                     const float* voltages,
+                                     unsigned int count) {
+  return WrapSet(&sc::SetAllAnalogOutput, handle, voltages,
+                 static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
+                                  unsigned int channel, float* voltage_out) {
+  return WrapGet(&sc::GetAnalogOutput, handle, voltage_out, channel);
+}
+
+int AbsScpiClient_GetAllAnalogOutput(AbsScpiClientHandle handle,
+                                     float* voltages_out, unsigned int count) {
+  return WrapGet(&sc::GetAllAnalogOutput, handle, voltages_out,
+                 static_cast<std::size_t>(count));
+}

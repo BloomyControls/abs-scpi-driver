@@ -289,6 +289,18 @@ int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
 int AbsScpiClient_GetAllCellOperatingMode(AbsScpiClientHandle handle,
                                           int* modes_out, unsigned int count);
 
+int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
+                                  unsigned int channel, float voltage);
+
+int AbsScpiClient_SetAllAnalogOutput(AbsScpiClientHandle handle,
+                                     const float* voltages, unsigned int count);
+
+int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
+                                  unsigned int channel, float* voltage_out);
+
+int AbsScpiClient_GetAllAnalogOutput(AbsScpiClientHandle handle,
+                                     float* voltages_out, unsigned int count);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
