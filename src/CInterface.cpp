@@ -6,8 +6,10 @@
 #include <bci/abs/UdpMulticastDriver.h>
 #include <string.h>  // for strnlen()
 
+#include <array>
 #include <cstddef>
 #include <memory>
+#include <span>
 #include <type_traits>
 
 using namespace bci::abs;
@@ -533,4 +535,51 @@ int AbsScpiClient_GetAllAnalogOutput(AbsScpiClientHandle handle,
                                      float voltages_out[], unsigned int count) {
   return WrapGet(&sc::GetAllAnalogOutput, handle, voltages_out,
                  static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_SetDigitalOutput(AbsScpiClientHandle handle,
+                                   unsigned int channel, bool level) {
+  return WrapSet(&sc::SetDigitalOutput, handle, channel, level);
+}
+
+int AbsScpiClient_SetAllDigitalOutput(AbsScpiClientHandle handle,
+                                      unsigned int levels_mask) {
+  std::array<bool, kDigitalOutputCount> levels{};
+  for (auto i = 0U; i < kDigitalOutputCount; ++i) {
+    levels[i] = !!(levels_mask & (1U << i));
+  }
+  return WrapSet(&sc::SetAllDigitalOutput, handle,
+                 std::span<const bool>(levels));
+}
+
+int AbsScpiClient_GetDigitalOutput(AbsScpiClientHandle handle,
+                                   unsigned int channel, bool* level_out) {
+  return WrapGet(&sc::GetDigitalOutput, handle, level_out, channel);
+}
+
+int AbsScpiClient_GetAllDigitalOutput(AbsScpiClientHandle handle,
+                                      unsigned int* levels_out) {
+  return WrapGet(&sc::GetAllDigitalOutputMasked, handle, levels_out);
+}
+
+int AbsScpiClient_MeasureAnalogInput(AbsScpiClientHandle handle,
+                                     unsigned int channel, float* voltage_out) {
+  return WrapGet(&sc::MeasureAnalogInput, handle, voltage_out, channel);
+}
+
+int AbsScpiClient_MeasureAllAnalogInput(AbsScpiClientHandle handle,
+                                        float voltages_out[],
+                                        unsigned int count) {
+  return WrapGet(&sc::MeasureAllAnalogInput, handle, voltages_out,
+                 static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
+                                      unsigned int channel, bool* level_out) {
+  return WrapGet(&sc::MeasureDigitalInput, handle, level_out, channel);
+}
+
+int AbsScpiClient_MeasureAllDigitalInput(AbsScpiClientHandle handle,
+                                         unsigned int* levels_out) {
+  return WrapGet(&sc::MeasureAllDigitalInputMasked, handle, levels_out);
 }

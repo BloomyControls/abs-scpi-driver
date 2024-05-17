@@ -311,6 +311,31 @@ int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
 int AbsScpiClient_GetAllAnalogOutput(AbsScpiClientHandle handle,
                                      float voltages_out[], unsigned int count);
 
+int AbsScpiClient_SetDigitalOutput(AbsScpiClientHandle handle,
+                                   unsigned int channel, bool level);
+
+int AbsScpiClient_SetAllDigitalOutput(AbsScpiClientHandle handle,
+                                      unsigned int levels_mask);
+
+int AbsScpiClient_GetDigitalOutput(AbsScpiClientHandle handle,
+                                   unsigned int channel, bool* level_out);
+
+int AbsScpiClient_GetAllDigitalOutput(AbsScpiClientHandle handle,
+                                      unsigned int* levels_out);
+
+int AbsScpiClient_MeasureAnalogInput(AbsScpiClientHandle handle,
+                                     unsigned int channel, float* voltage_out);
+
+int AbsScpiClient_MeasureAllAnalogInput(AbsScpiClientHandle handle,
+                                        float voltages_out[],
+                                        unsigned int count);
+
+int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
+                                      unsigned int channel, bool* level_out);
+
+int AbsScpiClient_MeasureAllDigitalInput(AbsScpiClientHandle handle,
+                                         unsigned int* levels_out);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
