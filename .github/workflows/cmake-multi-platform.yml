@@ -33,9 +33,9 @@ jobs:
             c_compiler: gcc
             cpp_compiler: g++
             problem_matcher: gcc
-          #- os: ubuntu-latest
-          #  c_compiler: clang
-          #  cpp_compiler: clang++
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
         exclude:
           - os: windows-latest
             c_compiler: gcc
@@ -45,10 +45,6 @@ jobs:
             problem_matcher: gcc
           - os: ubuntu-latest
             c_compiler: cl
-            # clang is a little confused at the moment... at least in part due
-            # to a github actions issue with ubuntu runners
-          - os: ubuntu-latest
-            c_compiler: clang
           - os: ubuntu-latest
             problem_matcher: msvc
 
