@@ -77,8 +77,8 @@ add_library(absscpi
 add_library(abs::scpi ALIAS absscpi)
 
 set_target_properties(absscpi PROPERTIES
-  VERSION ${absscpi_VERSION}
-  SOVERSION ${absscpi_VERSION_MAJOR})
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR})
 
 target_compile_features(absscpi PUBLIC cxx_std_20)
 
