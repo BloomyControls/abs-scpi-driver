@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(libbciabs_scpi VERSION 1.0.0)
+project(absscpi VERSION 1.0.0)
 
-option(BCIABS_SCPI_INSTALL "Enable install" ON)
+option(ABSSCPI_INSTALL "Enable install" ON)
 
 include(FetchContent)
 
@@ -60,7 +60,7 @@ FetchContent_MakeAvailable(fast_float)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
-add_library(bciabs_scpi
+add_library(absscpi
   src/TcpDriver.cpp
   src/UdpDriver.cpp
   src/UdpMulticastDriver.cpp
@@ -74,39 +74,39 @@ add_library(bciabs_scpi
   src/Errors.cpp
   src/CInterface.cpp
 )
-add_library(bci::abs-scpi ALIAS bciabs_scpi)
+add_library(abs::scpi ALIAS absscpi)
 
-target_compile_features(bciabs_scpi PUBLIC cxx_std_20)
+target_compile_features(absscpi PUBLIC cxx_std_20)
 
 if(MSVC)
-  target_compile_options(bciabs_scpi PRIVATE /W3)
+  target_compile_options(absscpi PRIVATE /W3)
 else()
-  target_compile_options(bciabs_scpi PRIVATE -Wall -Wextra)
+  target_compile_options(absscpi PRIVATE -Wall -Wextra)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(bciabs_scpi PRIVATE -Wno-psabi)
+    target_compile_options(absscpi PRIVATE -Wno-psabi)
   endif()
 endif()
 
-if(BCIABS_SCPI_INSTALL)
+if(ABSSCPI_INSTALL)
   include(GNUInstallDirs)
 endif()
 
-target_include_directories(bciabs_scpi PUBLIC
+target_include_directories(absscpi PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_link_libraries(bciabs_scpi PRIVATE
+target_link_libraries(absscpi PRIVATE
   fmt::fmt-header-only
   fast_float
   ${BOOST_LIBS}
 )
 
-if(BCIABS_SCPI_INSTALL)
+if(ABSSCPI_INSTALL)
   install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/bci"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-  install(TARGETS bciabs_scpi
+  install(TARGETS absscpi
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
