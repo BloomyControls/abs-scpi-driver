@@ -71,7 +71,6 @@ C interface.
 #include <bci/abs/CInterface.h>
 
 #include <stdio.h>
-#include <string.h>
 
 static void FormatErr(const char* msg, int ec) {
   fprintf(stderr, "%s: %s (%d)\n", msg, AbsScpiClient_ErrorMessage(ec), ec);
