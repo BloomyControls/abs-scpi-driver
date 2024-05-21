@@ -136,6 +136,8 @@ enum class ErrorCode : int {
   kFailedToJoinGroup = -22,        ///< Failed to join multicast group
   kBufferTooSmall = -23,           ///< Buffer too small
   kInvalidPrecisionMode = -24,     ///< Invalid precision mode
+  kAllocationFailed = -25,         ///< Allocation failed (C only)
+  kUnexpectedException = -26,      ///< Unexpected exception (C only)
 };
 
 /**

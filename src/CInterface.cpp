@@ -18,6 +18,7 @@
 #include <array>
 #include <cstddef>
 #include <memory>
+#include <new>
 #include <span>
 #include <type_traits>
 
@@ -31,17 +32,22 @@ static ScpiClient& GetClient(AbsScpiClientHandle handle) {
 
 template <class... Args>
 static int WrapSet(ErrorCode (ScpiClient::*func)(Args...) const,
-                   AbsScpiClientHandle handle, Args... args) {
+                   AbsScpiClientHandle handle, Args... args) noexcept try {
   if (!handle || !func) {
     return static_cast<int>(ec::kInvalidArgument);
   }
 
   return static_cast<int>((GetClient(handle).*func)(args...));
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 template <class T, class... Args>
 static int WrapGet(Result<T> (ScpiClient::*func)(Args...) const,
-                   AbsScpiClientHandle handle, T* res, Args... args) {
+                   AbsScpiClientHandle handle, T* res, Args... args) noexcept
+    try {
   if (!handle || !func || !res) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -54,16 +60,24 @@ static int WrapGet(Result<T> (ScpiClient::*func)(Args...) const,
   }
 
   return static_cast<int>(err);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 template <class... Args>
 static int WrapGet(ErrorCode (ScpiClient::*func)(Args...) const,
-                   AbsScpiClientHandle handle, Args... args) {
+                   AbsScpiClientHandle handle, Args... args) noexcept try {
   if (!handle || !func) {
     return static_cast<int>(ec::kInvalidArgument);
   }
 
   return static_cast<int>((GetClient(handle).*func)(args...));
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 // Get a view over a char array that may or may not be null-terminated.
@@ -83,7 +97,10 @@ int AbsScpiClient_Init(AbsScpiClientHandle* handle_out) {
 
   ScpiClient*& client_ptr = *(ScpiClient**)handle_out;
   if (!client_ptr) {
-    client_ptr = new ScpiClient();
+    client_ptr = new (std::nothrow) ScpiClient();
+    if (!client_ptr) {
+      return static_cast<int>(ec::kAllocationFailed);
+    }
   }
 
   return static_cast<int>(ec::kSuccess);
@@ -97,7 +114,7 @@ void AbsScpiClient_Destroy(AbsScpiClientHandle* handle) {
 }
 
 int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
-                          const char* interface_ip) {
+                          const char* interface_ip) try {
   if (!handle || !target_ip) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -116,9 +133,14 @@ int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
   }
 
   return static_cast<int>(ret);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
-int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle, const char* target_ip) {
+int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle,
+                          const char* target_ip) try {
   if (!handle || !target_ip) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -132,10 +154,14 @@ int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle, const char* target_ip) {
   }
 
   return static_cast<int>(ret);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
-                             unsigned int device_id) {
+                             unsigned int device_id) try {
   if (!handle || !com_port) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -150,10 +176,14 @@ int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
   }
 
   return static_cast<int>(ret);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
-                                   const char* interface_ip) {
+                                   const char* interface_ip) try {
   if (!handle || !interface_ip) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -167,10 +197,14 @@ int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
   }
 
   return static_cast<int>(ret);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_GetDeviceInfo(AbsScpiClientHandle handle,
-                                AbsDeviceInfo* info_out) {
+                                AbsDeviceInfo* info_out) try {
   if (!info_out) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -192,6 +226,10 @@ int AbsScpiClient_GetDeviceInfo(AbsScpiClientHandle handle,
   ver.copy(ver_out, sizeof(ver_out) - 1);
 
   return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out) {
@@ -199,7 +237,7 @@ int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out) {
 }
 
 int AbsScpiClient_GetIPAddress(AbsScpiClientHandle handle,
-                               AbsEthernetConfig* addr_out) {
+                               AbsEthernetConfig* addr_out) try {
   if (!addr_out) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -220,6 +258,10 @@ int AbsScpiClient_GetIPAddress(AbsScpiClientHandle handle,
   mask.copy(mask_out, sizeof(mask_out) - 1);
 
   return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
@@ -233,7 +275,7 @@ int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle, char* buf,
-                                     unsigned int len) {
+                                     unsigned int len) try {
   if (!buf || len == 0) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -253,6 +295,10 @@ int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle, char* buf,
   buf[date.size()] = '\0';
 
   return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_GetErrorCount(AbsScpiClientHandle handle, int* count_out) {
@@ -261,7 +307,7 @@ int AbsScpiClient_GetErrorCount(AbsScpiClientHandle handle, int* count_out) {
 
 int AbsScpiClient_GetNextError(AbsScpiClientHandle handle,
                                int16_t* err_code_out, char* msg_buf,
-                               unsigned int msg_buf_len) {
+                               unsigned int msg_buf_len) try {
   if (!err_code_out || !msg_buf || msg_buf_len == 0) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -282,6 +328,10 @@ int AbsScpiClient_GetNextError(AbsScpiClientHandle handle,
   msg_buf[err.err_msg.size()] = '\0';
 
   return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_ClearErrors(AbsScpiClientHandle handle) {
@@ -595,7 +645,7 @@ int AbsScpiClient_MeasureAllDigitalInput(AbsScpiClientHandle handle,
 
 int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
                                      AbsEthernetDiscoveryResult results_out[],
-                                     unsigned int* count) {
+                                     unsigned int* count) try {
   if (!interface_ip || !results_out || !count || *count == 0) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -619,12 +669,16 @@ int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
   }
 
   return static_cast<int>(ret);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }
 
 int AbsScpiClient_SerialDiscovery(const char* port, uint8_t first_id,
                                   uint8_t last_id,
                                   AbsSerialDiscoveryResult results_out[],
-                                  unsigned int* count) {
+                                  unsigned int* count) try {
   if (!port || !results_out || !count || *count == 0) {
     return static_cast<int>(ec::kInvalidArgument);
   }
@@ -648,4 +702,8 @@ int AbsScpiClient_SerialDiscovery(const char* port, uint8_t first_id,
   }
 
   return static_cast<int>(ret);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
 }

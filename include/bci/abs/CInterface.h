@@ -67,6 +67,10 @@ extern "C" {
 #define ABS_SCPI_ERR_BUFFER_TOO_SMALL (-23)
 /// Invalid precision mode
 #define ABS_SCPI_ERR_INVALID_PRECISION_MODE (-24)
+/// Allocation failed
+#define ABS_SCPI_ERR_ALLOCATION_FAILED (-25)
+/// Unexpected exception
+#define ABS_SCPI_ERR_UNEXPECTED_EXCEPTION (-26)
 
 /* Cell Fault Modes */
 
