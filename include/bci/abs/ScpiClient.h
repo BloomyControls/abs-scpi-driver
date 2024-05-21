@@ -270,7 +270,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellVoltage(float voltage) const;
+  ErrorCode SetAllCellVoltages(float voltage) const;
 
   /**
    * @brief Set all cells' voltages.
@@ -284,7 +284,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellVoltage(const float* voltages, std::size_t count) const;
+  ErrorCode SetAllCellVoltages(const float* voltages, std::size_t count) const;
 
   /**
    * @brief Set all cells' voltages.
@@ -294,7 +294,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellVoltage(std::span<const float> voltages) const;
+  ErrorCode SetAllCellVoltages(std::span<const float> voltages) const;
 
   /**
    * @brief Set all cells' voltages.
@@ -303,7 +303,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellVoltage(
+  ErrorCode SetAllCellVoltages(
       const std::array<float, kCellCount>& voltages) const;
 
   /**
@@ -320,7 +320,7 @@ class ScpiClient {
    *
    * @return Result containing an array of voltages or an error code.
    */
-  Result<std::array<float, kCellCount>> GetAllCellVoltageTarget() const;
+  Result<std::array<float, kCellCount>> GetAllCellVoltageTargets() const;
 
   /**
    * @brief Query all cells' voltage set points.
@@ -334,7 +334,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellVoltageTarget(float* voltages, std::size_t count) const;
+  ErrorCode GetAllCellVoltageTargets(float* voltages, std::size_t count) const;
 
   /**
    * @brief Query all cells' voltage set points.
@@ -343,7 +343,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellVoltageTarget(
+  ErrorCode GetAllCellVoltageTargets(
       std::array<float, kCellCount>& voltages) const;
 
   /**
@@ -354,7 +354,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellVoltageTarget(std::span<float> voltages) const;
+  ErrorCode GetAllCellVoltageTargets(std::span<float> voltages) const;
 
   /**
    * @brief Set a single cell's sourcing current limit.
@@ -425,7 +425,7 @@ class ScpiClient {
    * @return Result containing an array of the cells' sourcing limits or an
    * error code.
    */
-  Result<std::array<float, kCellCount>> GetAllCellSourcingLimit() const;
+  Result<std::array<float, kCellCount>> GetAllCellSourcingLimits() const;
 
   /**
    * @brief Query all cells' sourcing current limits.
@@ -439,7 +439,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSourcingLimit(float* limits, std::size_t count) const;
+  ErrorCode GetAllCellSourcingLimits(float* limits, std::size_t count) const;
 
   /**
    * @brief Query all cells' sourcing current limits.
@@ -448,7 +448,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSourcingLimit(
+  ErrorCode GetAllCellSourcingLimits(
       std::array<float, kCellCount>& limits) const;
 
   /**
@@ -459,7 +459,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSourcingLimit(std::span<float> limits) const;
+  ErrorCode GetAllCellSourcingLimits(std::span<float> limits) const;
 
   /**
    * @brief Set a single cell's sinking current limit.
@@ -533,7 +533,7 @@ class ScpiClient {
    * @return Result containing an array of the cells' sinking limits or an
    * error code.
    */
-  Result<std::array<float, kCellCount>> GetAllCellSinkingLimit() const;
+  Result<std::array<float, kCellCount>> GetAllCellSinkingLimits() const;
 
   /**
    * @brief Query all cells' sinking current limits.
@@ -547,7 +547,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSinkingLimit(float* limits, std::size_t count) const;
+  ErrorCode GetAllCellSinkingLimits(float* limits, std::size_t count) const;
 
   /**
    * @brief Query all cells' sinking current limits.
@@ -556,7 +556,8 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSinkingLimit(std::array<float, kCellCount>& limits) const;
+  ErrorCode GetAllCellSinkingLimits(
+      std::array<float, kCellCount>& limits) const;
 
   /**
    * @brief Query all cells' sinking current limits.
@@ -566,7 +567,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSinkingLimit(std::span<float> limits) const;
+  ErrorCode GetAllCellSinkingLimits(std::span<float> limits) const;
 
   /**
    * @brief Set a single cell's faulting state.
@@ -585,7 +586,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellFault(CellFault fault) const;
+  ErrorCode SetAllCellFaults(CellFault fault) const;
 
   /**
    * @brief Set all cells' faulting states.
@@ -599,7 +600,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellFault(const CellFault* faults, std::size_t count) const;
+  ErrorCode SetAllCellFaults(const CellFault* faults, std::size_t count) const;
 
   /**
    * @brief Set all cells' faulting states.
@@ -609,7 +610,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellFault(std::span<const CellFault> faults) const;
+  ErrorCode SetAllCellFaults(std::span<const CellFault> faults) const;
 
   /**
    * @brief Set all cells' faulting states.
@@ -618,7 +619,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellFault(
+  ErrorCode SetAllCellFaults(
       const std::array<CellFault, kCellCount>& faults) const;
 
   /**
@@ -635,7 +636,7 @@ class ScpiClient {
    *
    * @return Result containing an array of cell fault states or an error code.
    */
-  Result<std::array<CellFault, kCellCount>> GetAllCellFault() const;
+  Result<std::array<CellFault, kCellCount>> GetAllCellFaults() const;
 
   /**
    * @brief Query all cells' faulting states.
@@ -649,7 +650,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellFault(CellFault* faults, std::size_t count) const;
+  ErrorCode GetAllCellFaults(CellFault* faults, std::size_t count) const;
 
   /**
    * @brief Query all cells' faulting states.
@@ -658,7 +659,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellFault(std::array<CellFault, kCellCount>& faults) const;
+  ErrorCode GetAllCellFaults(std::array<CellFault, kCellCount>& faults) const;
 
   /**
    * @brief Query all cells' faulting states.
@@ -668,7 +669,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellFault(std::span<CellFault> faults) const;
+  ErrorCode GetAllCellFaults(std::span<CellFault> faults) const;
 
   /**
    * @brief Set a single cell's current sense range.
@@ -687,7 +688,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellSenseRange(CellSenseRange range) const;
+  ErrorCode SetAllCellSenseRanges(CellSenseRange range) const;
 
   /**
    * @brief Set all cells' current sense ranges.
@@ -701,8 +702,8 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellSenseRange(const CellSenseRange* ranges,
-                                 std::size_t count) const;
+  ErrorCode SetAllCellSenseRanges(const CellSenseRange* ranges,
+                                  std::size_t count) const;
 
   /**
    * @brief Set all cells' current sense ranges.
@@ -712,7 +713,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellSenseRange(std::span<const CellSenseRange> ranges) const;
+  ErrorCode SetAllCellSenseRanges(std::span<const CellSenseRange> ranges) const;
 
   /**
    * @brief Set all cells' current sense ranges.
@@ -721,7 +722,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllCellSenseRange(
+  ErrorCode SetAllCellSenseRanges(
       const std::array<CellSenseRange, kCellCount>& ranges) const;
 
   /**
@@ -738,7 +739,7 @@ class ScpiClient {
    *
    * @return Result containing an array of cell sense ranges or an error code.
    */
-  Result<std::array<CellSenseRange, kCellCount>> GetAllCellSenseRange() const;
+  Result<std::array<CellSenseRange, kCellCount>> GetAllCellSenseRanges() const;
 
   /**
    * @brief Query all cells' current sense ranges.
@@ -752,8 +753,8 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSenseRange(CellSenseRange* ranges,
-                                 std::size_t count) const;
+  ErrorCode GetAllCellSenseRanges(CellSenseRange* ranges,
+                                  std::size_t count) const;
 
   /**
    * @brief Query all cells' current sense ranges.
@@ -762,7 +763,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSenseRange(
+  ErrorCode GetAllCellSenseRanges(
       std::array<CellSenseRange, kCellCount>& ranges) const;
 
   /**
@@ -773,7 +774,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellSenseRange(std::span<CellSenseRange> ranges) const;
+  ErrorCode GetAllCellSenseRanges(std::span<CellSenseRange> ranges) const;
 
   /**
    * @brief Set the cell precision mode.
@@ -805,7 +806,7 @@ class ScpiClient {
    *
    * @return Result containing an array of cell voltages or an error code.
    */
-  Result<std::array<float, kCellCount>> MeasureAllCellVoltage() const;
+  Result<std::array<float, kCellCount>> MeasureAllCellVoltages() const;
 
   /**
    * @brief Measure all cells' voltages.
@@ -819,7 +820,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllCellVoltage(float* voltages, std::size_t count) const;
+  ErrorCode MeasureAllCellVoltages(float* voltages, std::size_t count) const;
 
   /**
    * @brief Measure all cells' voltages.
@@ -828,7 +829,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllCellVoltage(
+  ErrorCode MeasureAllCellVoltages(
       std::array<float, kCellCount>& voltages) const;
 
   /**
@@ -839,7 +840,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllCellVoltage(std::span<float> voltages) const;
+  ErrorCode MeasureAllCellVoltages(std::span<float> voltages) const;
 
   /**
    * @brief Measure a single cell's current.
@@ -855,7 +856,7 @@ class ScpiClient {
    *
    * @return Result containing an array of cell currents or an error code.
    */
-  Result<std::array<float, kCellCount>> MeasureAllCellCurrent() const;
+  Result<std::array<float, kCellCount>> MeasureAllCellCurrents() const;
 
   /**
    * @brief Measure all cells' currents.
@@ -869,7 +870,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllCellCurrent(float* currents, std::size_t count) const;
+  ErrorCode MeasureAllCellCurrents(float* currents, std::size_t count) const;
 
   /**
    * @brief Measure all cells' currents.
@@ -878,7 +879,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllCellCurrent(
+  ErrorCode MeasureAllCellCurrents(
       std::array<float, kCellCount>& currents) const;
 
   /**
@@ -889,7 +890,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllCellCurrent(std::span<float> currents) const;
+  ErrorCode MeasureAllCellCurrents(std::span<float> currents) const;
 
   /**
    * @brief Query a single cell's operating mode.
@@ -906,7 +907,7 @@ class ScpiClient {
    * @return Result containing an array of cell operating modes or an error
    * code.
    */
-  Result<std::array<CellMode, kCellCount>> GetAllCellOperatingMode() const;
+  Result<std::array<CellMode, kCellCount>> GetAllCellOperatingModes() const;
 
   /**
    * @brief Query all cells' operating modes.
@@ -920,7 +921,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellOperatingMode(CellMode* modes, std::size_t count) const;
+  ErrorCode GetAllCellOperatingModes(CellMode* modes, std::size_t count) const;
 
   /**
    * @brief Query all cells' operating modes.
@@ -929,7 +930,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellOperatingMode(
+  ErrorCode GetAllCellOperatingModes(
       std::array<CellMode, kCellCount>& modes) const;
 
   /**
@@ -940,7 +941,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllCellOperatingMode(std::span<CellMode> modes) const;
+  ErrorCode GetAllCellOperatingModes(std::span<CellMode> modes) const;
 
   /* Aux IO */
 
@@ -961,7 +962,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllAnalogOutput(float voltage) const;
+  ErrorCode SetAllAnalogOutputs(float voltage) const;
 
   /**
    * @brief Set all analog outputs.
@@ -975,7 +976,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllAnalogOutput(const float* voltages, std::size_t count) const;
+  ErrorCode SetAllAnalogOutputs(const float* voltages, std::size_t count) const;
 
   /**
    * @brief Set all analog outputs.
@@ -985,7 +986,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllAnalogOutput(std::span<const float> voltages) const;
+  ErrorCode SetAllAnalogOutputs(std::span<const float> voltages) const;
 
   /**
    * @brief Set all analog outputs.
@@ -994,7 +995,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllAnalogOutput(
+  ErrorCode SetAllAnalogOutputs(
       const std::array<float, kAnalogOutputCount>& voltages) const;
 
   /**
@@ -1011,7 +1012,7 @@ class ScpiClient {
    *
    * @return Result containing an array of voltages or an error code.
    */
-  Result<std::array<float, kAnalogOutputCount>> GetAllAnalogOutput() const;
+  Result<std::array<float, kAnalogOutputCount>> GetAllAnalogOutputs() const;
 
   /**
    * @brief Query all analog outputs' voltages.
@@ -1025,7 +1026,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllAnalogOutput(float* voltages, std::size_t count) const;
+  ErrorCode GetAllAnalogOutputs(float* voltages, std::size_t count) const;
 
   /**
    * @brief Query all analog outputs' voltages.
@@ -1034,7 +1035,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllAnalogOutput(
+  ErrorCode GetAllAnalogOutputs(
       std::array<float, kAnalogOutputCount>& voltages) const;
 
   /**
@@ -1045,7 +1046,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode GetAllAnalogOutput(std::span<float> voltages) const;
+  ErrorCode GetAllAnalogOutputs(std::span<float> voltages) const;
 
   /**
    * @brief Set a single digital output.
@@ -1064,7 +1065,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllDigitalOutput(bool level) const;
+  ErrorCode SetAllDigitalOutputs(bool level) const;
 
   /**
    * @brief Set all digital outputs.
@@ -1074,7 +1075,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllDigitalOutputMasked(unsigned int channels, bool level) const;
+  ErrorCode SetAllDigitalOutputsMasked(unsigned int channels, bool level) const;
 
   /**
    * @brief Set all digital outputs.
@@ -1083,7 +1084,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllDigitalOutput(
+  ErrorCode SetAllDigitalOutputs(
       const std::array<bool, kDigitalOutputCount>& levels) const;
 
   /**
@@ -1094,7 +1095,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode SetAllDigitalOutput(std::span<const bool> levels) const;
+  ErrorCode SetAllDigitalOutputs(std::span<const bool> levels) const;
 
   /**
    * @brief Query a digital output's state.
@@ -1110,14 +1111,14 @@ class ScpiClient {
    *
    * @return Result containing an array of output states or an error code.
    */
-  Result<std::array<bool, kDigitalOutputCount>> GetAllDigitalOutput() const;
+  Result<std::array<bool, kDigitalOutputCount>> GetAllDigitalOutputs() const;
 
   /**
    * @brief Query all digital outputs' states.
    *
    * @return Result containing a bitmask of output states or an error code.
    */
-  Result<unsigned int> GetAllDigitalOutputMasked() const;
+  Result<unsigned int> GetAllDigitalOutputsMasked() const;
 
   /**
    * @brief Measure a single analog input.
@@ -1133,7 +1134,7 @@ class ScpiClient {
    *
    * @return Result containing an array of voltages or an error code.
    */
-  Result<std::array<float, kAnalogInputCount>> MeasureAllAnalogInput() const;
+  Result<std::array<float, kAnalogInputCount>> MeasureAllAnalogInputs() const;
 
   /**
    * @brief Measure all analog inputs.
@@ -1147,7 +1148,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllAnalogInput(float* voltages, std::size_t count) const;
+  ErrorCode MeasureAllAnalogInputs(float* voltages, std::size_t count) const;
 
   /**
    * @brief Measure all analog inputs.
@@ -1156,7 +1157,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllAnalogInput(
+  ErrorCode MeasureAllAnalogInputs(
       std::array<float, kAnalogInputCount>& voltages) const;
 
   /**
@@ -1167,7 +1168,7 @@ class ScpiClient {
    *
    * @return An error code.
    */
-  ErrorCode MeasureAllAnalogInput(std::span<float> voltages) const;
+  ErrorCode MeasureAllAnalogInputs(std::span<float> voltages) const;
 
   /**
    * @brief Measure a single digital input.
@@ -1183,14 +1184,14 @@ class ScpiClient {
    *
    * @return Result containing an array of input states or an error code.
    */
-  Result<std::array<bool, kDigitalInputCount>> MeasureAllDigitalInput() const;
+  Result<std::array<bool, kDigitalInputCount>> MeasureAllDigitalInputs() const;
 
   /**
    * @brief Measure all digital inputs.
    *
    * @return Result containing a bitmask of input states or an error code.
    */
-  Result<unsigned int> MeasureAllDigitalInputMasked() const;
+  Result<unsigned int> MeasureAllDigitalInputsMasked() const;
 
  private:
   /// Driver handle.

@@ -242,15 +242,16 @@ int AbsScpiClient_GetCellsEnabledMasked(AbsScpiClientHandle handle,
 int AbsScpiClient_SetCellVoltage(AbsScpiClientHandle handle, unsigned int cell,
                                  float voltage);
 
-int AbsScpiClient_SetAllCellVoltage(AbsScpiClientHandle handle,
-                                    const float voltages[], unsigned int count);
+int AbsScpiClient_SetAllCellVoltages(AbsScpiClientHandle handle,
+                                     const float voltages[],
+                                     unsigned int count);
 
 int AbsScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
                                        unsigned int cell, float* voltage_out);
 
-int AbsScpiClient_GetAllCellVoltageTarget(AbsScpiClientHandle handle,
-                                          float voltages_out[],
-                                          unsigned int count);
+int AbsScpiClient_GetAllCellVoltageTargets(AbsScpiClientHandle handle,
+                                           float voltages_out[],
+                                           unsigned int count);
 
 int AbsScpiClient_SetCellSourcing(AbsScpiClientHandle handle, unsigned int cell,
                                   float limit);
@@ -261,9 +262,9 @@ int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle,
 int AbsScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle,
                                        unsigned int cell, float* limit_out);
 
-int AbsScpiClient_GetAllCellSourcingLimit(AbsScpiClientHandle handle,
-                                          float limits_out[],
-                                          unsigned int count);
+int AbsScpiClient_GetAllCellSourcingLimits(AbsScpiClientHandle handle,
+                                           float limits_out[],
+                                           unsigned int count);
 
 int AbsScpiClient_SetCellSinking(AbsScpiClientHandle handle, unsigned int cell,
                                  float limit);
@@ -274,33 +275,33 @@ int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle,
 int AbsScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle,
                                       unsigned int cell, float* limit_out);
 
-int AbsScpiClient_GetAllCellSinkingLimit(AbsScpiClientHandle handle,
-                                         float limits_out[],
-                                         unsigned int count);
+int AbsScpiClient_GetAllCellSinkingLimits(AbsScpiClientHandle handle,
+                                          float limits_out[],
+                                          unsigned int count);
 
 int AbsScpiClient_SetCellFault(AbsScpiClientHandle handle, unsigned int cell,
                                int fault);
 
-int AbsScpiClient_SetAllCellFault(AbsScpiClientHandle handle,
-                                  const int faults[], unsigned int count);
+int AbsScpiClient_SetAllCellFaults(AbsScpiClientHandle handle,
+                                   const int faults[], unsigned int count);
 
 int AbsScpiClient_GetCellFault(AbsScpiClientHandle handle, unsigned int cell,
                                int* fault_out);
 
-int AbsScpiClient_GetAllCellFault(AbsScpiClientHandle handle, int faults_out[],
-                                  unsigned int count);
+int AbsScpiClient_GetAllCellFaults(AbsScpiClientHandle handle, int faults_out[],
+                                   unsigned int count);
 
 int AbsScpiClient_SetCellSenseRange(AbsScpiClientHandle handle,
                                     unsigned int cell, int range);
 
-int AbsScpiClient_SetAllCellSenseRange(AbsScpiClientHandle handle,
-                                       const int ranges[], unsigned int count);
+int AbsScpiClient_SetAllCellSenseRanges(AbsScpiClientHandle handle,
+                                        const int ranges[], unsigned int count);
 
 int AbsScpiClient_GetCellSenseRange(AbsScpiClientHandle handle,
                                     unsigned int cell, int* range_out);
 
-int AbsScpiClient_GetAllCellSenseRange(AbsScpiClientHandle handle,
-                                       int ranges_out[], unsigned int count);
+int AbsScpiClient_GetAllCellSenseRanges(AbsScpiClientHandle handle,
+                                        int ranges_out[], unsigned int count);
 
 int AbsScpiClient_SetCellPrecisionMode(AbsScpiClientHandle handle, int mode);
 
@@ -310,60 +311,60 @@ int AbsScpiClient_GetCellPrecisionMode(AbsScpiClientHandle handle,
 int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,
                                      unsigned int cell, float* voltage_out);
 
-int AbsScpiClient_MeasureAllCellVoltage(AbsScpiClientHandle handle,
-                                        float voltages_out[],
-                                        unsigned int count);
+int AbsScpiClient_MeasureAllCellVoltages(AbsScpiClientHandle handle,
+                                         float voltages_out[],
+                                         unsigned int count);
 
 int AbsScpiClient_MeasureCellCurrent(AbsScpiClientHandle handle,
                                      unsigned int cell, float* current_out);
 
-int AbsScpiClient_MeasureAllCellCurrent(AbsScpiClientHandle handle,
-                                        float currents_out[],
-                                        unsigned int count);
+int AbsScpiClient_MeasureAllCellCurrents(AbsScpiClientHandle handle,
+                                         float currents_out[],
+                                         unsigned int count);
 
 int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
                                        unsigned int cell, int* mode_out);
 
-int AbsScpiClient_GetAllCellOperatingMode(AbsScpiClientHandle handle,
-                                          int modes_out[], unsigned int count);
+int AbsScpiClient_GetAllCellOperatingModes(AbsScpiClientHandle handle,
+                                           int modes_out[], unsigned int count);
 
 int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
                                   unsigned int channel, float voltage);
 
-int AbsScpiClient_SetAllAnalogOutput(AbsScpiClientHandle handle,
-                                     const float voltages[],
-                                     unsigned int count);
+int AbsScpiClient_SetAllAnalogOutputs(AbsScpiClientHandle handle,
+                                      const float voltages[],
+                                      unsigned int count);
 
 int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
                                   unsigned int channel, float* voltage_out);
 
-int AbsScpiClient_GetAllAnalogOutput(AbsScpiClientHandle handle,
-                                     float voltages_out[], unsigned int count);
+int AbsScpiClient_GetAllAnalogOutputs(AbsScpiClientHandle handle,
+                                      float voltages_out[], unsigned int count);
 
 int AbsScpiClient_SetDigitalOutput(AbsScpiClientHandle handle,
                                    unsigned int channel, bool level);
 
-int AbsScpiClient_SetAllDigitalOutput(AbsScpiClientHandle handle,
-                                      unsigned int levels_mask);
+int AbsScpiClient_SetAllDigitalOutputs(AbsScpiClientHandle handle,
+                                       unsigned int levels_mask);
 
 int AbsScpiClient_GetDigitalOutput(AbsScpiClientHandle handle,
                                    unsigned int channel, bool* level_out);
 
-int AbsScpiClient_GetAllDigitalOutput(AbsScpiClientHandle handle,
-                                      unsigned int* levels_out);
+int AbsScpiClient_GetAllDigitalOutputs(AbsScpiClientHandle handle,
+                                       unsigned int* levels_out);
 
 int AbsScpiClient_MeasureAnalogInput(AbsScpiClientHandle handle,
                                      unsigned int channel, float* voltage_out);
 
-int AbsScpiClient_MeasureAllAnalogInput(AbsScpiClientHandle handle,
-                                        float voltages_out[],
-                                        unsigned int count);
+int AbsScpiClient_MeasureAllAnalogInputs(AbsScpiClientHandle handle,
+                                         float voltages_out[],
+                                         unsigned int count);
 
 int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
                                       unsigned int channel, bool* level_out);
 
-int AbsScpiClient_MeasureAllDigitalInput(AbsScpiClientHandle handle,
-                                         unsigned int* levels_out);
+int AbsScpiClient_MeasureAllDigitalInputs(AbsScpiClientHandle handle,
+                                          unsigned int* levels_out);
 
 // count is both an input and an output!
 // if results_out is not big enough, fills as much as possible and returns

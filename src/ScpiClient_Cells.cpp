@@ -106,7 +106,7 @@ ErrorCode ScpiClient::SetCellVoltage(unsigned int cell, float voltage) const {
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellVoltage(float voltage) const {
+ErrorCode ScpiClient::SetAllCellVoltages(float voltage) const {
   voltage = std::clamp(voltage, 0.0f, kMaxVoltage);
 
   char buf[64]{};
@@ -116,8 +116,8 @@ ErrorCode ScpiClient::SetAllCellVoltage(float voltage) const {
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellVoltage(const float* voltages,
-                                        std::size_t count) const {
+ErrorCode ScpiClient::SetAllCellVoltages(const float* voltages,
+                                         std::size_t count) const {
   if ((count > 0 && !voltages) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -138,13 +138,14 @@ ErrorCode ScpiClient::SetAllCellVoltage(const float* voltages,
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellVoltage(std::span<const float> voltages) const {
-  return SetAllCellVoltage(voltages.data(), voltages.size());
+ErrorCode ScpiClient::SetAllCellVoltages(
+    std::span<const float> voltages) const {
+  return SetAllCellVoltages(voltages.data(), voltages.size());
 }
 
-ErrorCode ScpiClient::SetAllCellVoltage(
+ErrorCode ScpiClient::SetAllCellVoltages(
     const std::array<float, kCellCount>& voltages) const {
-  return SetAllCellVoltage(voltages.data(), voltages.size());
+  return SetAllCellVoltages(voltages.data(), voltages.size());
 }
 
 Result<float> ScpiClient::GetCellVoltageTarget(unsigned int cell) const {
@@ -158,15 +159,15 @@ Result<float> ScpiClient::GetCellVoltageTarget(unsigned int cell) const {
   return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
-Result<std::array<float, kCellCount>> ScpiClient::GetAllCellVoltageTarget()
+Result<std::array<float, kCellCount>> ScpiClient::GetAllCellVoltageTargets()
     const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:VOLT? (@1:{})\r\n", kCellCount);
   return SendAndRecv(buf).and_then(scpi::ParseRespFloatArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::GetAllCellVoltageTarget(float* voltages,
-                                              std::size_t count) const {
+ErrorCode ScpiClient::GetAllCellVoltageTargets(float* voltages,
+                                               std::size_t count) const {
   if ((!voltages && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -186,13 +187,14 @@ ErrorCode ScpiClient::GetAllCellVoltageTarget(float* voltages,
   return scpi::SplitRespFloats(*resp, std::span{voltages, count});
 }
 
-ErrorCode ScpiClient::GetAllCellVoltageTarget(
+ErrorCode ScpiClient::GetAllCellVoltageTargets(
     std::array<float, kCellCount>& voltages) const {
-  return GetAllCellVoltageTarget(voltages.data(), voltages.size());
+  return GetAllCellVoltageTargets(voltages.data(), voltages.size());
 }
 
-ErrorCode ScpiClient::GetAllCellVoltageTarget(std::span<float> voltages) const {
-  return GetAllCellVoltageTarget(voltages.data(), voltages.size());
+ErrorCode ScpiClient::GetAllCellVoltageTargets(
+    std::span<float> voltages) const {
+  return GetAllCellVoltageTargets(voltages.data(), voltages.size());
 }
 
 ErrorCode ScpiClient::SetCellSourcing(unsigned int cell, float limit) const {
@@ -261,7 +263,7 @@ Result<float> ScpiClient::GetCellSourcingLimit(unsigned int cell) const {
   return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
-Result<std::array<float, kCellCount>> ScpiClient::GetAllCellSourcingLimit()
+Result<std::array<float, kCellCount>> ScpiClient::GetAllCellSourcingLimits()
     const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SRC? (@1:{})\r\n",
@@ -269,8 +271,8 @@ Result<std::array<float, kCellCount>> ScpiClient::GetAllCellSourcingLimit()
   return SendAndRecv(buf).and_then(scpi::ParseRespFloatArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::GetAllCellSourcingLimit(float* limits,
-                                              std::size_t count) const {
+ErrorCode ScpiClient::GetAllCellSourcingLimits(float* limits,
+                                               std::size_t count) const {
   if ((!limits && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -290,13 +292,13 @@ ErrorCode ScpiClient::GetAllCellSourcingLimit(float* limits,
   return scpi::SplitRespFloats(*resp, std::span{limits, count});
 }
 
-ErrorCode ScpiClient::GetAllCellSourcingLimit(
+ErrorCode ScpiClient::GetAllCellSourcingLimits(
     std::array<float, kCellCount>& limits) const {
-  return GetAllCellSourcingLimit(limits.data(), limits.size());
+  return GetAllCellSourcingLimits(limits.data(), limits.size());
 }
 
-ErrorCode ScpiClient::GetAllCellSourcingLimit(std::span<float> limits) const {
-  return GetAllCellSourcingLimit(limits.data(), limits.size());
+ErrorCode ScpiClient::GetAllCellSourcingLimits(std::span<float> limits) const {
+  return GetAllCellSourcingLimits(limits.data(), limits.size());
 }
 
 ErrorCode ScpiClient::SetCellSinking(unsigned int cell, float limit) const {
@@ -365,7 +367,7 @@ Result<float> ScpiClient::GetCellSinkingLimit(unsigned int cell) const {
   return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
-Result<std::array<float, kCellCount>> ScpiClient::GetAllCellSinkingLimit()
+Result<std::array<float, kCellCount>> ScpiClient::GetAllCellSinkingLimits()
     const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SNK? (@1:{})\r\n",
@@ -373,8 +375,8 @@ Result<std::array<float, kCellCount>> ScpiClient::GetAllCellSinkingLimit()
   return SendAndRecv(buf).and_then(scpi::ParseRespFloatArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::GetAllCellSinkingLimit(float* limits,
-                                             std::size_t count) const {
+ErrorCode ScpiClient::GetAllCellSinkingLimits(float* limits,
+                                              std::size_t count) const {
   if ((!limits && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -394,13 +396,13 @@ ErrorCode ScpiClient::GetAllCellSinkingLimit(float* limits,
   return scpi::SplitRespFloats(*resp, std::span{limits, count});
 }
 
-ErrorCode ScpiClient::GetAllCellSinkingLimit(
+ErrorCode ScpiClient::GetAllCellSinkingLimits(
     std::array<float, kCellCount>& limits) const {
-  return GetAllCellSinkingLimit(limits.data(), limits.size());
+  return GetAllCellSinkingLimits(limits.data(), limits.size());
 }
 
-ErrorCode ScpiClient::GetAllCellSinkingLimit(std::span<float> limits) const {
-  return GetAllCellSinkingLimit(limits.data(), limits.size());
+ErrorCode ScpiClient::GetAllCellSinkingLimits(std::span<float> limits) const {
+  return GetAllCellSinkingLimits(limits.data(), limits.size());
 }
 
 ErrorCode ScpiClient::SetCellFault(unsigned int cell, CellFault fault) const {
@@ -419,7 +421,7 @@ ErrorCode ScpiClient::SetCellFault(unsigned int cell, CellFault fault) const {
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellFault(CellFault fault) const {
+ErrorCode ScpiClient::SetAllCellFaults(CellFault fault) const {
   auto fstr = scpi::CellFaultMnemonic(fault);
   if (fstr.empty()) {
     return ec::kInvalidFaultType;
@@ -432,8 +434,8 @@ ErrorCode ScpiClient::SetAllCellFault(CellFault fault) const {
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellFault(const CellFault* faults,
-                                      std::size_t count) const {
+ErrorCode ScpiClient::SetAllCellFaults(const CellFault* faults,
+                                       std::size_t count) const {
   if ((count > 0 && !faults) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -457,13 +459,14 @@ ErrorCode ScpiClient::SetAllCellFault(const CellFault* faults,
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellFault(std::span<const CellFault> faults) const {
-  return SetAllCellFault(faults.data(), faults.size());
+ErrorCode ScpiClient::SetAllCellFaults(
+    std::span<const CellFault> faults) const {
+  return SetAllCellFaults(faults.data(), faults.size());
 }
 
-ErrorCode ScpiClient::SetAllCellFault(
+ErrorCode ScpiClient::SetAllCellFaults(
     const std::array<CellFault, kCellCount>& faults) const {
-  return SetAllCellFault(faults.data(), faults.size());
+  return SetAllCellFaults(faults.data(), faults.size());
 }
 
 Result<CellFault> ScpiClient::GetCellFault(unsigned int cell) const {
@@ -477,14 +480,14 @@ Result<CellFault> ScpiClient::GetCellFault(unsigned int cell) const {
   return SendAndRecv(buf).and_then(scpi::ParseCellFault);
 }
 
-Result<std::array<CellFault, kCellCount>> ScpiClient::GetAllCellFault() const {
+Result<std::array<CellFault, kCellCount>> ScpiClient::GetAllCellFaults() const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP:FAUL? (@1:{})\r\n", kCellCount);
   return SendAndRecv(buf).and_then(scpi::ParseCellFaultArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::GetAllCellFault(CellFault* faults,
-                                      std::size_t count) const {
+ErrorCode ScpiClient::GetAllCellFaults(CellFault* faults,
+                                       std::size_t count) const {
   if ((!faults && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -505,13 +508,13 @@ ErrorCode ScpiClient::GetAllCellFault(CellFault* faults,
                                   scpi::ParseCellFault);
 }
 
-ErrorCode ScpiClient::GetAllCellFault(
+ErrorCode ScpiClient::GetAllCellFaults(
     std::array<CellFault, kCellCount>& faults) const {
-  return GetAllCellFault(faults.data(), faults.size());
+  return GetAllCellFaults(faults.data(), faults.size());
 }
 
-ErrorCode ScpiClient::GetAllCellFault(std::span<CellFault> faults) const {
-  return GetAllCellFault(faults.data(), faults.size());
+ErrorCode ScpiClient::GetAllCellFaults(std::span<CellFault> faults) const {
+  return GetAllCellFaults(faults.data(), faults.size());
 }
 
 ErrorCode ScpiClient::SetCellSenseRange(unsigned int cell,
@@ -531,7 +534,7 @@ ErrorCode ScpiClient::SetCellSenseRange(unsigned int cell,
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellSenseRange(CellSenseRange range) const {
+ErrorCode ScpiClient::SetAllCellSenseRanges(CellSenseRange range) const {
   auto rstr = scpi::CellSenseRangeMnemonic(range);
   if (rstr.empty()) {
     return ec::kInvalidSenseRange;
@@ -544,8 +547,8 @@ ErrorCode ScpiClient::SetAllCellSenseRange(CellSenseRange range) const {
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellSenseRange(const CellSenseRange* ranges,
-                                           std::size_t count) const {
+ErrorCode ScpiClient::SetAllCellSenseRanges(const CellSenseRange* ranges,
+                                            std::size_t count) const {
   if ((count > 0 && !ranges) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -569,14 +572,14 @@ ErrorCode ScpiClient::SetAllCellSenseRange(const CellSenseRange* ranges,
   return Send(buf);
 }
 
-ErrorCode ScpiClient::SetAllCellSenseRange(
+ErrorCode ScpiClient::SetAllCellSenseRanges(
     std::span<const CellSenseRange> ranges) const {
-  return SetAllCellSenseRange(ranges.data(), ranges.size());
+  return SetAllCellSenseRanges(ranges.data(), ranges.size());
 }
 
-ErrorCode ScpiClient::SetAllCellSenseRange(
+ErrorCode ScpiClient::SetAllCellSenseRanges(
     const std::array<CellSenseRange, kCellCount>& ranges) const {
-  return SetAllCellSenseRange(ranges.data(), ranges.size());
+  return SetAllCellSenseRanges(ranges.data(), ranges.size());
 }
 
 Result<CellSenseRange> ScpiClient::GetCellSenseRange(unsigned int cell) const {
@@ -591,14 +594,14 @@ Result<CellSenseRange> ScpiClient::GetCellSenseRange(unsigned int cell) const {
 }
 
 Result<std::array<CellSenseRange, kCellCount>>
-ScpiClient::GetAllCellSenseRange() const {
+ScpiClient::GetAllCellSenseRanges() const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "SENS:RANG? (@1:{})\r\n", kCellCount);
   return SendAndRecv(buf).and_then(scpi::ParseCellSenseRangeArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::GetAllCellSenseRange(CellSenseRange* ranges,
-                                           std::size_t count) const {
+ErrorCode ScpiClient::GetAllCellSenseRanges(CellSenseRange* ranges,
+                                            std::size_t count) const {
   if ((!ranges && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -619,14 +622,14 @@ ErrorCode ScpiClient::GetAllCellSenseRange(CellSenseRange* ranges,
                                   scpi::ParseCellSenseRange);
 }
 
-ErrorCode ScpiClient::GetAllCellSenseRange(
+ErrorCode ScpiClient::GetAllCellSenseRanges(
     std::array<CellSenseRange, kCellCount>& ranges) const {
-  return GetAllCellSenseRange(ranges.data(), ranges.size());
+  return GetAllCellSenseRanges(ranges.data(), ranges.size());
 }
 
-ErrorCode ScpiClient::GetAllCellSenseRange(
+ErrorCode ScpiClient::GetAllCellSenseRanges(
     std::span<CellSenseRange> ranges) const {
-  return GetAllCellSenseRange(ranges.data(), ranges.size());
+  return GetAllCellSenseRanges(ranges.data(), ranges.size());
 }
 
 ErrorCode ScpiClient::SetCellPrecisionMode(CellPrecisionMode mode) const {
@@ -657,15 +660,15 @@ Result<float> ScpiClient::MeasureCellVoltage(unsigned int cell) const {
   return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
-Result<std::array<float, kCellCount>> ScpiClient::MeasureAllCellVoltage()
+Result<std::array<float, kCellCount>> ScpiClient::MeasureAllCellVoltages()
     const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:VOLT? (@1:{})\r\n", kCellCount);
   return SendAndRecv(buf).and_then(scpi::ParseRespFloatArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::MeasureAllCellVoltage(float* voltages,
-                                            std::size_t count) const {
+ErrorCode ScpiClient::MeasureAllCellVoltages(float* voltages,
+                                             std::size_t count) const {
   if ((!voltages && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -685,13 +688,13 @@ ErrorCode ScpiClient::MeasureAllCellVoltage(float* voltages,
   return scpi::SplitRespFloats(*resp, std::span{voltages, count});
 }
 
-ErrorCode ScpiClient::MeasureAllCellVoltage(
+ErrorCode ScpiClient::MeasureAllCellVoltages(
     std::array<float, kCellCount>& voltages) const {
-  return MeasureAllCellVoltage(voltages.data(), voltages.size());
+  return MeasureAllCellVoltages(voltages.data(), voltages.size());
 }
 
-ErrorCode ScpiClient::MeasureAllCellVoltage(std::span<float> voltages) const {
-  return MeasureAllCellVoltage(voltages.data(), voltages.size());
+ErrorCode ScpiClient::MeasureAllCellVoltages(std::span<float> voltages) const {
+  return MeasureAllCellVoltages(voltages.data(), voltages.size());
 }
 
 Result<float> ScpiClient::MeasureCellCurrent(unsigned int cell) const {
@@ -705,15 +708,15 @@ Result<float> ScpiClient::MeasureCellCurrent(unsigned int cell) const {
   return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
-Result<std::array<float, kCellCount>> ScpiClient::MeasureAllCellCurrent()
+Result<std::array<float, kCellCount>> ScpiClient::MeasureAllCellCurrents()
     const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:CURR? (@1:{})\r\n", kCellCount);
   return SendAndRecv(buf).and_then(scpi::ParseRespFloatArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::MeasureAllCellCurrent(float* currents,
-                                            std::size_t count) const {
+ErrorCode ScpiClient::MeasureAllCellCurrents(float* currents,
+                                             std::size_t count) const {
   if ((!currents && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -733,13 +736,13 @@ ErrorCode ScpiClient::MeasureAllCellCurrent(float* currents,
   return scpi::SplitRespFloats(*resp, std::span{currents, count});
 }
 
-ErrorCode ScpiClient::MeasureAllCellCurrent(
+ErrorCode ScpiClient::MeasureAllCellCurrents(
     std::array<float, kCellCount>& currents) const {
-  return MeasureAllCellCurrent(currents.data(), currents.size());
+  return MeasureAllCellCurrents(currents.data(), currents.size());
 }
 
-ErrorCode ScpiClient::MeasureAllCellCurrent(std::span<float> currents) const {
-  return MeasureAllCellCurrent(currents.data(), currents.size());
+ErrorCode ScpiClient::MeasureAllCellCurrents(std::span<float> currents) const {
+  return MeasureAllCellCurrents(currents.data(), currents.size());
 }
 
 Result<CellMode> ScpiClient::GetCellOperatingMode(unsigned int cell) const {
@@ -753,7 +756,7 @@ Result<CellMode> ScpiClient::GetCellOperatingMode(unsigned int cell) const {
   return SendAndRecv(buf).and_then(scpi::ParseCellOperatingMode);
 }
 
-Result<std::array<CellMode, kCellCount>> ScpiClient::GetAllCellOperatingMode()
+Result<std::array<CellMode, kCellCount>> ScpiClient::GetAllCellOperatingModes()
     const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP:MODE? (@1:{})\r\n", kCellCount);
@@ -761,8 +764,8 @@ Result<std::array<CellMode, kCellCount>> ScpiClient::GetAllCellOperatingMode()
       scpi::ParseCellOperatingModeArray<kCellCount>);
 }
 
-ErrorCode ScpiClient::GetAllCellOperatingMode(CellMode* modes,
-                                              std::size_t count) const {
+ErrorCode ScpiClient::GetAllCellOperatingModes(CellMode* modes,
+                                               std::size_t count) const {
   if ((!modes && count > 0) || count > kCellCount) {
     return ec::kInvalidArgument;
   }
@@ -783,13 +786,14 @@ ErrorCode ScpiClient::GetAllCellOperatingMode(CellMode* modes,
                                   scpi::ParseCellOperatingMode);
 }
 
-ErrorCode ScpiClient::GetAllCellOperatingMode(
+ErrorCode ScpiClient::GetAllCellOperatingModes(
     std::array<CellMode, kCellCount>& modes) const {
-  return GetAllCellOperatingMode(modes.data(), modes.size());
+  return GetAllCellOperatingModes(modes.data(), modes.size());
 }
 
-ErrorCode ScpiClient::GetAllCellOperatingMode(std::span<CellMode> modes) const {
-  return GetAllCellOperatingMode(modes.data(), modes.size());
+ErrorCode ScpiClient::GetAllCellOperatingModes(
+    std::span<CellMode> modes) const {
+  return GetAllCellOperatingModes(modes.data(), modes.size());
 }
 
 }  // namespace bci::abs
