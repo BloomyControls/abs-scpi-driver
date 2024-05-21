@@ -48,15 +48,17 @@ void ScpiClient::SetDriver(
   driver_ = std::move(driver);
 }
 
-void ScpiClient::SetTargetDeviceID(unsigned int id) {
+ErrorCode ScpiClient::SetTargetDeviceID(unsigned int id) {
   if (driver_) {
     driver_->SetDeviceID(id);
+    return ec::kSuccess;
   }
+  return ec::kInvalidDriverHandle;
 }
 
-unsigned int ScpiClient::GetTargetDeviceID() const {
+Result<unsigned int> ScpiClient::GetTargetDeviceID() const {
   if (!driver_) {
-    return 0;
+    return Err(ec::kInvalidDriverHandle);
   }
   return driver_->GetDeviceID();
 }

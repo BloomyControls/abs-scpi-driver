@@ -182,6 +182,12 @@ int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
 int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
                                    const char* interface_ip);
 
+int AbsScpiClient_SetTargetDeviceId(AbsScpiClientHandle handle,
+                                    unsigned int device_id);
+
+int AbsScpiClient_GetTargetDeviceId(AbsScpiClientHandle handle,
+                                    unsigned int* device_id_out);
+
 int AbsScpiClient_GetDeviceInfo(AbsScpiClientHandle handle,
                                 AbsDeviceInfo* info_out);
 

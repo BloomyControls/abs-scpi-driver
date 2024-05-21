@@ -95,13 +95,15 @@ class ScpiClient {
    *
    * @param[in] id the serial ID in the range 0-255, or 256+ to target all
    * devices on a bus
+   *
+   * @return An error code.
    */
-  void SetTargetDeviceID(unsigned int id);
+  ErrorCode SetTargetDeviceID(unsigned int id);
 
   /**
-   * @return Targeted device ID.
+   * @return Result containing the targeted device ID or an error code.
    */
-  unsigned int GetTargetDeviceID() const;
+  Result<unsigned int> GetTargetDeviceID() const;
 
   /* System */
 
