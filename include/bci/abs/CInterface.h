@@ -784,9 +784,11 @@ int AbsScpiClient_MeasureAllCellCurrents(AbsScpiClientHandle handle,
                                          unsigned int count);
 
 /**
- * @brief 
+ * @brief Query a cell's operating mode (constant voltage or current-limited).
  *
  * @param[in] handle SCPI client
+ * @param[in] cell target cell index, 0-7
+ * @param[out] mode_out pointer to returned operating mode
  *
  * @return 0 on success or a negative error code.
  */
@@ -794,9 +796,13 @@ int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
                                        unsigned int cell, int* mode_out);
 
 /**
- * @brief 
+ * @brief Query many cells' operating modes (constant voltage or
+ * current-limited).
  *
  * @param[in] handle SCPI client
+ * @param[out] modes_out array to store the returned modes, one per cell
+ * @param[in] count number of cells to query (must not be greater than the total
+ * number of cells)
  *
  * @return 0 on success or a negative error code.
  */
@@ -804,9 +810,11 @@ int AbsScpiClient_GetAllCellOperatingModes(AbsScpiClientHandle handle,
                                            int modes_out[], unsigned int count);
 
 /**
- * @brief 
+ * @brief Set a single analog output's voltage.
  *
  * @param[in] handle SCPI client
+ * @param[in] channel target channel index, 0-7
+ * @param[in] voltage desired voltage
  *
  * @return 0 on success or a negative error code.
  */
@@ -814,9 +822,12 @@ int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
                                   unsigned int channel, float voltage);
 
 /**
- * @brief 
+ * @brief Set many analog outputs.
  *
  * @param[in] handle SCPI client
+ * @param[in] voltages array of voltages, one per channel
+ * @param[in] count number of channels to target (must not be greater than the
+ * total channel count)
  *
  * @return 0 on success or a negative error code.
  */
@@ -825,9 +836,11 @@ int AbsScpiClient_SetAllAnalogOutputs(AbsScpiClientHandle handle,
                                       unsigned int count);
 
 /**
- * @brief 
+ * @brief Query on analog output's set point.
  *
  * @param[in] handle SCPI client
+ * @param[in] channel target channel index, 0-7
+ * @param[out] voltage_out pointer to store the returned voltage
  *
  * @return 0 on success or a negative error code.
  */
@@ -835,9 +848,13 @@ int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
                                   unsigned int channel, float* voltage_out);
 
 /**
- * @brief 
+ * @brief Query many analog outputs' set points.
  *
  * @param[in] handle SCPI client
+ * @param[out] voltages_out array to store the returned voltages, one per
+ * channel
+ * @param[in] count length of the array (must not be greater than the total
+ * channel count)
  *
  * @return 0 on success or a negative error code.
  */
@@ -845,9 +862,11 @@ int AbsScpiClient_GetAllAnalogOutputs(AbsScpiClientHandle handle,
                                       float voltages_out[], unsigned int count);
 
 /**
- * @brief 
+ * @brief Set a single digital output.
  *
  * @param[in] handle SCPI client
+ * @param[in] channel target channel index, 0-3
+ * @param[in] level desired output level
  *
  * @return 0 on success or a negative error code.
  */
@@ -855,9 +874,10 @@ int AbsScpiClient_SetDigitalOutput(AbsScpiClientHandle handle,
                                    unsigned int channel, bool level);
 
 /**
- * @brief 
+ * @brief Set all digital outputs.
  *
  * @param[in] handle SCPI client
+ * @param[in] levels_mask mask of desired output states, one bit per channel
  *
  * @return 0 on success or a negative error code.
  */
@@ -865,9 +885,11 @@ int AbsScpiClient_SetAllDigitalOutputs(AbsScpiClientHandle handle,
                                        unsigned int levels_mask);
 
 /**
- * @brief 
+ * @brief Query the state of a digital output.
  *
  * @param[in] handle SCPI client
+ * @param[in] channel target channel index, 0-3
+ * @param[out] level_out pointer to the returned output level
  *
  * @return 0 on success or a negative error code.
  */
@@ -875,9 +897,11 @@ int AbsScpiClient_GetDigitalOutput(AbsScpiClientHandle handle,
                                    unsigned int channel, bool* level_out);
 
 /**
- * @brief 
+ * @brief Query the states of all digital outputs.
  *
  * @param[in] handle SCPI client
+ * @param[out] levels_out pointer to store the returned levels, one bit per
+ * channel
  *
  * @return 0 on success or a negative error code.
  */
@@ -885,9 +909,11 @@ int AbsScpiClient_GetAllDigitalOutputs(AbsScpiClientHandle handle,
                                        unsigned int* levels_out);
 
 /**
- * @brief 
+ * @brief Measure a single analog input.
  *
  * @param[in] handle SCPI client
+ * @param[in] channel target channel index, 0-7
+ * @param[out] voltage_out pointer to the returned voltage
  *
  * @return 0 on success or a negative error code.
  */
@@ -895,9 +921,12 @@ int AbsScpiClient_MeasureAnalogInput(AbsScpiClientHandle handle,
                                      unsigned int channel, float* voltage_out);
 
 /**
- * @brief 
+ * @brief Measure many analog inputs.
  *
  * @param[in] handle SCPI client
+ * @param[out] voltages_out array to store the returned voltages
+ * @param[in] count length of the array (must not be greater than the total
+ * channel count)
  *
  * @return 0 on success or a negative error code.
  */
@@ -906,9 +935,11 @@ int AbsScpiClient_MeasureAllAnalogInputs(AbsScpiClientHandle handle,
                                          unsigned int count);
 
 /**
- * @brief 
+ * @brief Measure a single digital input.
  *
  * @param[in] handle SCPI client
+ * @param[in] channel target channel index, 0-3
+ * @param[out] level_out pointer to the returned input state
  *
  * @return 0 on success or a negative error code.
  */
@@ -916,25 +947,62 @@ int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
                                       unsigned int channel, bool* level_out);
 
 /**
- * @brief 
+ * @brief Measure all digital inputs.
  *
  * @param[in] handle SCPI client
+ * @param[out] levels_out pointer to the returned levels, one bit per channel
  *
  * @return 0 on success or a negative error code.
  */
 int AbsScpiClient_MeasureAllDigitalInputs(AbsScpiClientHandle handle,
                                           unsigned int* levels_out);
 
-// count is both an input and an output!
-// if results_out is not big enough, fills as much as possible and returns
-// a buffer too small error
+/**
+ * @brief Use UDP multicast to discover ABSes on the network.
+ *
+ * This function does not require that a ScpiClient be open or connected.
+ *
+ * @note If the array is not big enough, this function will fill in as many
+ * results as possible and return a buffer too small error. The output is still
+ * valid in this case.
+ *
+ * @param[in] interface_ip address of the local interface to bind to
+ * @param[out] results_out array of Ethernet discovery results
+ * @param[in,out] count pointer to the length of the array; will be set to the
+ * actual number of units discovered
+ *
+ * @return 0 on success or a negative error code.
+ */
 int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
                                      AbsEthernetDiscoveryResult results_out[],
                                      unsigned int* count);
 
-// count is both an input and an output!
-// if results_out is not big enough, fills as much as possible and returns
-// a buffer too small error
+/**
+ * @brief Use RS-485 to discover ABSes on the bus.
+ *
+ * This function does not require that a ScpiClient be open or connected. In
+ * fact, a ScpiClient may NOT be connected to the same serial port as is used
+ * during the call to this function.
+ *
+ * To discover serial devices, this function simply iterates through serial IDs
+ * and waits for a response from each device. As this can be a slow process
+ * (upwards of 15 seconds for the full address space), it's recommended to limit
+ * the search range to the range devices are expected to be in.
+ *
+ * @note If the array is not big enough, this function will fill in as many
+ * results as possible and return a buffer too small error. The output is still
+ * valid in this case.
+ *
+ * @param[in] port serial port to use, such as COM1 or /dev/ttyS0
+ * @param[in] first_id first serial ID to check, 0-255
+ * @param[in] last_id last serial ID to check (inclusive), 0-255 (must not be
+ * less than @a first_id)
+ * @param[out] results_out array of serial discovery results
+ * @param[in,out] count pointer to the length of the array; will be set to the
+ * actual number of units discovered
+ *
+ * @return 0 on success or a negative error code.
+ */
 int AbsScpiClient_SerialDiscovery(const char* port, uint8_t first_id,
                                   uint8_t last_id,
                                   AbsSerialDiscoveryResult results_out[],
