@@ -139,19 +139,22 @@ typedef struct AbsDeviceInfo {
   char version[128];      ///< Version number.
 } AbsDeviceInfo;
 
-/// ABS Ethernet address configuration.
+/// ABS Ethernet address configuration. All strings are guaranteed to be
+/// null-terminated.
 typedef struct AbsEthernetConfig {
   char ip[32];       ///< IP address.
   char netmask[32];  ///< Subnet mask.
 } AbsEthernetConfig;
 
-/// ABS Ethernet discovery result.
+/// ABS Ethernet discovery result. All strings are guaranteed to be
+/// null-terminated.
 typedef struct AbsEthernetDiscoveryResult {
   char ip[32];       ///< IP address.
   char serial[128];  ///< Serial number.
 } AbsEthernetDiscoveryResult;
 
-/// ABS serial discovery result.
+/// ABS serial discovery result. All strings are guaranteed to be
+/// null-terminated.
 typedef struct AbsSerialDiscoveryResult {
   uint8_t id;        ///< IP address.
   char serial[128];  ///< Serial number.
