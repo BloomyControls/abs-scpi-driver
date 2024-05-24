@@ -531,23 +531,13 @@ int AbsScpiClient_GetAllCellSenseRanges(AbsScpiClientHandle handle,
                  static_cast<std::size_t>(count));
 }
 
-static_assert(ABS_CELL_PREC_NORMAL ==
-              static_cast<int>(CellPrecisionMode::kNormal));
-static_assert(ABS_CELL_PREC_HIGH ==
-              static_cast<int>(CellPrecisionMode::kHighPrecision));
-static_assert(ABS_CELL_PREC_FILTER ==
-              static_cast<int>(CellPrecisionMode::kNoiseRejection));
-static_assert(std::is_same_v<std::underlying_type_t<CellPrecisionMode>, int>);
-
-int AbsScpiClient_SetCellPrecisionMode(AbsScpiClientHandle handle, int mode) {
-  return WrapSet(&sc::SetCellPrecisionMode, handle,
-                 static_cast<CellPrecisionMode>(mode));
+int AbsScpiClient_EnableCellNoiseFilter(AbsScpiClientHandle handle, bool en) {
+  return WrapSet(&sc::EnableCellNoiseFilter, handle, en);
 }
 
-int AbsScpiClient_GetCellPrecisionMode(AbsScpiClientHandle handle,
-                                       int* mode_out) {
-  return WrapGet(&sc::GetCellPrecisionMode, handle,
-                 reinterpret_cast<CellPrecisionMode*>(mode_out));
+int AbsScpiClient_GetCellNoiseFilterEnabled(AbsScpiClientHandle handle,
+                                            bool* en_out) {
+  return WrapGet(&sc::GetCellNoiseFilterEnabled, handle, en_out);
 }
 
 int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,

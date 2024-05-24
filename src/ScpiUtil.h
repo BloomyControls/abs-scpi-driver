@@ -322,38 +322,6 @@ constexpr Result<std::array<CellMode, kLen>> ParseCellOperatingModeArray(
   return res;
 }
 
-constexpr std::string_view CellPrecisionModeMnemonic(
-    CellPrecisionMode mode) noexcept {
-  switch (mode) {
-    case CellPrecisionMode::kNormal:
-      return "NORM";
-    case CellPrecisionMode::kHighPrecision:
-      return "PREC";
-    case CellPrecisionMode::kNoiseRejection:
-      return "FILT";
-  }
-  return "";
-}
-
-constexpr Result<CellPrecisionMode> ParseCellPrecisionMode(
-    std::string_view str) noexcept {
-  constexpr std::pair<std::string_view, CellPrecisionMode> kOpts[] = {
-      {"NORMAL", CellPrecisionMode::kNormal},
-      {"PRECISION", CellPrecisionMode::kHighPrecision},
-      {"FILTER", CellPrecisionMode::kNoiseRejection},
-  };
-
-  str = util::Trim(str);
-
-  for (auto [text, mode] : kOpts) {
-    if (str == text) {
-      return mode;
-    }
-  }
-
-  return util::Err(ErrorCode::kInvalidResponse);
-}
-
 // Parse quoted SCPI <String> data.
 std::optional<std::string> ParseQuotedString(std::string_view str);
 

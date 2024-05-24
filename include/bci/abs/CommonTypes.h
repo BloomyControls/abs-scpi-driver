@@ -41,13 +41,6 @@ enum class CellSenseRange : int {
   kHigh,  ///< High range (5A)
 };
 
-/// Cell precision modes.
-enum class CellPrecisionMode : int {
-  kNormal,          ///< Normal precision, high speed mode (default)
-  kHighPrecision,   ///< High precision mode
-  kNoiseRejection,  ///< Noise rejection mode
-};
-
 /// Cell operating modes.
 enum class CellMode : int {
   kConstantVoltage,  ///< Constant voltage (normal)
@@ -135,9 +128,8 @@ enum class ErrorCode : int {
   kFailedToConfigurePort = -21,    ///< Failed to configure serial port
   kFailedToJoinGroup = -22,        ///< Failed to join multicast group
   kBufferTooSmall = -23,           ///< Buffer too small
-  kInvalidPrecisionMode = -24,     ///< Invalid precision mode
-  kAllocationFailed = -25,         ///< Allocation failed (C only)
-  kUnexpectedException = -26,      ///< Unexpected exception (C only)
+  kAllocationFailed = -24,         ///< Allocation failed (C only)
+  kUnexpectedException = -25,      ///< Unexpected exception (C only)
 };
 
 /**

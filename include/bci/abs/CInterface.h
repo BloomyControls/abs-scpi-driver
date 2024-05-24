@@ -65,12 +65,10 @@ extern "C" {
 #define ABS_SCPI_ERR_FAILED_TO_JOIN_GROUP (-22)
 /// Buffer too small
 #define ABS_SCPI_ERR_BUFFER_TOO_SMALL (-23)
-/// Invalid precision mode
-#define ABS_SCPI_ERR_INVALID_PRECISION_MODE (-24)
 /// Allocation failed
-#define ABS_SCPI_ERR_ALLOCATION_FAILED (-25)
+#define ABS_SCPI_ERR_ALLOCATION_FAILED (-24)
 /// Unexpected exception
-#define ABS_SCPI_ERR_UNEXPECTED_EXCEPTION (-26)
+#define ABS_SCPI_ERR_UNEXPECTED_EXCEPTION (-25)
 
 /* Cell Indices and Bit Masks */
 
@@ -111,15 +109,6 @@ extern "C" {
 #define ABS_CELL_SENSE_RANGE_1A 1
 /// High range (5A)
 #define ABS_CELL_SENSE_RANGE_5A 2
-
-/* Cell Precision Modes */
-
-/// Normal precision mode (high speed)
-#define ABS_CELL_PREC_NORMAL 0
-/// High precision mode (low speed)
-#define ABS_CELL_PREC_HIGH 1
-/// Noise-rejection mode (low speed)
-#define ABS_CELL_PREC_FILTER 2
 
 /* Cell Operating Modes */
 
@@ -714,27 +703,28 @@ int AbsScpiClient_GetAllCellSenseRanges(AbsScpiClientHandle handle,
                                         int ranges_out[], unsigned int count);
 
 /**
- * @brief Set the cell precision mode.
+ * @brief Enable or disable the cell 50/60Hz noise filter.
  *
- * The device defaults to normal precision (high speed) mode.
+ * This mode filters 50/60Hz noise and increases cell measurement accuracy, but
+ * reduces the cell control rate to 10Hz.
  *
  * @param[in] handle SCPI client
- * @param[in] mode desired cell precision mode
+ * @param[in] en desired cell noise filter state
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetCellPrecisionMode(AbsScpiClientHandle handle, int mode);
+int AbsScpiClient_EnableCellNoiseFilter(AbsScpiClientHandle handle, bool en);
 
 /**
- * @brief Query the cell precision mode.
+ * @brief Query the enable state of the cell 50/60Hz noise filter.
  *
  * @param[in] handle SCPI client
- * @param[out] mode_out a pointer to the returned precision mode
+ * @param[out] en_out a pointer to the returned filter state
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellPrecisionMode(AbsScpiClientHandle handle,
-                                       int* mode_out);
+int AbsScpiClient_GetCellNoiseFilterEnabled(AbsScpiClientHandle handle,
+                                            bool* en_out);
 
 /**
  * @brief Measure a cell's voltage.

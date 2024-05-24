@@ -777,20 +777,24 @@ class ScpiClient {
   ErrorCode GetAllCellSenseRanges(std::span<CellSenseRange> ranges) const;
 
   /**
-   * @brief Set the cell precision mode.
+   * @brief Enable or disable the cell 50/60Hz noise filter.
    *
-   * @param[in] mode desired cell precision mode
+   * This mode filters 50/60Hz noise and increases cell measurement accuracy,
+   * but reduces the cell control rate to 10Hz.
+   *
+   * @param[in] en desired cell noise filter state
    *
    * @return An error code.
    */
-  ErrorCode SetCellPrecisionMode(CellPrecisionMode mode) const;
+  ErrorCode EnableCellNoiseFilter(bool en) const;
 
   /**
-   * @brief Query the cell precision mode.
+   * @brief Query the state of the cell noise filter.
    *
-   * @return Result containing the precision mode or an error code.
+   * @return Result containing the enable state of the noise filter or an error
+   * code.
    */
-  Result<CellPrecisionMode> GetCellPrecisionMode() const;
+  Result<bool> GetCellNoiseFilterEnabled() const;
 
   /**
    * @brief Measure a single cell's voltage.

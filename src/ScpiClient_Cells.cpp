@@ -632,21 +632,14 @@ ErrorCode ScpiClient::GetAllCellSenseRanges(
   return GetAllCellSenseRanges(ranges.data(), ranges.size());
 }
 
-ErrorCode ScpiClient::SetCellPrecisionMode(CellPrecisionMode mode) const {
-  auto mstr = scpi::CellPrecisionModeMnemonic(mode);
-  if (mstr.empty()) {
-    return ec::kInvalidPrecisionMode;
-  }
-
+ErrorCode ScpiClient::EnableCellNoiseFilter(bool en) const {
   char buf[64]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "CONF:MEAS:MODE {}\r\n", mstr);
-
+  fmt::format_to_n(buf, sizeof(buf) - 1, "CONF:MEAS:FILT {:d}\r\n", en);
   return Send(buf);
 }
 
-Result<CellPrecisionMode> ScpiClient::GetCellPrecisionMode() const {
-  return SendAndRecv("CONF:MEAS:MODE?\r\n")
-      .and_then(scpi::ParseCellPrecisionMode);
+Result<bool> ScpiClient::GetCellNoiseFilterEnabled() const {
+  return SendAndRecv("CONF:MEAS:FILT?\r\n").and_then(scpi::ParseBoolResponse);
 }
 
 Result<float> ScpiClient::MeasureCellVoltage(unsigned int cell) const {
