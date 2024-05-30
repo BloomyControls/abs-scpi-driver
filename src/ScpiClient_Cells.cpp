@@ -148,6 +148,34 @@ ErrorCode ScpiClient::SetAllCellVoltages(
   return SetAllCellVoltages(voltages.data(), voltages.size());
 }
 
+ErrorCode ScpiClient::SetMultipleCellVoltages(unsigned int cells,
+                                              float voltage) const {
+  voltage = std::clamp(voltage, 0.0f, kMaxVoltage);
+
+  cells &= kCellsMask;
+  if (cells) {
+    if (cells == kCellsMask) {
+      return SetAllCellVoltages(voltage);
+    }
+
+    std::array<unsigned int, kCellCount> which_cells{};
+    std::size_t count{};
+    for (unsigned int i = 0; i < kCellCount && cells; ++i, cells >>= 1) {
+      if (cells & 1) {
+        which_cells[count++] = i + 1;
+      }
+    }
+
+    std::span chan_list{which_cells.data(), count};
+    char buf[64]{};
+    fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:VOLT {:.4f},(@{})\r\n",
+                     voltage, fmt::join(chan_list, ","));
+    return Send(buf);
+  }
+
+  return ec::kSuccess;
+}
+
 Result<float> ScpiClient::GetCellVoltageTarget(unsigned int cell) const {
   if (cell >= kCellCount) {
     return Err(ec::kChannelIndexOutOfRange);
@@ -252,6 +280,34 @@ ErrorCode ScpiClient::SetAllCellSourcing(
   return SetAllCellSourcing(limits.data(), limits.size());
 }
 
+ErrorCode ScpiClient::SetMultipleCellSourcing(unsigned int cells,
+                                              float limit) const {
+  limit = std::clamp(limit, 0.0f, kMaxSourcing);
+
+  cells &= kCellsMask;
+  if (cells) {
+    if (cells == kCellsMask) {
+      return SetAllCellSourcing(limit);
+    }
+
+    std::array<unsigned int, kCellCount> which_cells{};
+    std::size_t count{};
+    for (unsigned int i = 0; i < kCellCount && cells; ++i, cells >>= 1) {
+      if (cells & 1) {
+        which_cells[count++] = i + 1;
+      }
+    }
+
+    std::span chan_list{which_cells.data(), count};
+    char buf[64]{};
+    fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SRC {:.4f},(@{})\r\n",
+                     limit, fmt::join(chan_list, ","));
+    return Send(buf);
+  }
+
+  return ec::kSuccess;
+}
+
 Result<float> ScpiClient::GetCellSourcingLimit(unsigned int cell) const {
   if (cell >= kCellCount) {
     return Err(ec::kChannelIndexOutOfRange);
@@ -354,6 +410,34 @@ ErrorCode ScpiClient::SetAllCellSinking(std::span<const float> limits) const {
 ErrorCode ScpiClient::SetAllCellSinking(
     const std::array<float, kCellCount>& limits) const {
   return SetAllCellSinking(limits.data(), limits.size());
+}
+
+ErrorCode ScpiClient::SetMultipleCellSinking(unsigned int cells,
+                                             float limit) const {
+  limit = std::clamp(limit, -kMaxSinking, kMaxSinking);
+
+  cells &= kCellsMask;
+  if (cells) {
+    if (cells == kCellsMask) {
+      return SetAllCellSinking(limit);
+    }
+
+    std::array<unsigned int, kCellCount> which_cells{};
+    std::size_t count{};
+    for (unsigned int i = 0; i < kCellCount && cells; ++i, cells >>= 1) {
+      if (cells & 1) {
+        which_cells[count++] = i + 1;
+      }
+    }
+
+    std::span chan_list{which_cells.data(), count};
+    char buf[64]{};
+    fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:CURR:SNK {:.4f},(@{})\r\n",
+                     limit, fmt::join(chan_list, ","));
+    return Send(buf);
+  }
+
+  return ec::kSuccess;
 }
 
 Result<float> ScpiClient::GetCellSinkingLimit(unsigned int cell) const {

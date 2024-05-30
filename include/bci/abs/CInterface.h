@@ -469,6 +469,18 @@ int AbsScpiClient_SetAllCellVoltages(AbsScpiClientHandle handle,
                                      unsigned int count);
 
 /**
+ * @brief Set multiple cells to the same voltage.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] cells bitmask of cells to target (one bit per cell)
+ * @param[in] voltage target voltage
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetMultipleCellVoltages(AbsScpiClientHandle handle,
+                                          unsigned int cells, float voltage);
+
+/**
  * @brief Query a cell's target voltage.
  *
  * @param[in] handle SCPI client
@@ -520,6 +532,18 @@ int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle,
                                      const float limits[], unsigned int count);
 
 /**
+ * @brief Set multiple cells to the same sourcing limit.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] cells bitmask of cells to target (one bit per cell)
+ * @param[in] limit target sourcing limit, 0-5
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetMultipleCellSourcing(AbsScpiClientHandle handle,
+                                          unsigned int cells, float limit);
+
+/**
  * @brief Query a single cell's sourcing limit.
  *
  * @param[in] handle SCPI client
@@ -569,6 +593,18 @@ int AbsScpiClient_SetCellSinking(AbsScpiClientHandle handle, unsigned int cell,
  */
 int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle,
                                     const float limits[], unsigned int count);
+
+/**
+ * @brief Set multiple cells to the same sinking limit.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] cells bitmask of cells to target (one bit per cell)
+ * @param[in] limit target sinking limit, 0-5 (positive or negative)
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetMultipleCellSinking(AbsScpiClientHandle handle,
+                                         unsigned int cells, float limit);
 
 /**
  * @brief Query a single cell's sinking limit.

@@ -307,6 +307,16 @@ class ScpiClient {
       const std::array<float, kCellCount>& voltages) const;
 
   /**
+   * @brief Set multiple cells' voltages to the same value.
+   *
+   * @param[in] cells bitmask of cells to target, 1 bit per cell
+   * @param[in] voltage target voltage
+   *
+   * @return An error code.
+   */
+  ErrorCode SetMultipleCellVoltages(unsigned int cells, float voltage) const;
+
+  /**
    * @brief Query a single cell's voltage set point.
    *
    * @param[in] cell target cell index
@@ -408,6 +418,16 @@ class ScpiClient {
    */
   ErrorCode SetAllCellSourcing(
       const std::array<float, kCellCount>& limits) const;
+
+  /**
+   * @brief Set multiple cells' sourcing current limits to the same value.
+   *
+   * @param[in] cells bitmask of cells to target, 1 bit per cell
+   * @param[in] limit target sourcing limit
+   *
+   * @return An error code.
+   */
+  ErrorCode SetMultipleCellSourcing(unsigned int cells, float limit) const;
 
   /**
    * @brief Query a single cell's sourcing current limit.
@@ -516,6 +536,16 @@ class ScpiClient {
    */
   ErrorCode SetAllCellSinking(
       const std::array<float, kCellCount>& limits) const;
+
+  /**
+   * @brief Set multiple cells' sinking current limits to the same value.
+   *
+   * @param[in] cells bitmask of cells to target, 1 bit per cell
+   * @param[in] limit target sinking limit
+   *
+   * @return An error code.
+   */
+  ErrorCode SetMultipleCellSinking(unsigned int cells, float limit) const;
 
   /**
    * @brief Query a single cell's sinking current limit.

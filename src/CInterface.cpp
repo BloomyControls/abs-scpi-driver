@@ -404,6 +404,11 @@ int AbsScpiClient_SetAllCellVoltages(AbsScpiClientHandle handle,
                  static_cast<std::size_t>(count));
 }
 
+int AbsScpiClient_SetMultipleCellVoltages(AbsScpiClientHandle handle,
+                                          unsigned int cells, float voltage) {
+  return WrapSet(&sc::SetMultipleCellVoltages, handle, cells, voltage);
+}
+
 int AbsScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
                                        unsigned int cell, float* voltage_out) {
   return WrapGet(&sc::GetCellVoltageTarget, handle, voltage_out, cell);
@@ -427,6 +432,11 @@ int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle,
                  static_cast<std::size_t>(count));
 }
 
+int AbsScpiClient_SetMultipleCellSourcing(AbsScpiClientHandle handle,
+                                          unsigned int cells, float limit) {
+  return WrapSet(&sc::SetMultipleCellSourcing, handle, cells, limit);
+}
+
 int AbsScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle,
                                        unsigned int cell, float* limit_out) {
   return WrapGet(&sc::GetCellSourcingLimit, handle, limit_out, cell);
@@ -448,6 +458,11 @@ int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle,
                                     const float limits[], unsigned int count) {
   return WrapSet(&sc::SetAllCellSinking, handle, limits,
                  static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_SetMultipleCellSinking(AbsScpiClientHandle handle,
+                                         unsigned int cells, float limit) {
+  return WrapSet(&sc::SetMultipleCellSinking, handle, cells, limit);
 }
 
 int AbsScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle,
