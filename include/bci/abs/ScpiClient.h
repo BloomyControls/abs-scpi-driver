@@ -1248,10 +1248,7 @@ class ScpiClient {
    */
   Result<unsigned int> MeasureAllDigitalInputsMasked() const;
 
- private:
-  /// Driver handle.
-  std::shared_ptr<drivers::CommDriver> driver_;
-
+ protected:
   /**
    * @brief Send a message to the ABS. Checks for driver validity.
    *
@@ -1270,6 +1267,10 @@ class ScpiClient {
    * @return Result containing the response or an error code.
    */
   Result<std::string> SendAndRecv(std::string_view buf) const;
+
+ private:
+  /// Driver handle.
+  std::shared_ptr<drivers::CommDriver> driver_;
 };
 
 }  // namespace bci::abs
