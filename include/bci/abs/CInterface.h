@@ -658,6 +658,18 @@ int AbsScpiClient_SetAllCellFaults(AbsScpiClientHandle handle,
                                    const int faults[], unsigned int count);
 
 /**
+ * @brief Set multiple cells to the same fault state.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] cells bitmask of cells to target, one bit per cell
+ * @param[in] fault target cell fault state
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetMultipleCellFaults(AbsScpiClientHandle handle,
+                                        unsigned int cells, int fault);
+
+/**
  * @brief Query a single cell's fault state.
  *
  * @param[in] handle SCPI client
@@ -863,6 +875,19 @@ int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
 int AbsScpiClient_SetAllAnalogOutputs(AbsScpiClientHandle handle,
                                       const float voltages[],
                                       unsigned int count);
+
+/**
+ * @brief Set multiple analog outputs to the same value.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] channels bitmask of channels to target, one bit per channel
+ * @param[in] voltage target output voltage
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetMultipleAnalogOutputs(AbsScpiClientHandle handle,
+                                           unsigned int channels,
+                                           float voltage);
 
 /**
  * @brief Query on analog output's set point.

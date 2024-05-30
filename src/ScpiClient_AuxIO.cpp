@@ -21,6 +21,8 @@ namespace bci::abs {
 
 static constexpr unsigned int kDigitalOutputsMask =
     ((1U << kDigitalOutputCount) - 1);
+static constexpr unsigned int kAnalogOutputsMask =
+    ((1U << kAnalogOutputCount) - 1);
 
 static constexpr float kMaxAnalogOutVoltage = 10.0f;
 
@@ -83,6 +85,35 @@ ErrorCode ScpiClient::SetAllAnalogOutputs(
 ErrorCode ScpiClient::SetAllAnalogOutputs(
     const std::array<float, kAnalogOutputCount>& voltages) const {
   return SetAllAnalogOutputs(voltages.data(), voltages.size());
+}
+
+ErrorCode ScpiClient::SetMultipleAnalogOutputs(unsigned int channels,
+                                               float voltage) const {
+  voltage = std::clamp(voltage, -kMaxAnalogOutVoltage, kMaxAnalogOutVoltage);
+
+  channels &= kAnalogOutputsMask;
+  if (channels) {
+    if (channels == kAnalogOutputsMask) {
+      return SetAllAnalogOutputs(voltage);
+    }
+
+    std::array<unsigned int, kAnalogOutputCount> which_chans{};
+    std::size_t count{};
+    for (unsigned int i = 0; i < kAnalogOutputCount && channels;
+         ++i, channels >>= 1) {
+      if (channels & 1) {
+        which_chans[count++] = i + 1;
+      }
+    }
+
+    std::span chan_list{which_chans.data(), count};
+    char buf[64]{};
+    fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT {:.3f},(@{})\r\n",
+                     voltage, fmt::join(chan_list, ","));
+    return Send(buf);
+  }
+
+  return ec::kSuccess;
 }
 
 Result<float> ScpiClient::GetAnalogOutput(unsigned int channel) const {

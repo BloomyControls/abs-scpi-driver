@@ -498,6 +498,12 @@ int AbsScpiClient_SetAllCellFaults(AbsScpiClientHandle handle,
                  static_cast<std::size_t>(count));
 }
 
+int AbsScpiClient_SetMultipleCellFaults(AbsScpiClientHandle handle,
+                                        unsigned int cells, int fault) {
+  return WrapSet(&sc::SetMultipleCellFaults, handle, cells,
+                 static_cast<CellFault>(fault));
+}
+
 int AbsScpiClient_GetCellFault(AbsScpiClientHandle handle, unsigned int cell,
                                int* fault_out) {
   return WrapGet(&sc::GetCellFault, handle,
@@ -608,6 +614,12 @@ int AbsScpiClient_SetAllAnalogOutputs(AbsScpiClientHandle handle,
                                       unsigned int count) {
   return WrapSet(&sc::SetAllAnalogOutputs, handle, voltages,
                  static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_SetMultipleAnalogOutputs(AbsScpiClientHandle handle,
+                                           unsigned int channels,
+                                           float voltage) {
+  return WrapSet(&sc::SetMultipleAnalogOutputs, handle, channels, voltage);
 }
 
 int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,

@@ -653,6 +653,16 @@ class ScpiClient {
       const std::array<CellFault, kCellCount>& faults) const;
 
   /**
+   * @brief Set multiple cells to the same fault state.
+   *
+   * @param[in] cells bitmask of cells to target, one bit per cell
+   * @param[in] fault target fault state
+   *
+   * @return An error code.
+   */
+  ErrorCode SetMultipleCellFaults(unsigned int cells, CellFault fault) const;
+
+  /**
    * @brief Query a single cell's faulting state.
    *
    * @param[in] cell target cell index
@@ -1031,6 +1041,17 @@ class ScpiClient {
    */
   ErrorCode SetAllAnalogOutputs(
       const std::array<float, kAnalogOutputCount>& voltages) const;
+
+  /**
+   * @brief Set multiple analog outputs to the same value.
+   *
+   * @param[in] channels bitmask of channels to target, 1 bit per channel
+   * @param[in] voltage target voltage
+   *
+   * @return An error code.
+   */
+  ErrorCode SetMultipleAnalogOutputs(unsigned int channels,
+                                     float voltage) const;
 
   /**
    * @brief Query a single analog output's voltage.

@@ -553,6 +553,37 @@ ErrorCode ScpiClient::SetAllCellFaults(
   return SetAllCellFaults(faults.data(), faults.size());
 }
 
+ErrorCode ScpiClient::SetMultipleCellFaults(unsigned int cells,
+                                            CellFault fault) const {
+  cells &= kCellsMask;
+  if (cells) {
+    if (cells == kCellsMask) {
+      return SetAllCellFaults(fault);
+    }
+
+    std::array<unsigned int, kCellCount> which_cells{};
+    std::size_t count{};
+    for (unsigned int i = 0; i < kCellCount && cells; ++i, cells >>= 1) {
+      if (cells & 1) {
+        which_cells[count++] = i + 1;
+      }
+    }
+
+    auto fstr = scpi::CellFaultMnemonic(fault);
+    if (fstr.empty()) {
+      return ec::kInvalidFaultType;
+    }
+
+    std::span chan_list{which_cells.data(), count};
+    char buf[64]{};
+    fmt::format_to_n(buf, sizeof(buf) - 1, "OUTP:FAUL {},(@{})\r\n", fstr,
+                     fmt::join(chan_list, ","));
+    return Send(buf);
+  }
+
+  return ec::kSuccess;
+}
+
 Result<CellFault> ScpiClient::GetCellFault(unsigned int cell) const {
   if (cell >= kCellCount) {
     return Err(ec::kChannelIndexOutOfRange);
