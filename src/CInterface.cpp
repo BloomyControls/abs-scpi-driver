@@ -292,7 +292,7 @@ int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
                  CharsView(addr->netmask));
 }
 
-int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle, char* buf,
+int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle, char buf[],
                                      unsigned int len) try {
   if (!buf || len == 0) {
     return static_cast<int>(ec::kInvalidArgument);
@@ -324,7 +324,7 @@ int AbsScpiClient_GetErrorCount(AbsScpiClientHandle handle, int* count_out) {
 }
 
 int AbsScpiClient_GetNextError(AbsScpiClientHandle handle,
-                               int16_t* err_code_out, char* msg_buf,
+                               int16_t* err_code_out, char msg_buf[],
                                unsigned int msg_buf_len) try {
   if (!err_code_out || !msg_buf || msg_buf_len == 0) {
     return static_cast<int>(ec::kInvalidArgument);
