@@ -4,6 +4,14 @@ project(absscpi VERSION 1.0.0)
 
 option(ABSSCPI_INSTALL "Enable install" ON)
 
+if(ABSSCPI_STATIC)
+  set(ABSSCPI_LIB_TYPE STATIC)
+elseif(BUILD_SHARED_LIBS)
+  set(ABSSCPI_LIB_TYPE SHARED)
+else()
+  set(ABSSCPI_LIB_TYPE STATIC)
+endif()
+
 include(FetchContent)
 
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
@@ -60,7 +68,7 @@ FetchContent_MakeAvailable(fast_float)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
-add_library(absscpi
+add_library(absscpi ${ABSSCPI_LIB_TYPE}
   src/TcpDriver.cpp
   src/UdpDriver.cpp
   src/UdpMulticastDriver.cpp
@@ -78,7 +86,9 @@ add_library(abs::scpi ALIAS absscpi)
 
 set_target_properties(absscpi PROPERTIES
   VERSION ${PROJECT_VERSION}
-  SOVERSION ${PROJECT_VERSION_MAJOR})
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  POSITION_INDEPENDENT_CODE ON
+)
 
 target_compile_features(absscpi PUBLIC cxx_std_20)
 
