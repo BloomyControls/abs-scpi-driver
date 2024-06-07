@@ -10,6 +10,7 @@
 #include <fmt/ranges.h>
 
 #include <array>
+#include <iterator>
 #include <span>
 #include <string>
 #include <string_view>
@@ -130,8 +131,8 @@ ErrorCode ScpiClient::SetAllCellVoltages(const float* voltages,
   // try to do only one allocation
   buf.reserve(count * 19 + 2);
   for (std::size_t i = 0; i < count; ++i) {
-    buf += fmt::format(":SOUR{}:VOLT {:.4f};", i + 1,
-                       std::clamp(voltages[i], 0.0f, kMaxVoltage));
+    fmt::format_to(std::back_inserter(buf), ":SOUR{}:VOLT {:.4f};", i + 1,
+                   std::clamp(voltages[i], 0.0f, kMaxVoltage));
   }
   buf += "\r\n";
 
@@ -263,8 +264,8 @@ ErrorCode ScpiClient::SetAllCellSourcing(const float* limits,
   // try to do only one allocation
   buf.reserve(count * 23 + 2);
   for (std::size_t i = 0; i < count; ++i) {
-    buf += fmt::format(":SOUR{}:CURR:SRC {:.4f};", i + 1,
-                       std::clamp(limits[i], 0.0f, kMaxSourcing));
+    fmt::format_to(std::back_inserter(buf), ":SOUR{}:CURR:SRC {:.4f};", i + 1,
+                   std::clamp(limits[i], 0.0f, kMaxSourcing));
   }
   buf += "\r\n";
 
@@ -395,8 +396,8 @@ ErrorCode ScpiClient::SetAllCellSinking(const float* limits,
   // try to do only one allocation
   buf.reserve(count * 23 + 2);
   for (std::size_t i = 0; i < count; ++i) {
-    buf += fmt::format(":SOUR{}:CURR:SNK {:.4f};", i + 1,
-                       std::clamp(limits[i], -kMaxSinking, kMaxSinking));
+    fmt::format_to(std::back_inserter(buf), ":SOUR{}:CURR:SNK {:.4f};", i + 1,
+                   std::clamp(limits[i], -kMaxSinking, kMaxSinking));
   }
   buf += "\r\n";
 
@@ -536,7 +537,7 @@ ErrorCode ScpiClient::SetAllCellFaults(const CellFault* faults,
     if (fstr.empty()) {
       return ec::kInvalidFaultType;
     }
-    buf += fmt::format(":OUTP{}:FAUL {};", i + 1, fstr);
+    fmt::format_to(std::back_inserter(buf), ":OUTP{}:FAUL {};", i + 1, fstr);
   }
   buf += "\r\n";
 
@@ -680,7 +681,7 @@ ErrorCode ScpiClient::SetAllCellSenseRanges(const CellSenseRange* ranges,
     if (rstr.empty()) {
       return ec::kInvalidSenseRange;
     }
-    buf += fmt::format(":SENS{}:RANG {};", i + 1, rstr);
+    fmt::format_to(std::back_inserter(buf), ":SENS{}:RANG {};", i + 1, rstr);
   }
   buf += "\r\n";
 

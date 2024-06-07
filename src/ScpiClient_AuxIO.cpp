@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <array>
+#include <iterator>
 #include <span>
 #include <string_view>
 
@@ -68,8 +69,8 @@ ErrorCode ScpiClient::SetAllAnalogOutputs(const float* voltages,
   // try to do only one allocation
   buf.reserve(count * 21 + 2);
   for (std::size_t i = 0; i < count; ++i) {
-    buf += fmt::format(
-        ":SOUR:AUX:OUT{} {:.3f};", i + 1,
+    fmt::format_to(
+        std::back_inserter(buf), ":SOUR:AUX:OUT{} {:.3f};", i + 1,
         std::clamp(voltages[i], -kMaxAnalogOutVoltage, kMaxAnalogOutVoltage));
   }
   buf += "\r\n";
