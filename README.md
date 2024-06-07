@@ -14,6 +14,7 @@ C/C++ driver for communicating with a Bloomy Controls Advanced Battery Simulator
 - Exception-less error handling (see below)
 - C wrapper (`include/bci/abs/CInterface.h`) for use in C and other languages
 - Easy inclusion in CMake projects
+- [Python bindings](https://github.com/BloomyControls/abs-scpi-driver-python)
 
 > [!NOTE]
 > Exceptions are not handled internally unless it is necessary to do so. Any
