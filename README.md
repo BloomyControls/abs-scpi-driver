@@ -11,13 +11,14 @@ C/C++ driver for communicating with a Bloomy Controls Advanced Battery Simulator
 - Implements all SCPI commands and queries supported by the ABS
 - Automatic device discovery over UDP multicast and RS-485 to quickly find and
   identify devices
-- Exception-less error handling\*
+- Exception-less error handling (see below)
 - C wrapper (`include/bci/abs/CInterface.h`) for use in C and other languages
 - Easy inclusion in CMake projects
 
-\* Exceptions are not handled internally unless it is necessary to do so. Any
-exceptions thrown by this library are considered critical exceptional
-situations, such as a failure to allocate memory.
+> [!NOTE]
+> Exceptions are not handled internally unless it is necessary to do so. Any
+> exceptions thrown by this library are considered critical exceptional
+> situations, such as a failure to allocate memory.
 
 ## Example Usage (C++)
 
