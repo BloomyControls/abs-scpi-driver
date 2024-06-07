@@ -5,6 +5,10 @@
  * found in the LICENSE file or at https://opensource.org/license/BSD-3-Clause
  */
 
+/**
+ * @file
+ * Primary SCPI client declaration.
+ */
 #ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_SCPICLIENT_H
 #define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_SCPICLIENT_H
 
@@ -17,6 +21,16 @@
 
 #include "CommDriver.h"
 #include "CommonTypes.h"
+
+// These comments make sure doxygen generates docs properly.
+/**
+ * @namespace bci
+ * @brief Bloomy Controls root namespace.
+ */
+/**
+ * @namespace bci::abs
+ * @brief Contains ABS-related code.
+ */
 
 namespace bci::abs {
 
@@ -105,7 +119,10 @@ class ScpiClient {
    */
   Result<unsigned int> GetTargetDeviceID() const;
 
-  /* System */
+  /**
+   * @name System Control
+   */
+  ///@{
 
   /**
    * @brief Query general information about the unit.
@@ -206,7 +223,12 @@ class ScpiClient {
    */
   ErrorCode Reboot() const;
 
-  /* Cells */
+  ///@}
+
+  /**
+   * @name Cell Control
+   */
+  ///@{
 
   /**
    * @brief Enable or disable a single cell.
@@ -987,7 +1009,12 @@ class ScpiClient {
    */
   ErrorCode GetAllCellOperatingModes(std::span<CellMode> modes) const;
 
-  /* Aux IO */
+  ///@}
+
+  /**
+   * @name Aux IO Control
+   */
+  ///@{
 
   /**
    * @brief Set a single analog output.
@@ -1248,7 +1275,12 @@ class ScpiClient {
    */
   Result<unsigned int> MeasureAllDigitalInputsMasked() const;
 
-  /* Modeling */
+  ///@}
+
+  /**
+   * @name Model Control
+   */
+  ///@{
 
   /**
    * @brief Query the model status.
@@ -1552,6 +1584,8 @@ class ScpiClient {
    * @return An error code.
    */
   ErrorCode GetAllModelOutputs(std::span<ModelOutputPair> pairs) const;
+
+  ///@}
 
  protected:
   /**

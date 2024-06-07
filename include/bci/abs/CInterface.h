@@ -5,18 +5,34 @@
  * found in the LICENSE file or at https://opensource.org/license/BSD-3-Clause
  */
 
+/**
+ * @file
+ * @brief C-style interface to the library.
+ */
 #ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_CINTERFACE_H
 #define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_CINTERFACE_H
 
 #include <stdbool.h>
 #include <stdint.h>
 
+/**
+ * @defgroup CInterface C Interface
+ *
+ * This interface provides a wrapper around the C++ library for use in C and
+ * other languages.
+ *
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-/* SCPI Driver Error Codes */
-
+/**
+ * @defgroup CErrors Error Codes
+ * Error codes returned by the SCPI driver functions.
+ * @{
+ */
 /// Success (no error)
 #define ABS_SCPI_ERR_SUCCESS (0)
 /// Channel index out of range
@@ -69,29 +85,17 @@ extern "C" {
 #define ABS_SCPI_ERR_ALLOCATION_FAILED (-24)
 /// Unexpected exception
 #define ABS_SCPI_ERR_UNEXPECTED_EXCEPTION (-25)
+/** @} */
 
-/* Cell Indices and Bit Masks */
-
-#define ABS_CELL_1 0
-#define ABS_CELL_2 1
-#define ABS_CELL_3 2
-#define ABS_CELL_4 3
-#define ABS_CELL_5 4
-#define ABS_CELL_6 5
-#define ABS_CELL_7 6
-#define ABS_CELL_8 7
-
-#define ABS_CELL_1_MASK (1U << 0)
-#define ABS_CELL_2_MASK (1U << 1)
-#define ABS_CELL_3_MASK (1U << 2)
-#define ABS_CELL_4_MASK (1U << 3)
-#define ABS_CELL_5_MASK (1U << 4)
-#define ABS_CELL_6_MASK (1U << 5)
-#define ABS_CELL_7_MASK (1U << 6)
-#define ABS_CELL_8_MASK (1U << 7)
-
-/* Cell Fault Modes */
-
+/**
+ * @addtogroup CCells
+ * @{
+ */
+/**
+ * @defgroup CellFaults Cell Faults
+ * Cell faulting states constants.
+ * @{
+ */
 /// No fault
 #define ABS_CELL_FAULT_NONE 0
 /// Open circuit fault
@@ -100,26 +104,40 @@ extern "C" {
 #define ABS_CELL_FAULT_SHORT 2
 /// Polarity fault
 #define ABS_CELL_FAULT_POLARITY 3
+/** @} */
 
-/* Cell Current Sense Ranges */
-
+/**
+ * @defgroup SenseRanges Cell Current Sense Ranges
+ * Cell sense range constants.
+ * @{
+ */
 /// Automatic based on current limits (default)
 #define ABS_CELL_SENSE_RANGE_AUTO 0
 /// Low range (1A)
 #define ABS_CELL_SENSE_RANGE_1A 1
 /// High range (5A)
 #define ABS_CELL_SENSE_RANGE_5A 2
+/** @} */
 
-/* Cell Operating Modes */
-
+/**
+ * @defgroup CellModes Cell Operating Modes
+ * Cell operating mode constants.
+ * @{
+ */
 /// Constant voltage (normal)
 #define ABS_CELL_MODE_CV 0
 /// Current limited
 #define ABS_CELL_MODE_ILIM 1
+/** @} */
+/** @} */
 
 /// ABS SCPI client handle.
 typedef void* AbsScpiClientHandle;
 
+/**
+ * @addtogroup CSystem
+ * @{
+ */
 /// ABS device information structure. All strings are guaranteed to be
 /// null-terminated.
 typedef struct AbsDeviceInfo {
@@ -134,7 +152,12 @@ typedef struct AbsEthernetConfig {
   char ip[32];       ///< IP address.
   char netmask[32];  ///< Subnet mask.
 } AbsEthernetConfig;
+/** @} */
 
+/**
+ * @addtogroup CDisc
+ * @{
+ */
 /// ABS Ethernet discovery result. All strings are guaranteed to be
 /// null-terminated.
 typedef struct AbsEthernetDiscoveryResult {
@@ -148,6 +171,7 @@ typedef struct AbsSerialDiscoveryResult {
   uint8_t id;        ///< IP address.
   char serial[128];  ///< Serial number.
 } AbsSerialDiscoveryResult;
+/** @} */
 
 /**
  * @brief Get an error message to describe an error code returned by the driver.
@@ -249,6 +273,13 @@ int AbsScpiClient_SetTargetDeviceId(AbsScpiClientHandle handle,
  */
 int AbsScpiClient_GetTargetDeviceId(AbsScpiClientHandle handle,
                                     unsigned int* device_id_out);
+
+/**
+ * @defgroup CSystem System Control
+ * Functions for controlling the system, such as querying device info and
+ * updating the IP address.
+ * @{
+ */
 
 /**
  * @brief Query basic information about the unit.
@@ -392,6 +423,14 @@ int AbsScpiClient_ClearRecoverableAlarms(AbsScpiClientHandle handle);
  * @return 0 on success or a negative error code.
  */
 int AbsScpiClient_Reboot(AbsScpiClientHandle handle);
+
+/** @} */
+
+/**
+ * @defgroup CCells Cell Control
+ * Functions for controlling and measuring the cells.
+ * @{
+ */
 
 /**
  * @brief Enable a single cell.
@@ -850,6 +889,14 @@ int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
 int AbsScpiClient_GetAllCellOperatingModes(AbsScpiClientHandle handle,
                                            int modes_out[], unsigned int count);
 
+/** @} */
+
+/**
+ * @defgroup CAux Aux IO Control
+ * Functions for controlling auxiliary analog and digital IO.
+ * @{
+ */
+
 /**
  * @brief Set a single analog output's voltage.
  *
@@ -1011,6 +1058,14 @@ int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
 int AbsScpiClient_MeasureAllDigitalInputs(AbsScpiClientHandle handle,
                                           unsigned int* levels_out);
 
+/** @} */
+
+/**
+ * @defgroup CDisc Device Discovery
+ * Functions for discovering ABSes on the network.
+ * @{
+ */
+
 /**
  * @brief Use UDP multicast to discover ABSes on the network.
  *
@@ -1061,6 +1116,10 @@ int AbsScpiClient_SerialDiscovery(const char* port, uint8_t first_id,
                                   uint8_t last_id,
                                   AbsSerialDiscoveryResult results_out[],
                                   unsigned int* count);
+
+/** @} */
+
+/** @} */
 
 #ifdef __cplusplus
 }

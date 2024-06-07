@@ -31,7 +31,7 @@ Note that the UDP driver's `Open()` function also has an overload which takes
 the local IP address to bind to. If you have multiple NICs, you probably want to
 use this option.
 
-```c++
+```cpp
 #include <bci/abs/ScpiClient.h>
 #include <bci/abs/UdpDriver.h>
 

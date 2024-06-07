@@ -5,6 +5,10 @@
  * found in the LICENSE file or at https://opensource.org/license/BSD-3-Clause
  */
 
+/**
+ * @file
+ * @brief Defines common types for use with the SCPI client.
+ */
 #ifndef ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H
 #define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H
 
