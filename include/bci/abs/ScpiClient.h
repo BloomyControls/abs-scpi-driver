@@ -1248,6 +1248,311 @@ class ScpiClient {
    */
   Result<unsigned int> MeasureAllDigitalInputsMasked() const;
 
+  /* Modeling */
+
+  /**
+   * @brief Query the model status.
+   *
+   * @return Result containing the model status bitmask or an error code.
+   */
+  Result<std::uint8_t> GetModelStatus() const;
+
+  /**
+   * @brief Load the model configuration on the device.
+   *
+   * @return An error code.
+   */
+  ErrorCode LoadModel() const;
+
+  /**
+   * @brief Start modeling.
+   *
+   * @return An error code.
+   */
+  ErrorCode StartModel() const;
+
+  /**
+   * @brief Stop modeling.
+   *
+   * @return An error code.
+   */
+  ErrorCode StopModel() const;
+
+  /**
+   * @brief Unload the model configuration on the device.
+   *
+   * @return An error code.
+   */
+  ErrorCode UnloadModel() const;
+
+  /**
+   * @brief Query information about the currently loaded model.
+   *
+   * @return Result containing information about the model or an error code.
+   */
+  Result<ModelInfo> GetModelInfo() const;
+
+  /**
+   * @brief Set a global model input.
+   *
+   * @param[in] index input index, 0-7
+   * @param[in] value input value
+   *
+   * @return An error code.
+   */
+  ErrorCode SetGlobalModelInput(unsigned int index, float value) const;
+
+  /**
+   * @brief Set all global model inputs to the same value.
+   *
+   * @param[in] value the input value
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllGlobalModelInputs(float value) const;
+
+  /**
+   * @brief Set many global model inputs.
+   *
+   * @note It is recommended that the array and span overloads be preferred over
+   * this overload whenever possible.
+   *
+   * @param[in] values array of values, one per input
+   * @param[in] count length of the array (must not be greater than the total
+   * number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllGlobalModelInputs(const float* values,
+                                    std::size_t count) const;
+
+  /**
+   * @brief Set many global model inputs.
+   *
+   * @param[in] values array of values, one per input (must not be longer than
+   * the total number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllGlobalModelInputs(std::span<const float> values) const;
+
+  /**
+   * @brief Set all global model inputs.
+   *
+   * @param[in] values array of values, one per input
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllGlobalModelInputs(
+      const std::array<float, kGlobalModelInputCount>& values) const;
+
+  /**
+   * @brief Query a single global model input.
+   *
+   * @param[in] index index of the input, 0-7
+   *
+   * @return Result containing the value of the input or an error code.
+   */
+  Result<float> GetGlobalModelInput(unsigned int index) const;
+
+  /**
+   * @brief Query all global model inputs.
+   *
+   * @return Result containing the array of values or an error code.
+   */
+  Result<std::array<float, kGlobalModelInputCount>> GetAllGlobalModelInputs()
+      const;
+
+  /**
+   * @brief Query many global model inputs.
+   *
+   * @note It is recommended that the array and span overloads be preferred over
+   * this overload whenever possible.
+   *
+   * @param[out] values array to store the values, one per input
+   * @param[in] count length of the array (must not be more than the total
+   * number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllGlobalModelInputs(float* values, std::size_t count) const;
+
+  /**
+   * @brief Query all global model inputs.
+   *
+   * @param[out] values array of returned values, one per input
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllGlobalModelInputs(
+      std::array<float, kGlobalModelInputCount>& values) const;
+
+  /**
+   * @brief Query many global model inputs.
+   *
+   * @param[out] values array of returned values, one per input (must not be
+   * longer than the total number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllGlobalModelInputs(std::span<float> values) const;
+
+  /**
+   * @brief Set a local model input.
+   *
+   * @param[in] index input index, 0-7
+   * @param[in] value input value
+   *
+   * @return An error code.
+   */
+  ErrorCode SetLocalModelInput(unsigned int index, float value) const;
+
+  /**
+   * @brief Set all local model inputs to the same value.
+   *
+   * @param[in] value the input value
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllLocalModelInputs(float value) const;
+
+  /**
+   * @brief Set many local model inputs.
+   *
+   * @note It is recommended that the array and span overloads be preferred over
+   * this overload whenever possible.
+   *
+   * @param[in] values array of values, one per input
+   * @param[in] count length of the array (must not be greater than the total
+   * number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllLocalModelInputs(const float* values,
+                                   std::size_t count) const;
+
+  /**
+   * @brief Set many local model inputs.
+   *
+   * @param[in] values array of values, one per input (must not be longer than
+   * the total number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllLocalModelInputs(std::span<const float> values) const;
+
+  /**
+   * @brief Set all local model inputs.
+   *
+   * @param[in] values array of values, one per input
+   *
+   * @return An error code.
+   */
+  ErrorCode SetAllLocalModelInputs(
+      const std::array<float, kLocalModelInputCount>& values) const;
+
+  /**
+   * @brief Query a single local model input.
+   *
+   * @param[in] index index of the input, 0-7
+   *
+   * @return Result containing the value of the input or an error code.
+   */
+  Result<float> GetLocalModelInput(unsigned int index) const;
+
+  /**
+   * @brief Query all local model inputs.
+   *
+   * @return Result containing the array of values or an error code.
+   */
+  Result<std::array<float, kLocalModelInputCount>> GetAllLocalModelInputs()
+      const;
+
+  /**
+   * @brief Query many local model inputs.
+   *
+   * @note It is recommended that the array and span overloads be preferred over
+   * this overload whenever possible.
+   *
+   * @param[out] values array to store the values, one per input
+   * @param[in] count length of the array (must not be more than the total
+   * number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllLocalModelInputs(float* values, std::size_t count) const;
+
+  /**
+   * @brief Query all local model inputs.
+   *
+   * @param[out] values array of returned values, one per input
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllLocalModelInputs(
+      std::array<float, kLocalModelInputCount>& values) const;
+
+  /**
+   * @brief Query many local model inputs.
+   *
+   * @param[out] values array of returned values, one per input (must not be
+   * longer than the total number of inputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllLocalModelInputs(std::span<float> values) const;
+
+  /**
+   * @brief Query a single model output pair.
+   *
+   * @param[in] index index of the output, 0-17
+   *
+   * @return Result containing the output values or an error code.
+   */
+  Result<ModelOutputPair> GetModelOutput(unsigned int index) const;
+
+  /**
+   * @brief Query all model output pairs.
+   *
+   * @return Result containing the output pairs or an error code.
+   */
+  Result<std::array<ModelOutputPair, kModelOutputCount>> GetAllModelOutputs()
+      const;
+
+  /**
+   * @brief Query many model output pairs.
+   *
+   * @note It is recommended that the array and span overloads be preferred over
+   * this overload whenever possible.
+   *
+   * @param[out] pairs array of returned model output pairs, one per channel
+   * @param[in] count length of the array (must not be greater than the total
+   * number of outputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllModelOutputs(ModelOutputPair* pairs, std::size_t count) const;
+
+  /**
+   * @brief Query all model output pairs.
+   *
+   * @param[out] pairs array of returned pairs, one per output
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllModelOutputs(
+      std::array<ModelOutputPair, kModelOutputCount>& pairs) const;
+
+  /**
+   * @brief Query many model output pairs.
+   *
+   * @param[out] pairs array of returned pairs, one per output (must not be
+   * longer than the total number of outputs)
+   *
+   * @return An error code.
+   */
+  ErrorCode GetAllModelOutputs(std::span<ModelOutputPair> pairs) const;
+
  protected:
   /**
    * @brief Send a message to the ABS. Checks for driver validity.

@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <string>
+#include <utility>
 
 #include "util/expected.hpp"
 
@@ -25,6 +26,12 @@ inline constexpr unsigned int kAnalogOutputCount = 8U;
 inline constexpr unsigned int kDigitalInputCount = 4U;
 /// Total digital output count.
 inline constexpr unsigned int kDigitalOutputCount = 4U;
+/// Total global model input count.
+inline constexpr unsigned int kGlobalModelInputCount = 8U;
+/// Total local model input count.
+inline constexpr unsigned int kLocalModelInputCount = 8U;
+/// Total model output count (in pairs).
+inline constexpr unsigned int kModelOutputCount = 18U;
 
 /// Cell fault states.
 enum class CellFault : int {
@@ -100,6 +107,29 @@ inline constexpr std::uint32_t kFan4Fault = 0x010000;
 inline constexpr std::uint32_t kHardwareFault = 0x020000;
 
 }  // namespace alarms
+
+/// Information about a model.
+struct ModelInfo {
+  std::string name;     ///< Name of the model.
+  std::string version;  ///< Version of the model.
+};
+
+/// A pair representing the two values contained in a model output channel.
+using ModelOutputPair = std::pair<float, float>;
+
+/// Bits for interpreting the model status.
+namespace model_status {
+
+/// The model is running.
+inline constexpr std::uint8_t kRunning = 0x01;
+
+/// The model is loaded.
+inline constexpr std::uint8_t kLoaded = 0x02;
+
+/// The model has errored.
+inline constexpr std::uint8_t kErrored = 0x04;
+
+}  // namespace model_status
 
 /// Error codes returned by driver functions.
 /// @note These values must match the macros in CInterface.h!

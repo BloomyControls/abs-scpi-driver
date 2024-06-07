@@ -78,6 +78,7 @@ add_library(absscpi ${ABSSCPI_LIB_TYPE}
   src/ScpiClient_System.cpp
   src/ScpiClient_Cells.cpp
   src/ScpiClient_AuxIO.cpp
+  src/ScpiClient_Modeling.cpp
   src/Discovery.cpp
   src/Errors.cpp
   src/CInterface.cpp
