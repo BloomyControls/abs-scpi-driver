@@ -39,8 +39,8 @@ ErrorCode ScpiClient::SetAnalogOutput(unsigned int channel,
   voltage = std::clamp(voltage, -kMaxAnalogOutVoltage, kMaxAnalogOutVoltage);
 
   char buf[64]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT{} {:.3f}\r\n",
-                   channel + 1, voltage);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AOUT{} {:.3f}\r\n", channel + 1,
+                   voltage);
 
   return Send(buf);
 }
@@ -49,8 +49,8 @@ ErrorCode ScpiClient::SetAllAnalogOutputs(float voltage) const {
   voltage = std::clamp(voltage, -kMaxAnalogOutVoltage, kMaxAnalogOutVoltage);
 
   char buf[64]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT {:.3f},(@1:{})\r\n",
-                   voltage, kAnalogOutputCount);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AOUT {:.3f},(@1:{})\r\n", voltage,
+                   kAnalogOutputCount);
 
   return Send(buf);
 }
@@ -70,7 +70,7 @@ ErrorCode ScpiClient::SetAllAnalogOutputs(const float* voltages,
   buf.reserve(count * 21 + 2);
   for (std::size_t i = 0; i < count; ++i) {
     fmt::format_to(
-        std::back_inserter(buf), ":SOUR:AUX:OUT{} {:.3f};", i + 1,
+        std::back_inserter(buf), ":AUX:AOUT{} {:.3f};", i + 1,
         std::clamp(voltages[i], -kMaxAnalogOutVoltage, kMaxAnalogOutVoltage));
   }
   buf += "\r\n";
@@ -109,8 +109,8 @@ ErrorCode ScpiClient::SetMultipleAnalogOutputs(unsigned int channels,
 
     std::span chan_list{which_chans.data(), count};
     char buf[64]{};
-    fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT {:.3f},(@{})\r\n",
-                     voltage, fmt::join(chan_list, ","));
+    fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AOUT {:.3f},(@{})\r\n", voltage,
+                     fmt::join(chan_list, ","));
     return Send(buf);
   }
 
@@ -123,7 +123,7 @@ Result<float> ScpiClient::GetAnalogOutput(unsigned int channel) const {
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT{}?\r\n", channel + 1);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AOUT{}?\r\n", channel + 1);
 
   return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
@@ -131,7 +131,7 @@ Result<float> ScpiClient::GetAnalogOutput(unsigned int channel) const {
 Result<std::array<float, kAnalogOutputCount>> ScpiClient::GetAllAnalogOutputs()
     const {
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT? (@1:{})\r\n",
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AOUT? (@1:{})\r\n",
                    kAnalogOutputCount);
   return SendAndRecv(buf).and_then(
       scpi::ParseRespFloatArray<kAnalogOutputCount>);
@@ -148,7 +148,7 @@ ErrorCode ScpiClient::GetAllAnalogOutputs(float* voltages,
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:AUX:OUT? (@1:{})\r\n", count);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AOUT? (@1:{})\r\n", count);
 
   auto resp = SendAndRecv(buf);
   if (!resp) {
@@ -173,16 +173,16 @@ ErrorCode ScpiClient::SetDigitalOutput(unsigned int channel, bool level) const {
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:DAUX:OUT{} {:d}\r\n",
-                   channel + 1, level);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:DOUT{} {:d}\r\n", channel + 1,
+                   level);
 
   return Send(buf);
 }
 
 ErrorCode ScpiClient::SetAllDigitalOutputs(bool level) const {
   char buf[64]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:DAUX:OUT {:d},(@1:{})\r\n",
-                   level, kDigitalOutputCount);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:DOUT {:d},(@1:{})\r\n", level,
+                   kDigitalOutputCount);
   return Send(buf);
 }
 
@@ -202,8 +202,8 @@ ErrorCode ScpiClient::SetAllDigitalOutputsMasked(unsigned int channels,
     }
     std::span chan_list{which_chans.data(), count};
     char buf[64]{};
-    fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:DAUX:OUT {:d},(@{})\r\n",
-                     level, fmt::join(chan_list, ","));
+    fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:DOUT {:d},(@{})\r\n", level,
+                     fmt::join(chan_list, ","));
     return Send(buf);
   }
   return ec::kSuccess;
@@ -255,7 +255,7 @@ Result<bool> ScpiClient::GetDigitalOutput(unsigned int channel) const {
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:DAUX:OUT{}?\r\n", channel + 1);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:DOUT{}?\r\n", channel + 1);
 
   return SendAndRecv(buf).and_then(scpi::ParseBoolResponse);
 }
@@ -263,7 +263,7 @@ Result<bool> ScpiClient::GetDigitalOutput(unsigned int channel) const {
 Result<std::array<bool, kDigitalOutputCount>> ScpiClient::GetAllDigitalOutputs()
     const {
   char buf[64]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "SOUR:DAUX:OUT? (@1:{})\r\n",
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:DOUT? (@1:{})\r\n",
                    kDigitalOutputCount);
   return SendAndRecv(buf).and_then(
       scpi::ParseRespBoolArray<kDigitalOutputCount>);
@@ -291,7 +291,7 @@ Result<float> ScpiClient::MeasureAnalogInput(unsigned int channel) const {
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:AUX:IN{}?\r\n", channel + 1);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AIN{}?\r\n", channel + 1);
 
   return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
@@ -299,7 +299,7 @@ Result<float> ScpiClient::MeasureAnalogInput(unsigned int channel) const {
 Result<std::array<float, kAnalogInputCount>>
 ScpiClient::MeasureAllAnalogInputs() const {
   char buf[64]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:AUX:IN? (@1:{})\r\n",
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AIN? (@1:{})\r\n",
                    kAnalogInputCount);
   return SendAndRecv(buf).and_then(
       scpi::ParseRespFloatArray<kAnalogInputCount>);
@@ -316,7 +316,7 @@ ErrorCode ScpiClient::MeasureAllAnalogInputs(float* voltages,
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:AUX:IN? (@1:{})\r\n", count);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:AIN? (@1:{})\r\n", count);
 
   auto resp = SendAndRecv(buf);
   if (!resp) {
@@ -341,7 +341,7 @@ Result<bool> ScpiClient::MeasureDigitalInput(unsigned int channel) const {
   }
 
   char buf[32]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:DAUX:IN{}?\r\n", channel + 1);
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:DIN{}?\r\n", channel + 1);
 
   return SendAndRecv(buf).and_then(scpi::ParseBoolResponse);
 }
@@ -349,7 +349,7 @@ Result<bool> ScpiClient::MeasureDigitalInput(unsigned int channel) const {
 Result<std::array<bool, kDigitalInputCount>>
 ScpiClient::MeasureAllDigitalInputs() const {
   char buf[64]{};
-  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:DAUX:IN? (@1:{})\r\n",
+  fmt::format_to_n(buf, sizeof(buf) - 1, "AUX:DIN? (@1:{})\r\n",
                    kDigitalInputCount);
   return SendAndRecv(buf).and_then(
       scpi::ParseRespBoolArray<kDigitalInputCount>);
