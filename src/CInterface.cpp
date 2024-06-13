@@ -681,6 +681,152 @@ int AbsScpiClient_MeasureAllDigitalInputs(AbsScpiClientHandle handle,
   return WrapGet(&sc::MeasureAllDigitalInputsMasked, handle, levels_out);
 }
 
+int AbsScpiClient_GetModelStatus(AbsScpiClientHandle handle,
+                                 uint8_t* status_out) {
+  return WrapGet(&sc::GetModelStatus, handle, status_out);
+}
+
+int AbsScpiClient_LoadModel(AbsScpiClientHandle handle) {
+  return WrapSet(&sc::LoadModel, handle);
+}
+
+int AbsScpiClient_StartModel(AbsScpiClientHandle handle) {
+  return WrapSet(&sc::LoadModel, handle);
+}
+
+int AbsScpiClient_StopModel(AbsScpiClientHandle handle) {
+  return WrapSet(&sc::StopModel, handle);
+}
+
+int AbsScpiClient_UnloadModel(AbsScpiClientHandle handle) {
+  return WrapSet(&sc::UnloadModel, handle);
+}
+
+int AbsScpiClient_GetModelInfo(AbsScpiClientHandle handle,
+                               AbsModelInfo* model_info_out) try {
+  if (!handle || !model_info_out) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  *model_info_out = {};
+
+  auto info = GetClient(handle).GetModelInfo();
+  if (!info) {
+    return static_cast<int>(info.error());
+  }
+
+  auto&& [name, version] = *info;
+
+  name.copy(model_info_out->name, sizeof(model_info_out->name) - 1);
+  version.copy(model_info_out->version, sizeof(model_info_out->version) - 1);
+
+  return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
+}
+
+int AbsScpiClient_SetGlobalModelInput(AbsScpiClientHandle handle,
+                                      unsigned int index, float value) {
+  return WrapSet(&sc::SetGlobalModelInput, handle, index, value);
+}
+
+int AbsScpiClient_SetAllGlobalModelInputs(AbsScpiClientHandle handle,
+                                          const float values[],
+                                          unsigned int count) {
+  return WrapSet(&sc::SetAllGlobalModelInputs, handle, values,
+                 static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_GetGlobalModelInput(AbsScpiClientHandle handle,
+                                      unsigned int index, float* value_out) {
+  return WrapGet(&sc::GetGlobalModelInput, handle, value_out, index);
+}
+
+int AbsScpiClient_GetAllGlobalModelInputs(AbsScpiClientHandle handle,
+                                          float values_out[],
+                                          unsigned int count) {
+  return WrapGet(&sc::GetAllGlobalModelInputs, handle, values_out,
+                 static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_SetLocalModelInput(AbsScpiClientHandle handle,
+                                     unsigned int index, float value) {
+  return WrapSet(&sc::SetLocalModelInput, handle, index, value);
+}
+
+int AbsScpiClient_SetAllLocalModelInputs(AbsScpiClientHandle handle,
+                                         const float values[],
+                                         unsigned int count) {
+  return WrapSet(&sc::SetAllLocalModelInputs, handle, values,
+                 static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_GetLocalModelInput(AbsScpiClientHandle handle,
+                                     unsigned int index, float* value_out) {
+  return WrapGet(&sc::GetLocalModelInput, handle, value_out, index);
+}
+
+int AbsScpiClient_GetAllLocalModelInputs(AbsScpiClientHandle handle,
+                                         float values_out[],
+                                         unsigned int count) {
+  return WrapGet(&sc::GetAllLocalModelInputs, handle, values_out,
+                 static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_GetModelOutput(AbsScpiClientHandle handle, unsigned int index,
+                                 AbsModelOutputPair* pair_out) try {
+  if (!handle || !pair_out) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  auto pair = GetClient(handle).GetModelOutput(index);
+  if (!pair) {
+    return static_cast<int>(pair.error());
+  }
+
+  *pair_out = {pair->first, pair->second};
+
+  return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
+}
+
+int AbsScpiClient_GetAllModelOutputs(AbsScpiClientHandle handle,
+                                     AbsModelOutputPair pairs_out[],
+                                     unsigned int count) try {
+  if (!handle) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  if ((!pairs_out && count > 0) || count > kModelOutputCount) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  if (count == 0) {
+    return static_cast<int>(ec::kSuccess);
+  }
+
+  std::array<ModelOutputPair, kModelOutputCount> all_pairs{};
+  auto e = GetClient(handle).GetAllModelOutputs(all_pairs);
+  if (e != ec::kSuccess) {
+    return static_cast<int>(e);
+  }
+
+  for (unsigned int i = 0; i < count; ++i) {
+    pairs_out[i] = {all_pairs[i].first, all_pairs[i].second};
+  }
+
+  return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
+}
+
 int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
                                      AbsEthernetDiscoveryResult results_out[],
                                      unsigned int* count) try {

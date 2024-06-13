@@ -155,6 +155,30 @@ typedef struct AbsEthernetConfig {
 /** @} */
 
 /**
+ * @addtogroup CModeling
+ * @{
+ */
+/// Model is running.
+#define ABS_MODEL_STATUS_RUNNING (0x01)
+/// Model is loaded.
+#define ABS_MODEL_STATUS_LOADED (0x02)
+/// Model has errored.
+#define ABS_MODEL_STATUS_ERRORED (0x04)
+
+/// Information about a model. Strings are null-terminated.
+typedef struct AbsModelInfo {
+  char name[256];     ///< Model name.
+  char version[256];  ///< Model version.
+} AbsModelInfo;
+
+/// ABS model output pair.
+typedef struct AbsModelOutputPair {
+  float value_0;  ///< First value.
+  float value_1;  ///< Second value.
+} AbsModelOutputPair;
+/** @} */
+
+/**
  * @addtogroup CDisc
  * @{
  */
@@ -1057,6 +1081,206 @@ int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
  */
 int AbsScpiClient_MeasureAllDigitalInputs(AbsScpiClientHandle handle,
                                           unsigned int* levels_out);
+
+/** @} */
+
+/**
+ * @defgroup CModeling Model Control
+ * Model control functionality.
+ * @{
+ */
+
+/**
+ * @brief Query the model status.
+ *
+ * The ABS_MODEL_STATUS_* macros can be used to interpret the status.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] status_out pointer to the returned status bits
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetModelStatus(AbsScpiClientHandle handle,
+                                 uint8_t* status_out);
+
+/**
+ * @brief Load the model configuration on the device.
+ *
+ * @param[in] handle SCPI client
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_LoadModel(AbsScpiClientHandle handle);
+
+/**
+ * @brief Start modeling.
+ *
+ * @param[in] handle SCPI client
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_StartModel(AbsScpiClientHandle handle);
+
+/**
+ * @brief Stop modeling.
+ *
+ * @param[in] handle SCPI client
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_StopModel(AbsScpiClientHandle handle);
+
+/**
+ * @brief Unload the model configuration.
+ *
+ * @param[in] handle SCPI client
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_UnloadModel(AbsScpiClientHandle handle);
+
+/**
+ * @brief Query information about the loaded model.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] model_info_out pointer to the returned model info
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetModelInfo(AbsScpiClientHandle handle,
+                               AbsModelInfo* model_info_out);
+
+/**
+ * @brief Set a single global model input. Particularly useful with multicast to
+ * address multiple units at once.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] index input index, 0-7
+ * @param[in] value desired input value
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetGlobalModelInput(AbsScpiClientHandle handle,
+                                      unsigned int index, float value);
+
+/**
+ * @brief Set multiple global model inputs. Particularly useful with multicast
+ * to address multiple units at once.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] values array of values, one per input
+ * @param[in] count number of values to send (must not be greater than the total
+ * input count)
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetAllGlobalModelInputs(AbsScpiClientHandle handle,
+                                          const float values[],
+                                          unsigned int count);
+
+/**
+ * @brief Query the value of a single global model input.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] index index of the input, 0-7
+ * @param[out] value_out pointer to the returned value
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetGlobalModelInput(AbsScpiClientHandle handle,
+                                      unsigned int index, float* value_out);
+
+/**
+ * @brief Query the values of multiple global model inputs.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] values_out array of returned values, one per input
+ * @param[in] count length of the array (must not be longer than the total input
+ * count)
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetAllGlobalModelInputs(AbsScpiClientHandle handle,
+                                          float values_out[],
+                                          unsigned int count);
+
+/**
+ * @brief Set a single local model input.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] index input index, 0-7
+ * @param[in] value desired input value
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetLocalModelInput(AbsScpiClientHandle handle,
+                                     unsigned int index, float value);
+
+/**
+ * @brief Set multiple local model inputs.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] values array of values, one per input
+ * @param[in] count number of values to send (must not be greater than the total
+ * input count)
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_SetAllLocalModelInputs(AbsScpiClientHandle handle,
+                                         const float values[],
+                                         unsigned int count);
+
+/**
+ * @brief Query the value of a single local model input.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] index index of the input, 0-7
+ * @param[out] value_out pointer to the returned value
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetLocalModelInput(AbsScpiClientHandle handle,
+                                     unsigned int index, float* value_out);
+
+/**
+ * @brief Query the values of multiple local model inputs.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] values_out array of returned values, one per input
+ * @param[in] count length of the array (must not be longer than the total input
+ * count)
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetAllLocalModelInputs(AbsScpiClientHandle handle,
+                                         float values_out[],
+                                         unsigned int count);
+
+/**
+ * @brief Query a single pair of model outputs.
+ *
+ * @param[in] handle SCPI client
+ * @param[in] index output index, 0-17
+ * @param[out] pair_out pointer to the returned model output pair
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetModelOutput(AbsScpiClientHandle handle, unsigned int index,
+                                 AbsModelOutputPair* pair_out);
+
+/**
+ * @brief Query multiple model output pairs.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] pairs_out array of returned output pairs
+ * @param[in] count length of the array (must not be greater than the total
+ * model output count)
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetAllModelOutputs(AbsScpiClientHandle handle,
+                                     AbsModelOutputPair pairs_out[],
+                                     unsigned int count);
 
 /** @} */
 
