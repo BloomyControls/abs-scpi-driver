@@ -42,7 +42,7 @@ namespace bci::abs {
  *
  * Example usage (error handling omitted):
  * @code{.cpp}
- * auto driver{std::make_unique<bci::abs::drivers::UdpDriver>()};
+ * auto driver{std::make_shared<bci::abs::drivers::UdpDriver>()};
  * driver->Open("192.168.1.70");
  * ScpiClient client{driver};
  * client.SetCellVoltage(0, 1.35f);
