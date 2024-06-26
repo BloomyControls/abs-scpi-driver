@@ -154,6 +154,8 @@ if(ABSSCPI_INSTALL)
     "ABS SCPI driver C/C++ library and headers")
   set(CPACK_WIX_PROPERTY_ARPCOMMENTS "ABS SCPI Driver C/C++ Library")
   set(CPACK_WIX_PROPERTY_ARPURLINFOABOUT "${PROJECT_HOMEPAGE_URL}")
+  set(CPACK_WIX_UI_BANNER "${CMAKE_CURRENT_SOURCE_DIR}/img/installer_banner.jpg")
+  set(CPACK_WIX_UI_DIALOG "${CMAKE_CURRENT_SOURCE_DIR}/img/installer_dialog.jpg")
 
   include(CPack)
 
