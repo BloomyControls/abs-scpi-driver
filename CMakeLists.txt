@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(absscpi VERSION 1.0.0)
+project(absscpi
+  VERSION 1.0.0
+  DESCRIPTION "ABS SCPI driver library"
+  HOMEPAGE_URL "https://github.com/BloomyControls/abs-scpi-driver"
+)
 
 option(ABSSCPI_INSTALL "Enable install" ON)
 
@@ -126,10 +130,11 @@ if(ABSSCPI_INSTALL)
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+  # TODO: generate and install a CMake package config file
   include(InstallRequiredSystemLibraries)
   set(CPACK_PACKAGE_NAME "absscpi")
   set(CPACK_PACKAGE_VENDOR "Bloomy Controls, Inc.")
-  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
   set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
   set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
   install(FILES
@@ -140,5 +145,17 @@ if(ABSSCPI_INSTALL)
     EXCLUDE_FROM_ALL)
   set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
   set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
+
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "Bloomy Controls/absscpi")
+  set(CPACK_WIX_VERSION 3)
+  set(CPACK_WIX_UPGRADE_GUID "DF57E70F-C4C5-42E5-9047-44DC481FE555")
+  set(CPACK_WIX_ROOT_FEATURE_TITLE "ABS SCPI Drivers")
+  set(CPACK_WIX_ROOT_FEATURE_DESCRIPTION
+    "ABS SCPI driver C/C++ library and headers")
+  set(CPACK_WIX_PROPERTY_ARPCOMMENTS "ABS SCPI Driver C/C++ Library")
+  set(CPACK_WIX_PROPERTY_ARPURLINFOABOUT "${PROJECT_HOMEPAGE_URL}")
+
   include(CPack)
+
+  cpack_add_component(Metadata HIDDEN)
 endif()
