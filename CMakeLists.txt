@@ -131,6 +131,9 @@ if(ABSSCPI_INSTALL)
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
   # TODO: generate and install a CMake package config file
+  # TODO: have WIX also install this CMake package into the registry
+  # TODO: generate DEB packages
+  # TODO: there MUST be a better way to install the VC runtime...
   include(InstallRequiredSystemLibraries)
   set(CPACK_PACKAGE_NAME "absscpi")
   set(CPACK_PACKAGE_VENDOR "Bloomy Controls, Inc.")
