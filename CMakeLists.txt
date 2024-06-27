@@ -87,7 +87,7 @@ add_library(absscpi ${ABSSCPI_LIB_TYPE}
   src/Errors.cpp
   src/CInterface.cpp
 )
-add_library(abs::scpi ALIAS absscpi)
+add_library(bci::absscpi ALIAS absscpi)
 
 set_target_properties(absscpi PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -122,13 +122,36 @@ target_link_libraries(absscpi PRIVATE
 )
 
 if(ABSSCPI_INSTALL)
+  include(CMakePackageConfigHelpers)
+
+  set(targets_export_name "absscpi-targets")
+  set(version_config "${PROJECT_BINARY_DIR}/absscpi-config-version.cmake")
+  set(project_config "${PROJECT_BINARY_DIR}/absscpi-config.cmake")
+  set(absscpi_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/absscpi")
+
   install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/bci"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
   install(TARGETS absscpi
+    EXPORT ${targets_export_name}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+  write_basic_package_version_file(
+    ${version_config}
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion)
+
+  configure_package_config_file(
+    ${PROJECT_SOURCE_DIR}/cmake/absscpi-config.cmake.in
+    ${project_config}
+    INSTALL_DESTINATION ${absscpi_cmake_dir})
+
+  install(FILES ${project_config} ${version_config}
+    DESTINATION ${absscpi_cmake_dir})
+  install(EXPORT ${targets_export_name} DESTINATION ${absscpi_cmake_dir}
+    NAMESPACE bci::)
 
   # TODO: generate and install a CMake package config file
   # TODO: have WIX also install this CMake package into the registry

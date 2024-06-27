@@ -138,7 +138,7 @@ FetchContent_Declare(abs-driver
 )
 FetchContent_MakeAvailable(abs-driver)
 
-target_link_libraries(my_program PRIVATE abs::scpi)
+target_link_libraries(my_program PRIVATE bci::absscpi)
 ```
 
 ## Dependencies
