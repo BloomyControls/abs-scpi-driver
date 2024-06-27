@@ -106,7 +106,7 @@ else()
   endif()
 endif()
 
-if(ABSSCPI_INSTALL)
+if(ABSSCPI_INSTALL AND BUILD_SHARED_LIBS)
   include(GNUInstallDirs)
 endif()
 
@@ -121,7 +121,7 @@ target_link_libraries(absscpi PRIVATE
   ${BOOST_LIBS}
 )
 
-if(ABSSCPI_INSTALL)
+if(ABSSCPI_INSTALL AND BUILD_SHARED_LIBS)
   include(CMakePackageConfigHelpers)
 
   set(targets_export_name "absscpi-targets")
