@@ -130,13 +130,15 @@ if(ABSSCPI_INSTALL)
   set(absscpi_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/absscpi")
 
   install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/bci"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT devel)
 
   install(TARGETS absscpi
     EXPORT ${targets_export_name}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT libs)
 
   write_basic_package_version_file(
     ${version_config}
@@ -149,15 +151,13 @@ if(ABSSCPI_INSTALL)
     INSTALL_DESTINATION ${absscpi_cmake_dir})
 
   install(FILES ${project_config} ${version_config}
-    DESTINATION ${absscpi_cmake_dir})
+    DESTINATION ${absscpi_cmake_dir}
+    COMPONENT devel)
   install(EXPORT ${targets_export_name} DESTINATION ${absscpi_cmake_dir}
-    NAMESPACE bci::)
+    NAMESPACE bci::
+    COMPONENT devel)
 
-  # TODO: generate and install a CMake package config file
-  # TODO: have WIX also install this CMake package into the registry
   # TODO: generate DEB packages
-  # TODO: there MUST be a better way to install the VC runtime...
-  include(InstallRequiredSystemLibraries)
   set(CPACK_PACKAGE_NAME "absscpi")
   set(CPACK_PACKAGE_VENDOR "Bloomy Controls, Inc.")
   set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
@@ -175,15 +175,22 @@ if(ABSSCPI_INSTALL)
   set(CPACK_PACKAGE_INSTALL_DIRECTORY "Bloomy Controls/absscpi")
   set(CPACK_WIX_VERSION 3)
   set(CPACK_WIX_UPGRADE_GUID "DF57E70F-C4C5-42E5-9047-44DC481FE555")
-  set(CPACK_WIX_ROOT_FEATURE_TITLE "ABS SCPI Drivers")
+  set(CPACK_WIX_ROOT_FEATURE_TITLE "ABS SCPI Driver")
   set(CPACK_WIX_ROOT_FEATURE_DESCRIPTION
-    "ABS SCPI driver C/C++ library and headers")
+    "ABS SCPI driver C/C++ library and development files")
   set(CPACK_WIX_PROPERTY_ARPCOMMENTS "ABS SCPI Driver C/C++ Library")
   set(CPACK_WIX_PROPERTY_ARPURLINFOABOUT "${PROJECT_HOMEPAGE_URL}")
+  set(CPACK_WIX_CMAKE_PACKAGE_REGISTRY "absscpi")
   set(CPACK_WIX_UI_BANNER "${CMAKE_CURRENT_SOURCE_DIR}/img/installer_banner.jpg")
   set(CPACK_WIX_UI_DIALOG "${CMAKE_CURRENT_SOURCE_DIR}/img/installer_dialog.jpg")
 
   include(CPack)
 
   cpack_add_component(Metadata HIDDEN)
+  cpack_add_component(libs REQUIRED
+    DISPLAY_NAME "SCPI driver"
+    DESCRIPTION "C/C++ SCPI driver library")
+  cpack_add_component(devel
+    DISPLAY_NAME "Development files"
+    DESCRIPTION "Headers and CMake support files for developing software using the libraries")
 endif()
