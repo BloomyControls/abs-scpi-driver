@@ -66,7 +66,7 @@ class SerialDriver final : public CommDriver {
   /**
    * @brief Set the target device ID.
    *
-   * @param[in] id target device ID, 0-255 or 256+ to broadcast to all devices
+   * @param[in] id target device ID, 0-31 or 32+ to broadcast to all devices
    * on the bus
    */
   void SetDeviceID(unsigned int id);
@@ -80,7 +80,7 @@ class SerialDriver final : public CommDriver {
 
   /**
    * @brief Determine whether the port is send-only. This is true when the
-   * target device ID is 256+.
+   * target device ID is 32+.
    *
    * @return Whether the port is send-only.
    */

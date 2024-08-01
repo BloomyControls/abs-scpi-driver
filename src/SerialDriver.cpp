@@ -205,12 +205,12 @@ Result<std::string> SerialDriver::Impl::ReadLine(unsigned int timeout_ms) {
 }
 
 void SerialDriver::Impl::SetDeviceID(unsigned int id) {
-  dev_id_ = std::clamp(id, 0U, 255U);
+  dev_id_ = std::clamp(id, 0U, 32U);
 }
 
 unsigned int SerialDriver::Impl::GetDeviceID() const { return dev_id_; }
 
-bool SerialDriver::Impl::IsBroadcast() const { return dev_id_ > 255; }
+bool SerialDriver::Impl::IsBroadcast() const { return dev_id_ > 31; }
 
 void SerialDriver::Impl::CheckDeadline() {
   if (deadline_.expires_at() <= deadline_timer::traits_type::now()) {

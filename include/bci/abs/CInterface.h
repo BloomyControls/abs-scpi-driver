@@ -254,7 +254,7 @@ int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle, const char* target_ip);
  *
  * @param[in] handle SCPI client
  * @param[in] com_port the serial port to open, such as COM1 or /dev/ttyS0
- * @param[in] device_id target device ID, 0-255, or 256+ to broadcast to all
+ * @param[in] device_id target device ID, 0-31, or 32+ to broadcast to all
  * units on the bus
  *
  * @return 0 on success or a negative error code.
@@ -278,7 +278,7 @@ int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
  * connections.
  *
  * @param[in] handle SCPI client
- * @param[in] device_id target device ID, 0-255, or 256+ to broadcast to all
+ * @param[in] device_id target device ID, 0-31, or 32+ to broadcast to all
  * units on the bus
  *
  * @return 0 on success or a negative error code.
@@ -1318,17 +1318,15 @@ int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
  * during the call to this function.
  *
  * To discover serial devices, this function simply iterates through serial IDs
- * and waits for a response from each device. As this can be a slow process
- * (upwards of 15 seconds for the full address space), it's recommended to limit
- * the search range to the range devices are expected to be in.
+ * and waits for a response from each device.
  *
  * @note If the array is not big enough, this function will fill in as many
  * results as possible and return a buffer too small error. The output is still
  * valid in this case.
  *
  * @param[in] port serial port to use, such as COM1 or /dev/ttyS0
- * @param[in] first_id first serial ID to check, 0-255
- * @param[in] last_id last serial ID to check (inclusive), 0-255 (must not be
+ * @param[in] first_id first serial ID to check, 0-31
+ * @param[in] last_id last serial ID to check (inclusive), 0-31 (must not be
  * less than @a first_id)
  * @param[out] results_out array of serial discovery results
  * @param[in,out] count pointer to the length of the array; will be set to the

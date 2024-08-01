@@ -53,7 +53,7 @@ class CommDriver {
   /**
    * @brief Set the target device ID. Not implemented by most drivers.
    *
-   * @param[in] id the device's serial ID 0-255, or 256+ to broadcast to all
+   * @param[in] id the device's serial ID 0-31, or 32+ to broadcast to all
    * devices on the bus
    */
   virtual void SetDeviceID(unsigned int id) { static_cast<void>(id); }

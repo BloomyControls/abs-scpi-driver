@@ -107,7 +107,7 @@ class ScpiClient {
    * @brief Change the targeted device ID. This is currently only meaningful for
    * RS-485.
    *
-   * @param[in] id the serial ID in the range 0-255, or 256+ to target all
+   * @param[in] id the serial ID in the range 0-31, or 32+ to target all
    * devices on a bus
    *
    * @return An error code.

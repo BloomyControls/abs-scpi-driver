@@ -55,17 +55,11 @@ Result<EthernetDeviceList> MulticastDiscovery(std::string_view interface_ip);
  * @brief Discover any units on a serial bus.
  *
  * This function operates by sending an identification query to each address in
- * the specified range and enumerating all devices that reply. Because this is
- * much more time consuming than the multicast approach, it's recommended to
- * limit the range of ID searched to a range more relevant to a system. With
- * no units on the bus, a discovery of the full ID range 0-255 takes
- * approximately 15 seconds or more, though this may depend on the exact
- * hardware and operating system used. Checking 0-5 (6 addresses) took about
- * half a second on the same setup.
+ * the specified range and enumerating all devices that reply.
  *
  * @param[in] port serial port
- * @param[in] first_id first serial ID to query
- * @param[in] last_id last serial ID to query (inclusive)
+ * @param[in] first_id first serial ID to query, 0-31
+ * @param[in] last_id last serial ID to query, 0-31 (inclusive)
  *
  * @return Result containing a list of devices or an error code.
  */
