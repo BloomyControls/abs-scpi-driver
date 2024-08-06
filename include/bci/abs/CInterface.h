@@ -53,38 +53,36 @@ extern "C" {
 #define ABS_SCPI_ERR_READ_TIMED_OUT (-8)
 /// Not connected
 #define ABS_SCPI_ERR_NOT_CONNECTED (-9)
-/// Address resolution failed
-#define ABS_SCPI_ERR_ADDRESS_RESOLUTION_FAILED (-10)
 /// Invalid response from the unit
-#define ABS_SCPI_ERR_INVALID_RESPONSE (-11)
+#define ABS_SCPI_ERR_INVALID_RESPONSE (-10)
 /// Invalid fault type
-#define ABS_SCPI_ERR_INVALID_FAULT_TYPE (-12)
+#define ABS_SCPI_ERR_INVALID_FAULT_TYPE (-11)
 /// Invalid sense range
-#define ABS_SCPI_ERR_INVALID_SENSE_RANGE (-13)
+#define ABS_SCPI_ERR_INVALID_SENSE_RANGE (-12)
 /// Invalid argument
-#define ABS_SCPI_ERR_INVALID_ARGUMENT (-14)
+#define ABS_SCPI_ERR_INVALID_ARGUMENT (-13)
 /// Invalid driver handle
-#define ABS_SCPI_ERR_INVALID_DRIVER_HANDLE (-15)
+#define ABS_SCPI_ERR_INVALID_DRIVER_HANDLE (-14)
 /// Receive not allowed by driver
-#define ABS_SCPI_ERR_RECEIVE_NOT_ALLOWED (-16)
+#define ABS_SCPI_ERR_RECEIVE_NOT_ALLOWED (-15)
 /// Already connected
-#define ABS_SCPI_ERR_ALREADY_CONNECTED (-17)
+#define ABS_SCPI_ERR_ALREADY_CONNECTED (-16)
 /// Unexpected socket error
-#define ABS_SCPI_ERR_SOCKET_ERROR (-18)
+#define ABS_SCPI_ERR_SOCKET_ERROR (-17)
 /// Failed to bind socket
-#define ABS_SCPI_ERR_FAILED_TO_BIND_SOCKET (-19)
+#define ABS_SCPI_ERR_FAILED_TO_BIND_SOCKET (-18)
 /// Failed to open serial port
-#define ABS_SCPI_ERR_OPENING_SERIAL_PORT_FAILED (-20)
+#define ABS_SCPI_ERR_OPENING_SERIAL_PORT_FAILED (-19)
 /// Failed to configure serial port
-#define ABS_SCPI_ERR_FAILED_TO_CONFIGURE_PORT (-21)
+#define ABS_SCPI_ERR_FAILED_TO_CONFIGURE_PORT (-20)
 /// Failed to join multicast group
-#define ABS_SCPI_ERR_FAILED_TO_JOIN_GROUP (-22)
+#define ABS_SCPI_ERR_FAILED_TO_JOIN_GROUP (-21)
 /// Buffer too small
-#define ABS_SCPI_ERR_BUFFER_TOO_SMALL (-23)
+#define ABS_SCPI_ERR_BUFFER_TOO_SMALL (-22)
 /// Allocation failed
-#define ABS_SCPI_ERR_ALLOCATION_FAILED (-24)
+#define ABS_SCPI_ERR_ALLOCATION_FAILED (-23)
 /// Unexpected exception
-#define ABS_SCPI_ERR_UNEXPECTED_EXCEPTION (-25)
+#define ABS_SCPI_ERR_UNEXPECTED_EXCEPTION (-24)
 /** @} */
 
 /**
@@ -238,9 +236,9 @@ int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
  * @brief Open a TCP connection to the ABS.
  *
  * @note As a consequence of TCP's design, it is inherently less deterministic
- * than UDP. Commanding the ABS over TCP can be much slower and less
- * deterministic than UDP, so for time-sensitive applications, it's recommended
- * to avoid TCP in favor of UDP.
+ * than UDP. Commanding the ABS over TCP can be slower and less deterministic
+ * than UDP, so for time-sensitive applications, it's recommended to avoid TCP
+ * in favor of UDP.
  *
  * @param[in] handle SCPI client
  * @param[in] target_ip ABS's IP address

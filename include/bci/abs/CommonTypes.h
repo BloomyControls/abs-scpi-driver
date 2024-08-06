@@ -148,22 +148,21 @@ enum class ErrorCode : int {
   kReadFailed = -7,                ///< Failed to read message
   kReadTimedOut = -8,              ///< Read timed out
   kNotConnected = -9,              ///< Not connected
-  kAddressResolutionFailed = -10,  ///< Address resolution failed
-  kInvalidResponse = -11,          ///< Invalid response from the unit
-  kInvalidFaultType = -12,         ///< Invalid fault type
-  kInvalidSenseRange = -13,        ///< Invalid sense range
-  kInvalidArgument = -14,          ///< Invalid argument
-  kInvalidDriverHandle = -15,      ///< Invalid driver handle
-  kReceiveNotAllowed = -16,        ///< Receive not allowed by driver
-  kAlreadyConnected = -17,         ///< Already connected
-  kSocketError = -18,              ///< Unexpected socket error
-  kFailedToBindSocket = -19,       ///< Failed to bind socket
-  kOpeningSerialPortFailed = -20,  ///< Failed to open serial port
-  kFailedToConfigurePort = -21,    ///< Failed to configure serial port
-  kFailedToJoinGroup = -22,        ///< Failed to join multicast group
-  kBufferTooSmall = -23,           ///< Buffer too small
-  kAllocationFailed = -24,         ///< Allocation failed (C only)
-  kUnexpectedException = -25,      ///< Unexpected exception (C only)
+  kInvalidResponse = -10,          ///< Invalid response from the unit
+  kInvalidFaultType = -11,         ///< Invalid fault type
+  kInvalidSenseRange = -12,        ///< Invalid sense range
+  kInvalidArgument = -13,          ///< Invalid argument
+  kInvalidDriverHandle = -14,      ///< Invalid driver handle
+  kReceiveNotAllowed = -15,        ///< Receive not allowed by driver
+  kAlreadyConnected = -16,         ///< Already connected
+  kSocketError = -17,              ///< Unexpected socket error
+  kFailedToBindSocket = -18,       ///< Failed to bind socket
+  kOpeningSerialPortFailed = -19,  ///< Failed to open serial port
+  kFailedToConfigurePort = -20,    ///< Failed to configure serial port
+  kFailedToJoinGroup = -21,        ///< Failed to join multicast group
+  kBufferTooSmall = -22,           ///< Buffer too small
+  kAllocationFailed = -23,         ///< Allocation failed (C only)
+  kUnexpectedException = -24,      ///< Unexpected exception (C only)
 };
 
 /**

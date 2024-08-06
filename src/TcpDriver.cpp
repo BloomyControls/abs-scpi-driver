@@ -90,19 +90,14 @@ ErrorCode TcpDriver::Impl::Connect(std::string_view ip,
 
   tcp::endpoint endpoint(addr, 5025);
 
-  auto iter = tcp::resolver(io_service_).resolve(endpoint, ec);
-  if (ec) {
-    return ErrorCode::kAddressResolutionFailed;
-  }
-
   deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
 
   // would_block is never set from async_functions, so it's a safe way to signal
   // an incomplete async operation
   ec = boost::asio::error::would_block;
 
-  const auto connect_handler = [&](auto&& e, auto&&) { ec = e; };
-  boost::asio::async_connect(socket_, iter, connect_handler);
+  const auto connect_handler = [&](auto&& e) { ec = e; };
+  socket_.async_connect(endpoint, connect_handler);
 
   do {
     io_service_.run_one();

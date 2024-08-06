@@ -31,8 +31,6 @@ const char* ErrorMessage(ErrorCode ec) noexcept {
       return "Read timed out";
     case ErrorCode::kNotConnected:
       return "Not connection";
-    case ErrorCode::kAddressResolutionFailed:
-      return "Address resolution failed";
     case ErrorCode::kInvalidResponse:
       return "Invalid response received from the unit";
     case ErrorCode::kInvalidFaultType:
