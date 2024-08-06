@@ -138,8 +138,25 @@ FetchContent_Declare(abs-driver
 )
 FetchContent_MakeAvailable(abs-driver)
 
-target_link_libraries(my_program PRIVATE abs::scpi)
+target_link_libraries(my_program PRIVATE bci::absscpi)
 ```
+
+If you have already installed the driver to a standard location on your system,
+you can use `find_package` instead:
+
+```cmake
+find_package(absscpi 1.0.0 REQUIRED)
+
+target_link_libraries(my_program PRIVATE bci::absscpi)
+```
+
+> [!TIP]
+> On Windows, the MSI installer will register the CMake package in the Windows
+> registry, so the above example will build and link successfully. However,
+> because the DLL is not located in the `PATH` environment variable, the DLL
+> will fail to be found at runtime. To fix this, you can add a CMake command to
+> copy the DLL to the build directory and you can add an install target to copy
+> the DLL when installing your target.
 
 ## Dependencies
 
