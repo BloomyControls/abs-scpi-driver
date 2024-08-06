@@ -31,11 +31,8 @@ if(NOT fmt_FOUND)
     GIT_SHALLOW TRUE
   )
   FetchContent_GetProperties(fmt)
-  if(NOT fmt_POPULATED)
-    message(STATUS "Fetch fmt")
-    FetchContent_Populate(fmt)
-    add_subdirectory(${fmt_SOURCE_DIR} ${fmt_BINARY_DIR} EXCLUDE_FROM_ALL)
-  endif()
+  message(STATUS "Fetch fmt")
+  FetchContent_MakeAvailable(fmt)
 endif()
 
 set(Boost_USE_STATIC_LIBS ON)
