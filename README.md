@@ -45,7 +45,7 @@ int main(void) {
   auto driver{std::make_shared<bci::abs::drivers::UdpDriver>()};
   bci::abs::ScpiClient client{driver};
 
-  auto ret = driver->Open("192.168.1.70");
+  auto ret = driver->Open("192.168.1.100");
   if (ret != ec::kSuccess) {
     std::cerr << "Failed to open device: " << bci::abs::ErrorMessage(ret)
         << '\n';
@@ -90,7 +90,7 @@ int main(void) {
     goto cleanup;
   }
 
-  ec = AbsScpiClient_OpenUdp(handle, "192.168.1.70", NULL);
+  ec = AbsScpiClient_OpenUdp(handle, "192.168.1.100", NULL);
   if (ec < 0) {
     FormatErr("failed to open device", ec);
     goto cleanup;

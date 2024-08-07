@@ -43,7 +43,7 @@ namespace bci::abs {
  * Example usage (error handling omitted):
  * @code{.cpp}
  * auto driver{std::make_shared<bci::abs::drivers::UdpDriver>()};
- * driver->Open("192.168.1.70");
+ * driver->Open("192.168.1.100");
  * ScpiClient client{driver};
  * client.SetCellVoltage(0, 1.35f);
  * if (auto v = client.MeasureCellVoltage(0)) {
@@ -148,7 +148,7 @@ class ScpiClient {
   /**
    * @brief Set the device's IP address and subnet mask.
    *
-   * @note The addresses must be IPv4 dot-decimal notation, e.g. 192.168.1.70.
+   * @note The addresses must be IPv4 dot-decimal notation, e.g. 192.168.1.100.
    *
    * @note You will need to reopen the connection if using Ethernet.
    *
