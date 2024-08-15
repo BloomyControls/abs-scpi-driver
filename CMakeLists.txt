@@ -23,6 +23,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 set(FMT_SYSTEM_HEADERS TRUE)
+set(FMT_INSTALL OFF)
 find_package(fmt 10.2.1 QUIET)
 if(NOT fmt_FOUND)
   FetchContent_Declare(fmt
