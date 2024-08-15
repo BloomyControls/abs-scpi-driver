@@ -107,7 +107,7 @@ int AbsScpiClient_Init(AbsScpiClientHandle* handle_out) {
 }
 
 void AbsScpiClient_Destroy(AbsScpiClientHandle* handle) {
-  if (handle) {
+  if (handle && *handle) {
     delete (ScpiClient*)*handle;
     *handle = nullptr;
   }
