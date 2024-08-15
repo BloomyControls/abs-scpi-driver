@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <cstring>
 #include <memory>
 #include <new>
 #include <span>
@@ -123,7 +124,7 @@ int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
 
   auto driver = std::make_shared<drivers::UdpDriver>();
   ec ret;
-  if (interface_ip) {
+  if (interface_ip && std::strlen(interface_ip) > 0) {
     ret = driver->Open(interface_ip, target_ip);
   } else {
     ret = driver->Open(target_ip);

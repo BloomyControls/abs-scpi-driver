@@ -225,7 +225,7 @@ void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
  * @param[in] handle SCPI client
  * @param[in] target_ip ABS's IP address
  * @param[in] interface_ip address of the local interface to bind the socket to
- * (may be NULL to use any local address)
+ * (may be NULL or empty to use any local address)
  *
  * @return 0 on success or a negative error code.
  */
