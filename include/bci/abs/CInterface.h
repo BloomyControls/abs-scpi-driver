@@ -168,12 +168,6 @@ typedef struct AbsModelInfo {
   char name[256];     ///< Model name.
   char version[256];  ///< Model version.
 } AbsModelInfo;
-
-/// ABS model output pair.
-typedef struct AbsModelOutputPair {
-  float value_0;  ///< First value.
-  float value_1;  ///< Second value.
-} AbsModelOutputPair;
 /** @} */
 
 /**
@@ -1255,30 +1249,29 @@ int AbsScpiClient_GetAllLocalModelInputs(AbsScpiClientHandle handle,
                                          unsigned int count);
 
 /**
- * @brief Query a single pair of model outputs.
+ * @brief Query a single model output.
  *
  * @param[in] handle SCPI client
- * @param[in] index output index, 0-17
- * @param[out] pair_out pointer to the returned model output pair
+ * @param[in] index output index, 0-35
+ * @param[out] value_out pointer to the returned model output
  *
  * @return 0 on success or a negative error code.
  */
 int AbsScpiClient_GetModelOutput(AbsScpiClientHandle handle, unsigned int index,
-                                 AbsModelOutputPair* pair_out);
+                                 float* value_out);
 
 /**
- * @brief Query multiple model output pairs.
+ * @brief Query multiple model outputs.
  *
  * @param[in] handle SCPI client
- * @param[out] pairs_out array of returned output pairs
+ * @param[out] values_out array of returned outputs
  * @param[in] count length of the array (must not be greater than the total
  * model output count)
  *
  * @return 0 on success or a negative error code.
  */
 int AbsScpiClient_GetAllModelOutputs(AbsScpiClientHandle handle,
-                                     AbsModelOutputPair pairs_out[],
-                                     unsigned int count);
+                                     float values_out[], unsigned int count);
 
 /** @} */
 

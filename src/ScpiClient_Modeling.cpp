@@ -243,7 +243,7 @@ ErrorCode ScpiClient::GetAllLocalModelInputs(std::span<float> values) const {
   return GetAllLocalModelInputs(values.data(), values.size());
 }
 
-Result<ModelOutputPair> ScpiClient::GetModelOutput(unsigned int index) const {
+Result<float> ScpiClient::GetModelOutput(unsigned int index) const {
   if (index >= kModelOutputCount) {
     return Err(ec::kChannelIndexOutOfRange);
   }
@@ -251,33 +251,22 @@ Result<ModelOutputPair> ScpiClient::GetModelOutput(unsigned int index) const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MOD:OUT{}?\r\n", index + 1);
 
-  return SendAndRecv(buf)
-      .and_then(scpi::ParseRespFloatArray<2>)
-      .and_then([](auto&& data) {
-        return Result<ModelOutputPair>({data[0], data[1]});
-      });
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
 }
 
-Result<std::array<ModelOutputPair, kModelOutputCount>>
-ScpiClient::GetAllModelOutputs() const {
+Result<std::array<float, kModelOutputCount>> ScpiClient::GetAllModelOutputs()
+    const {
   char buf[32]{};
   fmt::format_to_n(buf, sizeof(buf) - 1, "MOD:OUT? (@1:{})\r\n",
                    kModelOutputCount);
 
-  return SendAndRecv(buf)
-      .and_then(scpi::ParseRespFloatArray<kModelOutputCount * 2>)
-      .and_then([](auto&& data) {
-        std::array<ModelOutputPair, kModelOutputCount> out;
-        for (std::size_t i = 0; i < out.size(); ++i) {
-          out[i] = {data[i * 2], data[i * 2 + 1]};
-        }
-        return Result<decltype(out)>(out);
-      });
+  return SendAndRecv(buf).and_then(
+      scpi::ParseRespFloatArray<kModelOutputCount>);
 }
 
-ErrorCode ScpiClient::GetAllModelOutputs(ModelOutputPair* pairs,
+ErrorCode ScpiClient::GetAllModelOutputs(float* outputs,
                                          std::size_t count) const {
-  if ((!pairs && count > 0) || count > kModelOutputCount) {
+  if ((!outputs && count > 0) || count > kModelOutputCount) {
     return ec::kInvalidArgument;
   }
 
@@ -294,29 +283,21 @@ ErrorCode ScpiClient::GetAllModelOutputs(ModelOutputPair* pairs,
     return resp.error();
   }
 
-  std::array<float, kModelOutputCount * 2> all_vals{};
-
-  ec e = scpi::SplitRespFloats(*resp, std::span{all_vals.data(), count * 2});
+  ec e = scpi::SplitRespFloats(*resp, std::span{outputs, count});
   if (e != ec::kSuccess) {
     return e;
-  }
-
-  for (std::size_t i = 0; i < count; ++i) {
-    pairs[i].first = all_vals[i * 2];
-    pairs[i].second = all_vals[i * 2 + 1];
   }
 
   return ec::kSuccess;
 }
 
 ErrorCode ScpiClient::GetAllModelOutputs(
-    std::array<ModelOutputPair, kModelOutputCount>& pairs) const {
-  return GetAllModelOutputs(pairs.data(), pairs.size());
+    std::array<float, kModelOutputCount>& outputs) const {
+  return GetAllModelOutputs(outputs.data(), outputs.size());
 }
 
-ErrorCode ScpiClient::GetAllModelOutputs(
-    std::span<ModelOutputPair> pairs) const {
-  return GetAllModelOutputs(pairs.data(), pairs.size());
+ErrorCode ScpiClient::GetAllModelOutputs(std::span<float> outputs) const {
+  return GetAllModelOutputs(outputs.data(), outputs.size());
 }
 
 }  // namespace bci::abs

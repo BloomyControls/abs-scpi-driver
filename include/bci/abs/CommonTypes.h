@@ -34,8 +34,8 @@ inline constexpr unsigned int kDigitalOutputCount = 4U;
 inline constexpr unsigned int kGlobalModelInputCount = 8U;
 /// Total local model input count.
 inline constexpr unsigned int kLocalModelInputCount = 8U;
-/// Total model output count (in pairs).
-inline constexpr unsigned int kModelOutputCount = 18U;
+/// Total model output count.
+inline constexpr unsigned int kModelOutputCount = 36U;
 
 /// Cell fault states.
 enum class CellFault : int {
@@ -117,9 +117,6 @@ struct ModelInfo {
   std::string name;     ///< Name of the model.
   std::string version;  ///< Version of the model.
 };
-
-/// A pair representing the two values contained in a model output channel.
-using ModelOutputPair = std::pair<float, float>;
 
 /// Bits for interpreting the model status.
 namespace model_status {

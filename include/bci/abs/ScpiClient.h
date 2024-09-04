@@ -1535,55 +1535,54 @@ class ScpiClient {
   ErrorCode GetAllLocalModelInputs(std::span<float> values) const;
 
   /**
-   * @brief Query a single model output pair.
+   * @brief Query a single model output.
    *
-   * @param[in] index index of the output, 0-17
+   * @param[in] index index of the output, 0-35
    *
-   * @return Result containing the output values or an error code.
+   * @return Result containing the output value or an error code.
    */
-  Result<ModelOutputPair> GetModelOutput(unsigned int index) const;
+  Result<float> GetModelOutput(unsigned int index) const;
 
   /**
-   * @brief Query all model output pairs.
+   * @brief Query all model outputs.
    *
-   * @return Result containing the output pairs or an error code.
+   * @return Result containing the outputs or an error code.
    */
-  Result<std::array<ModelOutputPair, kModelOutputCount>> GetAllModelOutputs()
-      const;
+  Result<std::array<float, kModelOutputCount>> GetAllModelOutputs() const;
 
   /**
-   * @brief Query many model output pairs.
+   * @brief Query many model outputs.
    *
    * @note It is recommended that the array and span overloads be preferred over
    * this overload whenever possible.
    *
-   * @param[out] pairs array of returned model output pairs, one per channel
+   * @param[out] outputs array of returned model output values, one per channel
    * @param[in] count length of the array (must not be greater than the total
    * number of outputs)
    *
    * @return An error code.
    */
-  ErrorCode GetAllModelOutputs(ModelOutputPair* pairs, std::size_t count) const;
+  ErrorCode GetAllModelOutputs(float* outputs, std::size_t count) const;
 
   /**
-   * @brief Query all model output pairs.
+   * @brief Query all model outputs.
    *
-   * @param[out] pairs array of returned pairs, one per output
+   * @param[out] outputs array of returned outputs
    *
    * @return An error code.
    */
   ErrorCode GetAllModelOutputs(
-      std::array<ModelOutputPair, kModelOutputCount>& pairs) const;
+      std::array<float, kModelOutputCount>& outputs) const;
 
   /**
-   * @brief Query many model output pairs.
+   * @brief Query many model outputs.
    *
-   * @param[out] pairs array of returned pairs, one per output (must not be
+   * @param[out] outputs array of returned outputs, one per output (must not be
    * longer than the total number of outputs)
    *
    * @return An error code.
    */
-  ErrorCode GetAllModelOutputs(std::span<ModelOutputPair> pairs) const;
+  ErrorCode GetAllModelOutputs(std::span<float> outputs) const;
 
   ///@}
 

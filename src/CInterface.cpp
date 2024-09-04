@@ -777,55 +777,14 @@ int AbsScpiClient_GetAllLocalModelInputs(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_GetModelOutput(AbsScpiClientHandle handle, unsigned int index,
-                                 AbsModelOutputPair* pair_out) try {
-  if (!handle || !pair_out) {
-    return static_cast<int>(ec::kInvalidArgument);
-  }
-
-  auto pair = GetClient(handle).GetModelOutput(index);
-  if (!pair) {
-    return static_cast<int>(pair.error());
-  }
-
-  *pair_out = {pair->first, pair->second};
-
-  return static_cast<int>(ec::kSuccess);
-} catch (const std::bad_alloc&) {
-  return static_cast<int>(ec::kAllocationFailed);
-} catch (...) {
-  return static_cast<int>(ec::kUnexpectedException);
+                                 float* value_out) {
+  return WrapGet(&sc::GetModelOutput, handle, value_out, index);
 }
 
 int AbsScpiClient_GetAllModelOutputs(AbsScpiClientHandle handle,
-                                     AbsModelOutputPair pairs_out[],
-                                     unsigned int count) try {
-  if (!handle) {
-    return static_cast<int>(ec::kInvalidArgument);
-  }
-
-  if ((!pairs_out && count > 0) || count > kModelOutputCount) {
-    return static_cast<int>(ec::kInvalidArgument);
-  }
-
-  if (count == 0) {
-    return static_cast<int>(ec::kSuccess);
-  }
-
-  std::array<ModelOutputPair, kModelOutputCount> all_pairs{};
-  auto e = GetClient(handle).GetAllModelOutputs(all_pairs);
-  if (e != ec::kSuccess) {
-    return static_cast<int>(e);
-  }
-
-  for (unsigned int i = 0; i < count; ++i) {
-    pairs_out[i] = {all_pairs[i].first, all_pairs[i].second};
-  }
-
-  return static_cast<int>(ec::kSuccess);
-} catch (const std::bad_alloc&) {
-  return static_cast<int>(ec::kAllocationFailed);
-} catch (...) {
-  return static_cast<int>(ec::kUnexpectedException);
+                                     float values_out[], unsigned int count) {
+  return WrapGet(&sc::GetAllModelOutputs, handle, values_out,
+                 static_cast<std::size_t>(count));
 }
 
 int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
