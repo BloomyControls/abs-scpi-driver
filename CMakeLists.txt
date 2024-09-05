@@ -69,6 +69,8 @@ FetchContent_Declare(fast_float
 message(STATUS "Fetch fast_float")
 FetchContent_MakeAvailable(fast_float)
 
+find_package(Doxygen 1.9 COMPONENTS dot QUIET)
+
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 add_library(absscpi ${ABSSCPI_LIB_TYPE}
@@ -119,6 +121,10 @@ target_link_libraries(absscpi PRIVATE
   fast_float
   ${BOOST_LIBS}
 )
+
+if(DOXYGEN_FOUND)
+  include(cmake/add_doxygen_target.cmake)
+endif()
 
 if(ABSSCPI_INSTALL AND BUILD_SHARED_LIBS)
   include(CMakePackageConfigHelpers)
