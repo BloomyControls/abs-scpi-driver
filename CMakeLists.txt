@@ -69,7 +69,7 @@ FetchContent_Declare(fast_float
 message(STATUS "Fetch fast_float")
 FetchContent_MakeAvailable(fast_float)
 
-find_package(Doxygen 1.9 COMPONENTS dot QUIET)
+find_package(Doxygen 1.9 OPTIONAL_COMPONENTS dot)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
