@@ -189,6 +189,12 @@ if(ABSSCPI_INSTALL AND BUILD_SHARED_LIBS)
   set(CPACK_WIX_UI_BANNER "${CMAKE_CURRENT_SOURCE_DIR}/img/installer_banner.jpg")
   set(CPACK_WIX_UI_DIALOG "${CMAKE_CURRENT_SOURCE_DIR}/img/installer_dialog.jpg")
 
+  if(WIN32)
+    # this will create a "package" target on Windows so that we don't have to
+    # invoke CPack directly
+    set(CPACK_GENERATOR "WIX")
+  endif()
+
   include(CPack)
 
   cpack_add_component(Metadata HIDDEN)
