@@ -117,7 +117,7 @@ ErrorCode TcpDriver::Impl::Connect(std::string_view ip,
 void TcpDriver::Impl::Close() noexcept {
   boost::system::error_code ignored;
   socket_.shutdown(tcp::socket::shutdown_send, ignored);
-  socket_.shutdown(tcp::socket::shutdown_send, ignored);
+  socket_.shutdown(tcp::socket::shutdown_receive, ignored);
   socket_.close(ignored);
 }
 
