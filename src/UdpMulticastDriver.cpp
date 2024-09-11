@@ -32,6 +32,8 @@ using util::Err;
 struct UdpMcastDriver::Impl {
   Impl();
 
+  ~Impl();
+
   ErrorCode Open(std::string_view interface_ip);
 
   void Close() noexcept;
@@ -89,6 +91,8 @@ UdpMcastDriver::Impl::Impl()
   deadline_.expires_at(boost::posix_time::pos_infin);
   CheckDeadline();
 }
+
+UdpMcastDriver::Impl::~Impl() { Close(); }
 
 ErrorCode UdpMcastDriver::Impl::Open(std::string_view interface_ip) {
   if (socket_.is_open()) {
