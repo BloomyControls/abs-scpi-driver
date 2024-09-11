@@ -94,7 +94,7 @@ SerialDriver::Impl::Impl()
   CheckDeadline();
 }
 
-SerialDriver::Impl::~Impl() {}
+SerialDriver::Impl::~Impl() { Close(); }
 
 ErrorCode SerialDriver::Impl::Open(const std::string& port) {
   boost::system::error_code ec{};
