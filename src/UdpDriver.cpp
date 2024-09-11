@@ -30,6 +30,8 @@ using util::Err;
 struct UdpDriver::Impl {
   Impl();
 
+  ~Impl();
+
   ErrorCode Open(std::string_view ip);
 
   ErrorCode Open(std::string_view local_ip, std::string_view target_ip);
@@ -85,6 +87,8 @@ UdpDriver::Impl::Impl()
   deadline_.expires_at(boost::posix_time::pos_infin);
   CheckDeadline();
 }
+
+UdpDriver::Impl::~Impl() { Close(); }
 
 ErrorCode UdpDriver::Impl::Open(std::string_view ip) {
   return Open("0.0.0.0", ip);
