@@ -17,8 +17,8 @@
 
 namespace bci::abs {
 
-static constexpr unsigned int kWriteTimeoutMs = 250;
-static constexpr unsigned int kReadTimeoutMs = 500;
+static constexpr unsigned int kWriteTimeoutMs = 10;
+static constexpr unsigned int kReadTimeoutMs = 50;
 
 using util::Err;
 using ec = ErrorCode;
