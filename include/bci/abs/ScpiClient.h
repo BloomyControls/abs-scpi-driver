@@ -54,7 +54,7 @@ namespace bci::abs {
 class ScpiClient {
  public:
   /// Default CTOR.
-  ScpiClient() = default;
+  ScpiClient() noexcept;
 
   /**
    * @brief Initialize a ScpiClient with a driver handle.
@@ -102,6 +102,16 @@ class ScpiClient {
    * @param[in] driver new driver to use
    */
   void SetDriver(std::shared_ptr<drivers::CommDriver> driver) noexcept;
+
+  /**
+   * @brief Set the read timeout for the client. In most cases, this is
+   * unnecessary. The default is 150ms.
+   *
+   * @param[in] timeout_ms new read timeout in milliseconds
+   *
+   * @return The previous timeout value.
+   */
+  unsigned int SetReadTimeout(unsigned int timeout_ms) noexcept;
 
   /**
    * @brief Change the targeted device ID. This is currently only meaningful for
@@ -1609,6 +1619,9 @@ class ScpiClient {
  private:
   /// Driver handle.
   std::shared_ptr<drivers::CommDriver> driver_;
+
+  /// Read timeout.
+  unsigned int read_timeout_ms_;
 };
 
 }  // namespace bci::abs

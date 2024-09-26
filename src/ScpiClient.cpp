@@ -18,19 +18,22 @@
 namespace bci::abs {
 
 static constexpr unsigned int kWriteTimeoutMs = 10;
-static constexpr unsigned int kReadTimeoutMs = 150;
 
 using util::Err;
 using ec = ErrorCode;
 
+ScpiClient::ScpiClient() noexcept : ScpiClient(nullptr) {}
+
 ScpiClient::ScpiClient(std::shared_ptr<drivers::CommDriver> driver) noexcept
-    : driver_{std::move(driver)} {}
+    : driver_{std::move(driver)}, read_timeout_ms_{150U} {}
 
 ScpiClient::ScpiClient(ScpiClient&& other) noexcept
-    : driver_{std::move(other.driver_)} {}
+    : driver_{std::move(other.driver_)},
+      read_timeout_ms_{std::move(other.read_timeout_ms_)} {}
 
 ScpiClient& ScpiClient::operator=(ScpiClient&& rhs) noexcept {
   driver_ = std::move(rhs.driver_);
+  read_timeout_ms_ = std::move(rhs.read_timeout_ms_);
   return *this;
 }
 
@@ -46,6 +49,10 @@ std::shared_ptr<const drivers::CommDriver> ScpiClient::GetDriver()
 void ScpiClient::SetDriver(
     std::shared_ptr<drivers::CommDriver> driver) noexcept {
   driver_ = std::move(driver);
+}
+
+unsigned int ScpiClient::SetReadTimeout(unsigned int timeout_ms) noexcept {
+  return std::exchange(read_timeout_ms_, timeout_ms);
 }
 
 ErrorCode ScpiClient::SetTargetDeviceID(unsigned int id) {
@@ -84,7 +91,7 @@ Result<std::string> ScpiClient::SendAndRecv(std::string_view buf) const {
   if (res != ErrorCode::kSuccess) {
     return Err(res);
   }
-  return driver_->ReadLine(kReadTimeoutMs);
+  return driver_->ReadLine(read_timeout_ms_);
 }
 
 }  // namespace bci::abs
