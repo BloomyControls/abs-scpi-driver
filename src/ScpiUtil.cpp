@@ -8,6 +8,7 @@
 #include "ScpiUtil.h"
 
 #include <bci/abs/CommonTypes.h>
+
 #include <optional>
 #include <string>
 #include <string_view>

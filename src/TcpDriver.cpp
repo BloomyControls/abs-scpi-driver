@@ -53,8 +53,7 @@ TcpDriver::TcpDriver() : impl_(std::make_shared<Impl>()) {}
 
 TcpDriver::~TcpDriver() { Close(); }
 
-ErrorCode TcpDriver::Connect(std::string_view ip,
-                             unsigned int timeout_ms) {
+ErrorCode TcpDriver::Connect(std::string_view ip, unsigned int timeout_ms) {
   return impl_->Connect(ip, timeout_ms);
 }
 

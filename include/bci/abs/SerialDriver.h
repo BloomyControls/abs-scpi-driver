@@ -93,4 +93,4 @@ class SerialDriver final : public CommDriver {
 
 }  // namespace bci::abs::drivers
 
-#endif  /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_SERIALDRIVER_H */
+#endif /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_SERIALDRIVER_H */

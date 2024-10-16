@@ -185,4 +185,4 @@ const char* ErrorMessage(ErrorCode ec) noexcept;
 
 }  // namespace bci::abs
 
-#endif  /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H */
+#endif /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_COMMONTYPES_H */

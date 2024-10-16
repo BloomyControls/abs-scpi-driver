@@ -69,4 +69,4 @@ Result<SerialDeviceList> SerialDiscovery(std::string_view port,
 
 }  // namespace bci::abs
 
-#endif  /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_DISCOVERY_H */
+#endif /* ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_DISCOVERY_H */
