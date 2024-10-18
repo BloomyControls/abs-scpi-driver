@@ -22,7 +22,6 @@ jobs:
 
     - name: Build
       run: |
-        echo "::add-matcher::.github/problem-matchers/${{ matrix.problem_matcher }}.json"
         cmake --build ${{ github.workspace }}/build --config Release
 
     - name: Create Installer
