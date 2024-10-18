@@ -30,7 +30,7 @@ jobs:
           submodules: true
 
       - name: Install Doxygen
-        run: sudo apt -o APT::Install-Suggests="true" install doxygen
+        run: sudo apt install doxygen graphviz
 
       - name: Configure
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release
