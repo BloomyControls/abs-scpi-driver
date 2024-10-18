@@ -35,6 +35,6 @@ jobs:
         draft: false
         prerelease: false
         generateReleaseNotes: true
-        artifacts: "${{ github.workspace }}/build/Release/*.msi"
+        artifacts: "${{ github.workspace }}/build/*.msi"
         artifactErrorsFailBuild: true
         token: ${{ github.token }}
