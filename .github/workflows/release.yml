@@ -1,40 +1,124 @@
-name: Create Release
+name: Deployment
 
 on:
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+      platforms:
+        default: "linux,windows"
+        type: string
+      release:
+        description: "Wether to create a GitHub Release"
+        type: boolean
+        default: true
 
 jobs:
-  release:
+  windows:
     runs-on: windows-latest
+
+    if: contains(inputs.platforms, 'windows')
+
+    strategy:
+      fail-fast: true
+
+      matrix:
+        arch: [x86, x64]
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Configure CMake
-      run: >
-        cmake -B "${{ github.workspace }}/build"
-        -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl
-        -DCMAKE_BUILD_TYPE=Release
-        -DBUILD_SHARED_LIBS=ON
-        -S "${{ github.workspace }}"
+      run: |
+        cmake -B build --preset ${{ matrix.arch }}-release
 
     - name: Build
       run: |
-        cmake --build ${{ github.workspace }}/build --config Release
+        cmake --build build --config Release
 
     - name: Create Installer
       run: |
-        cmake --build ${{ github.workspace }}/build --config Release --target package
+        cmake --build build --config Release --target package
 
-    - name: Create Release
-      uses: ncipollo/release-action@v1
-      id: create_release
+    - name: Create Archive
+      run: |
+        cd build
+        cpack -G ZIP
+
+    - uses: actions/upload-artifact@v4
       with:
-        draft: false
-        prerelease: false
-        generateReleaseNotes: true
-        artifacts: "${{ github.workspace }}/build/*.msi"
-        artifactErrorsFailBuild: true
-        token: ${{ github.token }}
+        name: windows-${{ matrix.arch }}
+        if-no-files-found: error
+        retention-days: 7
+        path: |
+          build/*.msi
+          build/*.zip
+
+  linux:
+    runs-on: ubuntu-latest
+
+    if: contains(inputs.platforms, 'linux')
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure CMake
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
+
+    - name: Build
+      run: |
+        cmake --build build --config Release
+
+    - name: Create Archive
+      run: |
+        cd build
+        cpack -G ZIP
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: linux-64
+        if-no-files-found: error
+        retention-days: 7
+        path: |
+          build/*.zip
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [windows, linux]
+    if: inputs.release
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Merge built artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dist
+        merge-multiple: true
+
+    - name: Prepare release assets
+      shell: bash
+      env:
+        TAG_NAME: ${{ inputs.tag_name }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        pushd dist
+        shasum -a 256 * > checksums.txt
+        mv checksums.txt absscpi_${TAG_NAME#v}_checksums.txt
+        popd
+
+        release_args=(
+          "$TAG_NAME"
+          --title "${TAG_NAME}"
+          --target "$GITHUB_SHA"
+          --generate-notes
+        )
+
+        # check for e.g., v1.1.0-rc0
+        if [[ $TAG_NAME == *-* ]]; then
+          release_args+=( --prerelease )
+        fi
+
+        scripts/label-assets dist/* | xargs gh release create "${release_args[@]}" --

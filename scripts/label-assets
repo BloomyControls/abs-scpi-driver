@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+# this script is pretty much copied from gh cli's and is used just while
+# generating releases
+
+if [ $# -eq 0 ]; then
+  >&2 printf "usage: scripts/label-assets dist/*\n"
+  exit 1
+fi
+
+for asset; do
+  label="$(basename "$asset")"
+  label="${label%.*}"
+  label="${label%.tar}"
+  label="ABS SCPI $(tr '-_' ' ' <<<"${label#absscpi[-_]}")"
+  case "$asset" in
+    *.msi) label="${label} installer";;
+  esac
+  printf '"%s#%s"\n' "$asset" "$label"
+done
