@@ -29,42 +29,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set reusable strings
-      id: strings
-      shell: bash
-      env:
-        VS_DIR: 'C:/Program Files/Microsoft Visual Studio/2022/Enterprise'
-      run: |
-        echo "vs-ps-enter-shell=& '$VS_DIR/Common7/Tools/Launch-VsDevShell.ps1' -SkipAutomaticLocation -HostArch amd64 -Arch ${{ matrix.arch == 'x64' && 'amd64' || matrix.arch }}" >> "$GITHUB_OUTPUT"
+    - name: Enable Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1.13.0
+      with:
+        arch: ${{ matrix.arch == 'x86' && 'amd64_x86' || 'amd64' }}
 
     - name: Configure CMake
-      shell: powershell
       run: |
-        ${{ steps.strings.vs-ps-enter-shell }}
         cmake -B build --preset ${{ matrix.arch }}-release
 
     - name: Build
-      shell: powershell
       run: |
-        ${{ steps.strings.vs-ps-enter-shell }}
         cmake --build build --config Release
 
     - name: Create Installer
-      shell: powershell
       run: |
-        ${{ steps.strings.vs-ps-enter-shell }}
         cmake --build build --config Release --target package
 
     - name: Create Archive
-      shell: powershell
       run: |
-        ${{ steps.strings.vs-ps-enter-shell }}
         cd build
         cpack -G ZIP
 
     - uses: actions/upload-artifact@v4
       with:
-        name: windows-${{ steps.strings.target_arch }}
+        name: windows-${{ matrix.arch }}
         if-no-files-found: error
         retention-days: 7
         path: |
