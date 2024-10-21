@@ -12,7 +12,7 @@ for asset; do
   label="$(basename "$asset")"
   label="${label%.*}"
   label="${label%.tar}"
-  label="ABS SCPI $(tr '-_' ' ' <<<"${label#absscpi[-_]}")"
+  label="ABS SCPI $(tr '_-' ' ' <<<"${label#absscpi[-_]}")"
   case "$asset" in
     *.msi) label="${label} installer";;
   esac
