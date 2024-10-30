@@ -87,6 +87,10 @@ Result<std::uint32_t> ScpiClient::GetAlarms() const {
       .and_then(scpi::ParseIntResponse<std::uint32_t>);
 }
 
+Result<bool> ScpiClient::GetInterlockState() const {
+  return SendAndRecv("SYST:INT?\r\n").and_then(scpi::ParseBoolResponse);
+}
+
 ErrorCode ScpiClient::AssertSoftwareInterlock() const {
   return Send("SYST:ALARM:RAISE\r\n");
 }
