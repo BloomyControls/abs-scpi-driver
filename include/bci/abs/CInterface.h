@@ -409,6 +409,19 @@ int AbsScpiClient_ClearErrors(AbsScpiClientHandle handle);
 int AbsScpiClient_GetAlarms(AbsScpiClientHandle handle, uint32_t* alarms_out);
 
 /**
+ * @brief Query the system interlock state. When in interlock, the unit will be
+ * put into its PoR state and cannot be controlled until the interlock is
+ * lifted.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] interlock_out pointer to the interlock state
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetInterlockState(AbsScpiClientHandle handle,
+                                    bool* interlock_out);
+
+/**
  * @brief Assert the software interlock (a recoverable alarm).
  *
  * The interlock may be cleared using the ClearRecoverableAlarms() function.

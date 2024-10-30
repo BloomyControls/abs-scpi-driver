@@ -361,6 +361,11 @@ int AbsScpiClient_GetAlarms(AbsScpiClientHandle handle, uint32_t* alarms_out) {
   return WrapGet(&sc::GetAlarms, handle, alarms_out);
 }
 
+int AbsScpiClient_GetInterlockState(AbsScpiClientHandle handle,
+                                    bool* interlock_out) {
+  return WrapGet(&sc::GetInterlockState, handle, interlock_out);
+}
+
 int AbsScpiClient_AssertSoftwareInterlock(AbsScpiClientHandle handle) {
   return WrapSet(&sc::AssertSoftwareInterlock, handle);
 }

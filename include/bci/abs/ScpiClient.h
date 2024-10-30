@@ -207,6 +207,15 @@ class ScpiClient {
   Result<std::uint32_t> GetAlarms() const;
 
   /**
+   * @brief Get the system interlock state. When in interlock, the unit will be
+   * put into its PoR state and cannot be controlled until the interlock is
+   * lifted.
+   *
+   * @return Result containing the interlock state or an error code.
+   */
+  Result<bool> GetInterlockState() const;
+
+  /**
    * @brief Assert the software interlock.
    *
    * Use ClearRecoverableAlarms() to clear the interlock.
