@@ -266,6 +266,15 @@ int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
                                    const char* interface_ip);
 
 /**
+ * @brief Close the client connection.
+ *
+ * @param[in] handle SCPI client
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_Close(AbsScpiClientHandle handle);
+
+/**
  * @brief Set the target device ID for communication. Only applies to RS-485
  * connections.
  *

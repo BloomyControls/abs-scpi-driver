@@ -204,6 +204,20 @@ int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
   return static_cast<int>(ec::kUnexpectedException);
 }
 
+int AbsScpiClient_Close(AbsScpiClientHandle handle) try {
+  if (!handle) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  GetClient(handle).SetDriver(nullptr);
+
+  return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
+}
+
 int AbsScpiClient_SetTargetDeviceId(AbsScpiClientHandle handle,
                                     unsigned int device_id) try {
   if (!handle) {
