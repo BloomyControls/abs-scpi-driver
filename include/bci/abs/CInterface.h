@@ -1165,6 +1165,19 @@ int AbsScpiClient_GetModelInfo(AbsScpiClientHandle handle,
                                AbsModelInfo* model_info_out);
 
 /**
+ * @brief Query the ID of the currently loaded model. This ID is user-defined
+ * and is not used by the unit. It is intended for use by tools.
+ *
+ * @param[in] handle SCPI client
+ * @param[out] id_buf buffer to store the null-terminated ID
+ * @param[in] buf_len length of @a id_buf
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetModelId(AbsScpiClientHandle handle, char id_buf[],
+                             unsigned int buf_len);
+
+/**
  * @brief Set a single global model input. Particularly useful with multicast to
  * address multiple units at once.
  *

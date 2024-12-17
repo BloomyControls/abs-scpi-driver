@@ -44,6 +44,10 @@ Result<ModelInfo> ScpiClient::GetModelInfo() const {
   return ModelInfo{std::move(res->at(0)), std::move(res->at(1))};
 }
 
+Result<std::string> ScpiClient::GetModelId() const {
+  return SendAndRecv("MOD:ID?\r\n").and_then(scpi::ParseStringResponse);
+}
+
 ErrorCode ScpiClient::SetGlobalModelInput(unsigned int index,
                                           float value) const {
   if (index >= kGlobalModelInputCount) {
