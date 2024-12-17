@@ -747,6 +747,33 @@ int AbsScpiClient_GetModelInfo(AbsScpiClientHandle handle,
   return static_cast<int>(ec::kUnexpectedException);
 }
 
+int AbsScpiClient_GetModelId(AbsScpiClientHandle handle, char id_buf[],
+                             unsigned int buf_len) try {
+  if (!handle || !id_buf || buf_len == 0) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  std::memset(id_buf, '\0', buf_len);
+
+  if (auto id = GetClient(handle).GetModelId()) {
+    // must have enough space for the id + null terminator
+    if (buf_len < id->size() + 1) {
+      return static_cast<int>(ec::kBufferTooSmall);
+    }
+
+    id->copy(id_buf, id->size());
+    id_buf[id->size()] = '\0';
+  } else {
+    return static_cast<int>(id.error());
+  }
+
+  return static_cast<int>(ec::kSuccess);
+} catch (const std::bad_alloc&) {
+  return static_cast<int>(ec::kAllocationFailed);
+} catch (...) {
+  return static_cast<int>(ec::kUnexpectedException);
+}
+
 int AbsScpiClient_SetGlobalModelInput(AbsScpiClientHandle handle,
                                       unsigned int index, float value) {
   return WrapSet(&sc::SetGlobalModelInput, handle, index, value);

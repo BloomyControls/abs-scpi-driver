@@ -1344,6 +1344,14 @@ class ScpiClient {
   Result<ModelInfo> GetModelInfo() const;
 
   /**
+   * @brief Query the ID of the currently loaded model. This ID is arbitrary and
+   * set in the config. It is primarily for tool use.
+   *
+   * @return Result containing the model ID or an error code.
+   */
+  Result<std::string> GetModelId() const;
+
+  /**
    * @brief Set a global model input.
    *
    * @param[in] index input index, 0-7
