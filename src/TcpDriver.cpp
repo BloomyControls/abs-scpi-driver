@@ -13,13 +13,13 @@
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/streambuf.hpp>
 #include <boost/asio/write.hpp>
+#include <chrono>
 #include <memory>
 #include <string>
 #include <string_view>
 
 #include "Util.h"
 
-using boost::asio::deadline_timer;
 using boost::asio::ip::tcp;
 
 namespace bci::abs::drivers {
@@ -42,11 +42,9 @@ struct TcpDriver::Impl {
  private:
   boost::asio::io_service io_service_;
   boost::asio::ip::tcp::socket socket_;
-  boost::asio::deadline_timer deadline_;
   boost::asio::streambuf input_buffer_;
-  bool did_timeout_;
 
-  void StartDeadline(unsigned int timeout_ms);
+  bool Run(unsigned int timeout_ms);
 };
 
 TcpDriver::TcpDriver() : impl_(std::make_shared<Impl>()) {}
@@ -71,9 +69,7 @@ Result<std::string> TcpDriver::ReadLine(unsigned int timeout_ms) const {
 TcpDriver::Impl::Impl()
     : io_service_(),
       socket_(io_service_),
-      deadline_(io_service_),
-      input_buffer_(),
-      did_timeout_(false) {
+      input_buffer_() {
   boost::system::error_code ignored;
   socket_.set_option(boost::asio::socket_base::linger(false, 0), ignored);
   socket_.set_option(boost::asio::socket_base::keep_alive(true), ignored);
@@ -92,28 +88,16 @@ ErrorCode TcpDriver::Impl::Connect(std::string_view ip,
 
   tcp::endpoint endpoint(addr, 5025);
 
-  StartDeadline(timeout_ms);
-
-  // would_block is never set from async_functions, so it's a safe way to signal
-  // an incomplete async operation
-  ec = boost::asio::error::would_block;
-
+  ec = {};
   const auto connect_handler = [&](auto&& e) { ec = e; };
   socket_.async_connect(endpoint, connect_handler);
 
-  do {
-    io_service_.run_one();
-  } while (ec == boost::asio::error::would_block);
-
-  if (ec) {
-    if (did_timeout_) {
-      return ErrorCode::kConnectionTimedOut;
-    }
-    return ErrorCode::kConnectionFailed;
+  if (!Run(timeout_ms)) {
+    return ErrorCode::kConnectionTimedOut;
   }
 
-  if (!socket_.is_open()) {
-    return ErrorCode::kConnectionTimedOut;
+  if (ec) {
+    return ErrorCode::kConnectionFailed;
   }
 
   return ErrorCode::kSuccess;
@@ -121,7 +105,6 @@ ErrorCode TcpDriver::Impl::Connect(std::string_view ip,
 
 void TcpDriver::Impl::Close() noexcept {
   boost::system::error_code ignored;
-  deadline_.cancel(ignored);
   socket_.cancel(ignored);
   socket_.shutdown(tcp::socket::shutdown_send, ignored);
   socket_.shutdown(tcp::socket::shutdown_receive, ignored);
@@ -134,26 +117,17 @@ ErrorCode TcpDriver::Impl::Write(std::string_view data,
     return ErrorCode::kNotConnected;
   }
 
-  StartDeadline(timeout_ms);
-
-  boost::system::error_code ec = boost::asio::error::would_block;
+  boost::system::error_code ec{};
 
   const auto write_handler = [&](auto&& e, auto&&) { ec = e; };
   boost::asio::async_write(socket_, boost::asio::buffer(data), write_handler);
 
-  do {
-    io_service_.run_one();
-  } while (ec == boost::asio::error::would_block);
-
-  if (ec) {
-    if (did_timeout_) {
-      return ErrorCode::kSendTimedOut;
-    }
-    return ErrorCode::kSendFailed;
+  if (!Run(timeout_ms)) {
+    return ErrorCode::kSendTimedOut;
   }
 
-  if (!socket_.is_open()) {
-    return ErrorCode::kSendTimedOut;
+  if (ec) {
+    return ErrorCode::kSendFailed;
   }
 
   return ErrorCode::kSuccess;
@@ -164,26 +138,17 @@ Result<std::string> TcpDriver::Impl::ReadLine(unsigned int timeout_ms) {
     return Err(ErrorCode::kNotConnected);
   }
 
-  StartDeadline(timeout_ms);
-
-  boost::system::error_code ec = boost::asio::error::would_block;
+  boost::system::error_code ec{};
 
   const auto read_handler = [&](auto&& e, auto&&) { ec = e; };
   boost::asio::async_read_until(socket_, input_buffer_, '\n', read_handler);
 
-  do {
-    io_service_.run_one();
-  } while (ec == boost::asio::error::would_block);
-
-  if (ec) {
-    if (did_timeout_) {
-      return Err(ErrorCode::kReadTimedOut);
-    }
-    return Err(ErrorCode::kReadFailed);
+  if (!Run(timeout_ms)) {
+    return Err(ErrorCode::kReadTimedOut);
   }
 
-  if (!socket_.is_open()) {
-    return Err(ErrorCode::kReadTimedOut);
+  if (ec) {
+    return Err(ErrorCode::kReadFailed);
   }
 
   std::string line;
@@ -193,16 +158,19 @@ Result<std::string> TcpDriver::Impl::ReadLine(unsigned int timeout_ms) {
   return line;
 }
 
-void TcpDriver::Impl::StartDeadline(unsigned int timeout_ms) {
-  deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
-  deadline_.async_wait([this](const boost::system::error_code& e) {
-    if (e != boost::asio::error::operation_aborted) {
-      did_timeout_ = true;
-      boost::system::error_code ignored;
-      socket_.cancel(ignored);
-    }
-  });
-  did_timeout_ = false;
+bool TcpDriver::Impl::Run(unsigned int timeout_ms) {
+  io_service_.restart();
+
+  io_service_.run_for(std::chrono::milliseconds(timeout_ms));
+
+  if (!io_service_.stopped()) {
+    boost::system::error_code ignored;
+    socket_.cancel(ignored);
+    io_service_.run();
+    return false;
+  }
+
+  return true;
 }
 
 }  // namespace bci::abs::drivers

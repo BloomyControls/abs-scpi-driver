@@ -9,20 +9,19 @@
 #include <fmt/core.h>
 
 #include <algorithm>
-#include <atomic>
+#include <array>
 #include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/serial_port.hpp>
 #include <boost/asio/streambuf.hpp>
 #include <boost/asio/write.hpp>
+#include <chrono>
 #include <memory>
 #include <string>
 #include <string_view>
 
 #include "Util.h"
-
-using boost::asio::deadline_timer;
 
 namespace bci::abs::drivers {
 
@@ -50,12 +49,10 @@ struct SerialDriver::Impl {
  private:
   boost::asio::io_service io_service_;
   boost::asio::serial_port port_;
-  boost::asio::deadline_timer deadline_;
   boost::asio::streambuf input_buffer_;
   unsigned int dev_id_;
-  std::atomic<bool> timeout_;
 
-  void CheckDeadline();
+  bool Run(unsigned int timeout_ms);
 };
 
 SerialDriver::SerialDriver() : impl_(std::make_shared<Impl>()) {}
@@ -86,13 +83,8 @@ bool SerialDriver::IsSendOnly() const { return impl_->IsBroadcast(); }
 SerialDriver::Impl::Impl()
     : io_service_(),
       port_(io_service_),
-      deadline_(io_service_),
       input_buffer_(),
-      dev_id_{},
-      timeout_{} {
-  deadline_.expires_at(boost::posix_time::pos_infin);
-  CheckDeadline();
-}
+      dev_id_{} { }
 
 SerialDriver::Impl::~Impl() { Close(); }
 
@@ -157,14 +149,14 @@ ErrorCode SerialDriver::Impl::Write(std::string_view data,
   fmt::format_to_n(dev_id_buf, sizeof(dev_id_buf) - 1, "@{} ", dev_id_);
   std::string_view dev_id_str{dev_id_buf};
 
+  std::array<boost::asio::const_buffer, 2> bufs = {
+    boost::asio::buffer(dev_id_str),
+    boost::asio::buffer(data),
+  };
+
   boost::system::error_code ec{};
 
-  boost::asio::write(port_, boost::asio::buffer(dev_id_str), ec);
-  if (ec) {
-    return ErrorCode::kSendFailed;
-  }
-
-  boost::asio::write(port_, boost::asio::buffer(data), ec);
+  boost::asio::write(port_, bufs, ec);
   if (ec) {
     return ErrorCode::kSendFailed;
   }
@@ -177,19 +169,12 @@ Result<std::string> SerialDriver::Impl::ReadLine(unsigned int timeout_ms) {
     return Err(ErrorCode::kNotConnected);
   }
 
-  timeout_ = false;
-  deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
-
-  boost::system::error_code ec = boost::asio::error::would_block;
+  boost::system::error_code ec;
 
   const auto read_handler = [&](auto&& e, auto&&) { ec = e; };
   boost::asio::async_read_until(port_, input_buffer_, '\n', read_handler);
 
-  do {
-    io_service_.run_one();
-  } while (ec == boost::asio::error::would_block);
-
-  if (timeout_) {
+  if (!Run(timeout_ms)) {
     return Err(ErrorCode::kReadTimedOut);
   }
 
@@ -212,14 +197,19 @@ unsigned int SerialDriver::Impl::GetDeviceID() const { return dev_id_; }
 
 bool SerialDriver::Impl::IsBroadcast() const { return dev_id_ > 31; }
 
-void SerialDriver::Impl::CheckDeadline() {
-  if (deadline_.expires_at() <= deadline_timer::traits_type::now()) {
-    timeout_ = true;
-    port_.cancel();
-    deadline_.expires_at(boost::posix_time::pos_infin);
+bool SerialDriver::Impl::Run(unsigned int timeout_ms) {
+  io_service_.restart();
+
+  io_service_.run_for(std::chrono::milliseconds(timeout_ms));
+
+  if (!io_service_.stopped()) {
+    boost::system::error_code ignored;
+    port_.cancel(ignored);
+    io_service_.run();
+    return false;
   }
 
-  deadline_.async_wait([&](auto&&) { this->CheckDeadline(); });
+  return true;
 }
 
 }  // namespace bci::abs::drivers
