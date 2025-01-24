@@ -8,11 +8,11 @@
 #include <bci/abs/UdpDriver.h>
 
 #include <array>
-#include <atomic>
 #include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <boost/asio/write.hpp>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -20,7 +20,6 @@
 
 #include "Util.h"
 
-using boost::asio::deadline_timer;
 using boost::asio::ip::udp;
 
 namespace bci::abs::drivers {
@@ -47,12 +46,10 @@ struct UdpDriver::Impl {
 
   boost::asio::io_service io_service_;
   boost::asio::ip::udp::socket socket_;
-  boost::asio::deadline_timer deadline_;
   boost::asio::ip::udp::endpoint endpoint_;
   std::array<std::uint8_t, kBufLen> buf_;
-  std::atomic<bool> timeout_;
 
-  void CheckDeadline();
+  bool Run(unsigned int timeout_ms);
 };
 
 UdpDriver::UdpDriver() : impl_(std::make_shared<Impl>()) {}
@@ -80,13 +77,8 @@ Result<std::string> UdpDriver::ReadLine(unsigned int timeout_ms) const {
 UdpDriver::Impl::Impl()
     : io_service_(),
       socket_(io_service_),
-      deadline_(io_service_),
       endpoint_(),
-      buf_{},
-      timeout_{} {
-  deadline_.expires_at(boost::posix_time::pos_infin);
-  CheckDeadline();
-}
+      buf_{} { }
 
 UdpDriver::Impl::~Impl() { Close(); }
 
@@ -156,19 +148,12 @@ ErrorCode UdpDriver::Impl::Write(std::string_view data,
     return ErrorCode::kNotConnected;
   }
 
-  timeout_ = false;
-  deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
-
-  boost::system::error_code ec = boost::asio::error::would_block;
+  boost::system::error_code ec;
 
   const auto write_handler = [&](auto&& e, auto&&) { ec = e; };
   socket_.async_send_to(boost::asio::buffer(data), endpoint_, write_handler);
 
-  do {
-    io_service_.run_one();
-  } while (ec == boost::asio::error::would_block);
-
-  if (timeout_) {
+  if (!Run(timeout_ms)) {
     return ErrorCode::kSendTimedOut;
   }
 
@@ -184,10 +169,7 @@ Result<std::string> UdpDriver::Impl::ReadLine(unsigned int timeout_ms) {
     return Err(ErrorCode::kNotConnected);
   }
 
-  timeout_ = false;
-  deadline_.expires_from_now(boost::posix_time::milliseconds(timeout_ms));
-
-  boost::system::error_code ec = boost::asio::error::would_block;
+  boost::system::error_code ec;
 
   std::size_t read_len{};
 
@@ -197,11 +179,7 @@ Result<std::string> UdpDriver::Impl::ReadLine(unsigned int timeout_ms) {
   };
   socket_.async_receive(boost::asio::buffer(buf_), read_handler);
 
-  do {
-    io_service_.run_one();
-  } while (ec == boost::asio::error::would_block);
-
-  if (timeout_) {
+  if (!Run(timeout_ms)) {
     return Err(ErrorCode::kReadTimedOut);
   }
 
@@ -214,14 +192,19 @@ Result<std::string> UdpDriver::Impl::ReadLine(unsigned int timeout_ms) {
   return line;
 }
 
-void UdpDriver::Impl::CheckDeadline() {
-  if (deadline_.expires_at() <= deadline_timer::traits_type::now()) {
-    timeout_ = true;
-    socket_.cancel();
-    deadline_.expires_at(boost::posix_time::pos_infin);
+bool UdpDriver::Impl::Run(unsigned int timeout_ms) {
+  io_service_.restart();
+
+  io_service_.run_for(std::chrono::milliseconds(timeout_ms));
+
+  if (!io_service_.stopped()) {
+    boost::system::error_code ignored;
+    socket_.cancel(ignored);
+    io_service_.run();
+    return false;
   }
 
-  deadline_.async_wait([&](auto&&) { this->CheckDeadline(); });
+  return true;
 }
 
 }  // namespace bci::abs::drivers
