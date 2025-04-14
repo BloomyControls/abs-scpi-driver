@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <array>
 #include <boost/asio.hpp>
-#include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/serial_port.hpp>
 #include <boost/asio/streambuf.hpp>
@@ -47,7 +46,7 @@ struct SerialDriver::Impl {
   bool IsBroadcast() const;
 
  private:
-  boost::asio::io_service io_service_;
+  boost::asio::io_context io_context_;
   boost::asio::serial_port port_;
   boost::asio::streambuf input_buffer_;
   unsigned int dev_id_;
@@ -81,8 +80,8 @@ unsigned int SerialDriver::GetDeviceID() const { return impl_->GetDeviceID(); }
 bool SerialDriver::IsSendOnly() const { return impl_->IsBroadcast(); }
 
 SerialDriver::Impl::Impl()
-    : io_service_(),
-      port_(io_service_),
+    : io_context_(),
+      port_(io_context_),
       input_buffer_(),
       dev_id_{} { }
 
@@ -198,14 +197,14 @@ unsigned int SerialDriver::Impl::GetDeviceID() const { return dev_id_; }
 bool SerialDriver::Impl::IsBroadcast() const { return dev_id_ > 31; }
 
 bool SerialDriver::Impl::Run(unsigned int timeout_ms) {
-  io_service_.restart();
+  io_context_.restart();
 
-  io_service_.run_for(std::chrono::milliseconds(timeout_ms));
+  io_context_.run_for(std::chrono::milliseconds(timeout_ms));
 
-  if (!io_service_.stopped()) {
+  if (!io_context_.stopped()) {
     boost::system::error_code ignored;
     port_.cancel(ignored);
-    io_service_.run();
+    io_context_.run();
     return false;
   }
 
