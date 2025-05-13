@@ -8,7 +8,6 @@
 #include <bci/abs/TcpDriver.h>
 
 #include <boost/asio.hpp>
-#include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/streambuf.hpp>
@@ -40,7 +39,7 @@ struct TcpDriver::Impl {
   Result<std::string> ReadLine(unsigned int timeout_ms);
 
  private:
-  boost::asio::io_service io_service_;
+  boost::asio::io_context io_context_;
   boost::asio::ip::tcp::socket socket_;
   boost::asio::streambuf input_buffer_;
 
@@ -67,8 +66,8 @@ Result<std::string> TcpDriver::ReadLine(unsigned int timeout_ms) const {
 }
 
 TcpDriver::Impl::Impl()
-    : io_service_(),
-      socket_(io_service_),
+    : io_context_(),
+      socket_(io_context_),
       input_buffer_() {
   boost::system::error_code ignored;
   socket_.set_option(boost::asio::socket_base::linger(false, 0), ignored);
@@ -159,14 +158,14 @@ Result<std::string> TcpDriver::Impl::ReadLine(unsigned int timeout_ms) {
 }
 
 bool TcpDriver::Impl::Run(unsigned int timeout_ms) {
-  io_service_.restart();
+  io_context_.restart();
 
-  io_service_.run_for(std::chrono::milliseconds(timeout_ms));
+  io_context_.run_for(std::chrono::milliseconds(timeout_ms));
 
-  if (!io_service_.stopped()) {
+  if (!io_context_.stopped()) {
     boost::system::error_code ignored;
     socket_.cancel(ignored);
-    io_service_.run();
+    io_context_.run();
     return false;
   }
 

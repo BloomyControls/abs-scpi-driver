@@ -40,13 +40,13 @@ set(Boost_USE_STATIC_LIBS ON)
 set(BOOST_INCLUDE_LIBRARIES system asio)
 set(BOOST_ENABLE_CMAKE ON)
 # use CONFIG to avoid CMP0167 warnings
-find_package(Boost 1.81.0 CONFIG COMPONENTS system QUIET)
+find_package(Boost 1.88.0 CONFIG COMPONENTS system QUIET)
 if (NOT Boost_FOUND)
   set(SAVED_BUILD_SHARED ${BUILD_SHARED_LIBS})
   set(BUILD_SHARED_LIBS OFF)
   FetchContent_Declare(Boost
-    URL https://github.com/boostorg/boost/releases/download/boost-1.81.0/boost-1.81.0.tar.gz
-    URL_HASH "SHA1=f71f661f893f39b7b82d66c54980349716f874a2"
+    URL https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.gz
+    URL_HASH "SHA1=7667d5edc4e753965db02595c912f78ad64725fe"
   )
   FetchContent_GetProperties(Boost)
   if(NOT Boost_POPULATED)

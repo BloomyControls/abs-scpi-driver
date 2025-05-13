@@ -9,7 +9,6 @@
 
 #include <array>
 #include <boost/asio.hpp>
-#include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <boost/asio/write.hpp>
 #include <chrono>
@@ -46,7 +45,7 @@ struct UdpMcastDriver::Impl {
  private:
   static constexpr std::size_t kBufLen = 8192;
 
-  boost::asio::io_service io_service_;
+  boost::asio::io_context io_context_;
   boost::asio::ip::udp::socket socket_;
   boost::asio::ip::udp::endpoint endpoint_;
   std::array<std::uint8_t, kBufLen> buf_;
@@ -79,8 +78,8 @@ Result<UdpMcastDriver::AddressedResponse> UdpMcastDriver::ReadLineFrom(
 }
 
 UdpMcastDriver::Impl::Impl()
-    : io_service_(),
-      socket_(io_service_),
+    : io_context_(),
+      socket_(io_context_),
       endpoint_(),
       buf_{} { }
 
@@ -222,14 +221,14 @@ Result<UdpMcastDriver::AddressedResponse> UdpMcastDriver::Impl::ReadLineFrom(
 }
 
 bool UdpMcastDriver::Impl::Run(unsigned int timeout_ms) {
-  io_service_.restart();
+  io_context_.restart();
 
-  io_service_.run_for(std::chrono::milliseconds(timeout_ms));
+  io_context_.run_for(std::chrono::milliseconds(timeout_ms));
 
-  if (!io_service_.stopped()) {
+  if (!io_context_.stopped()) {
     boost::system::error_code ignored;
     socket_.cancel(ignored);
-    io_service_.run();
+    io_context_.run();
     return false;
   }
 
