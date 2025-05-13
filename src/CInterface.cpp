@@ -711,7 +711,7 @@ int AbsScpiClient_LoadModel(AbsScpiClientHandle handle) {
 }
 
 int AbsScpiClient_StartModel(AbsScpiClientHandle handle) {
-  return WrapSet(&sc::LoadModel, handle);
+  return WrapSet(&sc::StartModel, handle);
 }
 
 int AbsScpiClient_StopModel(AbsScpiClientHandle handle) {
