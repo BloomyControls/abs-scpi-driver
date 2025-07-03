@@ -53,6 +53,14 @@ namespace bci::abs {
  */
 class ScpiClient {
  public:
+  /**
+   * @brief Get the library version as a decimal integer. For example, version
+   * 1.3.2 would return 10302.
+   *
+   * @return Library version.
+   */
+  static unsigned int Version() noexcept;
+
   /// Default CTOR.
   ScpiClient() noexcept;
 

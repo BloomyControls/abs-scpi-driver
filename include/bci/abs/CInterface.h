@@ -190,6 +190,18 @@ typedef struct AbsSerialDiscoveryResult {
 /** @} */
 
 /**
+ * @brief Get the version of the SCPI library as an unsigned base 10 integer.
+ * For example, version 1.2.3 would return 10203.
+ *
+ * This is intended to be used to check for the existence of certain
+ * functionality based on library version, particularly in wrappers (such as
+ * Python).
+ *
+ * @return The library version.
+ */
+unsigned int AbsScpiClient_Version();
+
+/**
  * @brief Get an error message to describe an error code returned by the driver.
  *
  * @return Null-terminated error message string.
