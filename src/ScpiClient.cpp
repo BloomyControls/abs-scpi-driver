@@ -22,6 +22,10 @@ static constexpr unsigned int kWriteTimeoutMs = 10;
 using util::Err;
 using ec = ErrorCode;
 
+unsigned int ScpiClient::Version() noexcept {
+  return ABSSCPI_VERSION;
+}
+
 ScpiClient::ScpiClient() noexcept : ScpiClient(nullptr) {}
 
 ScpiClient::ScpiClient(std::shared_ptr<drivers::CommDriver> driver) noexcept

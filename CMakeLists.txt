@@ -98,6 +98,10 @@ set_target_properties(absscpi PROPERTIES
 
 target_compile_features(absscpi PUBLIC cxx_std_20)
 
+target_compile_definitions(absscpi PRIVATE
+  "ABSSCPI_VERSION=((${PROJECT_VERSION_MAJOR}* 10000)+(${PROJECT_VERSION_MINOR}*100)+(${PROJECT_VERSION_PATCH}))"
+)
+
 if(MSVC)
   target_compile_options(absscpi PRIVATE /W3)
 else()
