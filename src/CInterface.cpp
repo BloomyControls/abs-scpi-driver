@@ -609,6 +609,32 @@ int AbsScpiClient_MeasureAllCellCurrents(AbsScpiClientHandle handle,
                  static_cast<std::size_t>(count));
 }
 
+int AbsScpiClient_MeasureAverageCellVoltage(AbsScpiClientHandle handle,
+                                            unsigned int cell,
+                                            float* voltage_out) {
+  return WrapGet(&sc::MeasureAverageCellVoltage, handle, voltage_out, cell);
+}
+
+int AbsScpiClient_MeasureAllAverageCellVoltages(AbsScpiClientHandle handle,
+                                                float voltages_out[],
+                                                unsigned int count) {
+  return WrapGet(&sc::MeasureAllAverageCellVoltages, handle, voltages_out,
+                 static_cast<std::size_t>(count));
+}
+
+int AbsScpiClient_MeasureAverageCellCurrent(AbsScpiClientHandle handle,
+                                            unsigned int cell,
+                                            float* current_out) {
+  return WrapGet(&sc::MeasureAverageCellCurrent, handle, current_out, cell);
+}
+
+int AbsScpiClient_MeasureAllAverageCellCurrents(AbsScpiClientHandle handle,
+                                                float currents_out[],
+                                                unsigned int count) {
+  return WrapGet(&sc::MeasureAllAverageCellCurrents, handle, currents_out,
+                 static_cast<std::size_t>(count));
+}
+
 static_assert(ABS_CELL_MODE_CV == static_cast<int>(CellMode::kConstantVoltage));
 static_assert(ABS_CELL_MODE_ILIM ==
               static_cast<int>(CellMode::kCurrentLimited));
