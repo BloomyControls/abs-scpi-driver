@@ -806,6 +806,56 @@ ErrorCode ScpiClient::MeasureAllCellVoltages(std::span<float> voltages) const {
   return MeasureAllCellVoltages(voltages.data(), voltages.size());
 }
 
+Result<float> ScpiClient::MeasureAverageCellVoltage(unsigned int cell) const {
+  if (cell >= kCellCount) {
+    return Err(ec::kChannelIndexOutOfRange);
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS{}:VOLT:AVG?\r\n", cell + 1);
+
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
+}
+
+Result<std::array<float, kCellCount>>
+ScpiClient::MeasureAllAverageCellVoltages() const {
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:VOLT:AVG? (@1:{})\r\n",
+                   kCellCount);
+  return SendAndRecv(buf).and_then(scpi::ParseRespFloatArray<kCellCount>);
+}
+
+ErrorCode ScpiClient::MeasureAllAverageCellVoltages(float* voltages,
+                                                    std::size_t count) const {
+  if ((!voltages && count > 0) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:VOLT:AVG? (@1:{})\r\n", count);
+
+  auto resp = SendAndRecv(buf);
+  if (!resp) {
+    return resp.error();
+  }
+
+  return scpi::SplitRespFloats(*resp, std::span{voltages, count});
+}
+
+ErrorCode ScpiClient::MeasureAllAverageCellVoltages(
+    std::array<float, kCellCount>& voltages) const {
+  return MeasureAllAverageCellVoltages(voltages.data(), voltages.size());
+}
+
+ErrorCode ScpiClient::MeasureAllAverageCellVoltages(
+    std::span<float> voltages) const {
+  return MeasureAllAverageCellVoltages(voltages.data(), voltages.size());
+}
+
 Result<float> ScpiClient::MeasureCellCurrent(unsigned int cell) const {
   if (cell >= kCellCount) {
     return Err(ec::kChannelIndexOutOfRange);
@@ -852,6 +902,56 @@ ErrorCode ScpiClient::MeasureAllCellCurrents(
 
 ErrorCode ScpiClient::MeasureAllCellCurrents(std::span<float> currents) const {
   return MeasureAllCellCurrents(currents.data(), currents.size());
+}
+
+Result<float> ScpiClient::MeasureAverageCellCurrent(unsigned int cell) const {
+  if (cell >= kCellCount) {
+    return Err(ec::kChannelIndexOutOfRange);
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS{}:CURR:AVG?\r\n", cell + 1);
+
+  return SendAndRecv(buf).and_then(scpi::ParseFloatResponse);
+}
+
+Result<std::array<float, kCellCount>>
+ScpiClient::MeasureAllAverageCellCurrents() const {
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:CURR:AVG? (@1:{})\r\n",
+                   kCellCount);
+  return SendAndRecv(buf).and_then(scpi::ParseRespFloatArray<kCellCount>);
+}
+
+ErrorCode ScpiClient::MeasureAllAverageCellCurrents(float* currents,
+                                                    std::size_t count) const {
+  if ((!currents && count > 0) || count > kCellCount) {
+    return ec::kInvalidArgument;
+  }
+
+  if (count == 0) {
+    return ec::kSuccess;
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "MEAS:CURR:AVG? (@1:{})\r\n", count);
+
+  auto resp = SendAndRecv(buf);
+  if (!resp) {
+    return resp.error();
+  }
+
+  return scpi::SplitRespFloats(*resp, std::span{currents, count});
+}
+
+ErrorCode ScpiClient::MeasureAllAverageCellCurrents(
+    std::array<float, kCellCount>& currents) const {
+  return MeasureAllAverageCellCurrents(currents.data(), currents.size());
+}
+
+ErrorCode ScpiClient::MeasureAllAverageCellCurrents(
+    std::span<float> currents) const {
+  return MeasureAllAverageCellCurrents(currents.data(), currents.size());
 }
 
 Result<CellMode> ScpiClient::GetCellOperatingMode(unsigned int cell) const {

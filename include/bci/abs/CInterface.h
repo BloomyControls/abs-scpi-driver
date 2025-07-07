@@ -197,6 +197,8 @@ typedef struct AbsSerialDiscoveryResult {
  * functionality based on library version, particularly in wrappers (such as
  * Python).
  *
+ * @since v1.1.0
+ *
  * @return The library version.
  */
 unsigned int AbsScpiClient_Version();
@@ -912,6 +914,96 @@ int AbsScpiClient_MeasureCellCurrent(AbsScpiClientHandle handle,
 int AbsScpiClient_MeasureAllCellCurrents(AbsScpiClientHandle handle,
                                          float currents_out[],
                                          unsigned int count);
+
+/**
+ * @brief Retrieve the rolling average of the last 10 voltage measurements for
+ * a single cell.
+ *
+ * At the default sample rate, this is a 10ms window. With filtering on, the
+ * length of this window will change.
+ *
+ * @since v1.1.0
+ *
+ * @par Requires
+ * Firmware v1.2.0
+ *
+ * @param[in] handle SCPI client
+ * @param[in] cell target cell index, 0-7
+ * @param[out] voltage_out pointer to the returned average voltage
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_MeasureAverageCellVoltage(AbsScpiClientHandle handle,
+                                            unsigned int cell,
+                                            float* voltage_out);
+
+/**
+ * @brief Retrieve the rolling average of the last 10 voltage measurements for
+ * many cells.
+ *
+ * At the default sample rate, this is a 10ms window. With filtering on, the
+ * length of this window will change.
+ *
+ * @since v1.1.0
+ *
+ * @par Requires
+ * Firmware v1.2.0
+ *
+ * @param[in] handle SCPI client
+ * @param[out] voltages_out array to store the returned average voltages, one
+ * per cell
+ * @param[in] count the number of cells to measure
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_MeasureAllAverageCellVoltages(AbsScpiClientHandle handle,
+                                                float voltages_out[],
+                                                unsigned int count);
+
+/**
+ * @brief Retrieve the rolling average of the last 10 current measurements for
+ * a single cell.
+ *
+ * At the default sample rate, this is a 10ms window. With filtering on, the
+ * length of this window will change.
+ *
+ * @since v1.1.0
+ *
+ * @par Requires
+ * Firmware v1.2.0
+ *
+ * @param[in] handle SCPI client
+ * @param[in] cell target cell index, 0-7
+ * @param[out] current_out pointer to the returned average current
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_MeasureAverageCellCurrent(AbsScpiClientHandle handle,
+                                            unsigned int cell,
+                                            float* current_out);
+
+/**
+ * @brief Retrieve the rolling average of the last 10 current measurements for
+ * many cells.
+ *
+ * At the default sample rate, this is a 10ms window. With filtering on, the
+ * length of this window will change.
+ *
+ * @since v1.1.0
+ *
+ * @par Requires
+ * Firmware v1.2.0
+ *
+ * @param[in] handle SCPI client
+ * @param[out] currents_out array to store the returned average currents, one
+ * per cell
+ * @param[in] count the number of cells to measure
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_MeasureAllAverageCellCurrents(AbsScpiClientHandle handle,
+                                                float currents_out[],
+                                                unsigned int count);
 
 /**
  * @brief Query a cell's operating mode (constant voltage or current-limited).
