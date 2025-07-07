@@ -57,6 +57,8 @@ class ScpiClient {
    * @brief Get the library version as a decimal integer. For example, version
    * 1.3.2 would return 10302.
    *
+   * @since v1.1.0
+   *
    * @return Library version.
    */
   static unsigned int Version() noexcept;
@@ -984,6 +986,200 @@ class ScpiClient {
    * @return An error code.
    */
   ErrorCode MeasureAllCellCurrents(std::span<float> currents) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 voltage measurements for
+   * a single cell.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[in] cell target cell index
+   *
+   * @return Result containing the average cell voltage or an error code.
+   */
+  Result<float> MeasureAverageCellVoltage(unsigned int cell) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 voltage measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @return Result containing an array of average cell voltages or an error
+   * code.
+   */
+  Result<std::array<float, kCellCount>> MeasureAllAverageCellVoltages() const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 voltage measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @note It is recommended that the array and span overloads be preferred over
+   * this overload whenever possible.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[out] voltages array to store the average voltages
+   * @param[in] count length of the array (must not be greater than the total
+   * cell count)
+   *
+   * @return An error code.
+   */
+  ErrorCode MeasureAllAverageCellVoltages(float* voltages,
+                                          std::size_t count) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 voltage measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[out] voltages an array of average cell voltages
+   *
+   * @return An error code.
+   */
+  ErrorCode MeasureAllAverageCellVoltages(
+      std::array<float, kCellCount>& voltages) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 voltage measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[out] voltages an array of cell voltages (must not be longer than the
+   * total cell count)
+   *
+   * @return An error code.
+   */
+  ErrorCode MeasureAllAverageCellVoltages(std::span<float> voltages) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 current measurements for
+   * a single cell.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[in] cell target cell index
+   *
+   * @return Result containing the average cell current or an error code.
+   */
+  Result<float> MeasureAverageCellCurrent(unsigned int cell) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 current measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @return Result containing an array of average cell currents or an error
+   * code.
+   */
+  Result<std::array<float, kCellCount>> MeasureAllAverageCellCurrents() const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 current measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @note It is recommended that the array and span overloads be preferred over
+   * this overload whenever possible.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[out] currents array to store the average currents
+   * @param[in] count length of the array (must not be greater than the total
+   * cell count)
+   *
+   * @return An error code.
+   */
+  ErrorCode MeasureAllAverageCellCurrents(float* currents,
+                                          std::size_t count) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 current measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[out] currents an array of average cell currents
+   *
+   * @return An error code.
+   */
+  ErrorCode MeasureAllAverageCellCurrents(
+      std::array<float, kCellCount>& currents) const;
+
+  /**
+   * @brief Retrieve the rolling average of the last 10 current measurements for
+   * all cells.
+   *
+   * At the default sample rate, this is a 10ms window. With filtering on, the
+   * length of this window will change.
+   *
+   * @since v1.1.0
+   *
+   * @par Requires
+   * Firmware v1.2.0
+   *
+   * @param[out] currents an array of cell currents (must not be longer than the
+   * total cell count)
+   *
+   * @return An error code.
+   */
+  ErrorCode MeasureAllAverageCellCurrents(std::span<float> currents) const;
 
   /**
    * @brief Query a single cell's operating mode.
