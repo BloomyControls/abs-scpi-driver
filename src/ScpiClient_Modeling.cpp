@@ -27,6 +27,12 @@ Result<std::uint8_t> ScpiClient::GetModelStatus() const {
       .and_then(scpi::ParseIntResponse<std::uint8_t>);
 }
 
+Result<std::chrono::milliseconds> ScpiClient::GetElapsedModelTime() const {
+  return SendAndRecv("MOD:TIME?\r\n")
+      .and_then(scpi::ParseIntResponse<std::int64_t>)
+      .map([](std::int64_t val) { return std::chrono::milliseconds(val); });
+}
+
 ErrorCode ScpiClient::LoadModel() const { return Send("MOD:LOAD\r\n"); }
 
 ErrorCode ScpiClient::StartModel() const { return Send("MOD:START\r\n"); }
