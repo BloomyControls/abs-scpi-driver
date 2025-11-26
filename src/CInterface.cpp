@@ -736,6 +736,23 @@ int AbsScpiClient_GetModelStatus(AbsScpiClientHandle handle,
   return WrapGet(&sc::GetModelStatus, handle, status_out);
 }
 
+int AbsScpiClient_GetElapsedModelTime(AbsScpiClientHandle handle,
+                                      int64_t* ms_out) {
+  if (!ms_out) {
+    return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  std::chrono::milliseconds ms{};
+  int ret = WrapGet(&sc::GetElapsedModelTime, handle, &ms);
+  if (ret != static_cast<int>(ec::kSuccess)) {
+    return ret;
+  }
+
+  *ms_out = ms.count();
+
+  return static_cast<int>(ec::kSuccess);
+}
+
 int AbsScpiClient_LoadModel(AbsScpiClientHandle handle) {
   return WrapSet(&sc::LoadModel, handle);
 }

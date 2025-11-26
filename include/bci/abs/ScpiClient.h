@@ -13,6 +13,7 @@
 #define ABS_SCPI_DRIVER_INCLUDE_BCI_ABS_SCPICLIENT_H
 
 #include <array>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <span>
@@ -1511,6 +1512,18 @@ class ScpiClient {
    * @return Result containing the model status bitmask or an error code.
    */
   Result<std::uint8_t> GetModelStatus() const;
+
+  /**
+   * @brief Query elapsed model time in milliseconds.
+   *
+   * @since v1.2.0
+   *
+   * @par Requires
+   * Firmware v1.3.0
+   *
+   * @return Result containing the elapsed time or an error code.
+   */
+  Result<std::chrono::milliseconds> GetElapsedModelTime() const;
 
   /**
    * @brief Load the model configuration on the device.

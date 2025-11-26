@@ -1222,6 +1222,22 @@ int AbsScpiClient_GetModelStatus(AbsScpiClientHandle handle,
                                  uint8_t* status_out);
 
 /**
+ * @brief Query the elapsed model time in milliseconds.
+ *
+ * @since v1.2.0
+ *
+ * @par Requires
+ * Firmware v1.3.0
+ *
+ * @param[in] handle SCPI client
+ * @param[out] ms_out pointer to the returned duration in milliseconds
+ *
+ * @return 0 on success or a negative error code.
+ */
+int AbsScpiClient_GetElapsedModelTime(AbsScpiClientHandle handle,
+                                      int64_t* ms_out);
+
+/**
  * @brief Load the model configuration on the device.
  *
  * @param[in] handle SCPI client
