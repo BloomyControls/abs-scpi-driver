@@ -66,13 +66,7 @@ Result<std::string> TcpDriver::ReadLine(unsigned int timeout_ms) const {
 }
 
 TcpDriver::Impl::Impl()
-    : io_context_(),
-      socket_(io_context_),
-      input_buffer_() {
-  boost::system::error_code ignored;
-  socket_.set_option(boost::asio::socket_base::linger(false, 0), ignored);
-  socket_.set_option(boost::asio::socket_base::keep_alive(true), ignored);
-}
+    : io_context_(), socket_(io_context_), input_buffer_() {}
 
 TcpDriver::Impl::~Impl() { Close(); }
 
@@ -98,6 +92,19 @@ ErrorCode TcpDriver::Impl::Connect(std::string_view ip,
   if (ec) {
     return ErrorCode::kConnectionFailed;
   }
+
+  socket_.set_option(boost::asio::socket_base::linger(false, 0), ec);
+  socket_.set_option(boost::asio::socket_base::keep_alive(true), ec);
+  socket_.set_option(
+      boost::asio::detail::socket_option::integer<IPPROTO_TCP, TCP_KEEPIDLE>(1),
+      ec);
+  socket_.set_option(
+      boost::asio::detail::socket_option::integer<IPPROTO_TCP, TCP_KEEPINTVL>(
+          1),
+      ec);
+  socket_.set_option(
+      boost::asio::detail::socket_option::integer<IPPROTO_TCP, TCP_KEEPCNT>(5),
+      ec);
 
   return ErrorCode::kSuccess;
 }
