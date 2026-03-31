@@ -26,6 +26,7 @@ AlwaysBreakBeforeMultilineStrings: true
 AlwaysBreakTemplateDeclarations: Yes
 AttributeMacros:
   - __capability
+  - ABSSCPI_API
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:

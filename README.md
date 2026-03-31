@@ -133,7 +133,7 @@ In your CMakeLists.txt, fetch and link with the driver:
 ```cmake
 FetchContent_Declare(abs-driver
   GIT_REPOSITORY https://github.com/BloomyControls/abs-scpi-driver.git
-  GIT_TAG v1.2.1
+  GIT_TAG v1.3.0
   GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(abs-driver)
@@ -145,7 +145,7 @@ If you have already installed the driver to a standard location on your system,
 you can use `find_package` instead:
 
 ```cmake
-find_package(absscpi 1.2.1 REQUIRED)
+find_package(absscpi 1.3.0 REQUIRED)
 
 target_link_libraries(my_program PRIVATE bci::absscpi)
 ```
@@ -166,9 +166,9 @@ dependencies. If these are installed on your system, CMake will find and use
 them if your installed versions are compatible. Otherwise, it will automatically
 fetch and build them as part of the build. The build dependencies are:
 
-- fmt v10.2.1
+- fmt v12.1.0
 - Boost v1.88.0
-- FastFloat v6.1.1
+- FastFloat v8.2.4
 
 These are all linked statically, regardless of the build configuration.
 

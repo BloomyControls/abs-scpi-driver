@@ -15,6 +15,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "absscpi_export.h"
+
 /**
  * @defgroup CInterface C Interface
  *
@@ -201,14 +203,14 @@ typedef struct AbsSerialDiscoveryResult {
  *
  * @return The library version.
  */
-unsigned int AbsScpiClient_Version();
+ABSSCPI_API unsigned int AbsScpiClient_Version();
 
 /**
  * @brief Get an error message to describe an error code returned by the driver.
  *
  * @return Null-terminated error message string.
  */
-const char* AbsScpiClient_ErrorMessage(int error);
+ABSSCPI_API const char* AbsScpiClient_ErrorMessage(int error);
 
 /**
  * @brief Initialize a SCPI client. Must be destroyed by the caller!
@@ -218,14 +220,14 @@ const char* AbsScpiClient_ErrorMessage(int error);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_Init(AbsScpiClientHandle* handle_out);
+ABSSCPI_API int AbsScpiClient_Init(AbsScpiClientHandle* handle_out);
 
 /**
  * @brief Destroy a SCPI client.
  *
  * @param[in,out] handle pointer to a handle to destroy
  */
-void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
+ABSSCPI_API void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
 
 /**
  * @brief Open a UDP connection to the ABS.
@@ -237,8 +239,9 @@ void AbsScpiClient_Destroy(AbsScpiClientHandle* handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
-                          const char* interface_ip);
+ABSSCPI_API int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle,
+                                      const char* target_ip,
+                                      const char* interface_ip);
 
 /**
  * @brief Open a TCP connection to the ABS.
@@ -253,7 +256,8 @@ int AbsScpiClient_OpenUdp(AbsScpiClientHandle handle, const char* target_ip,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle, const char* target_ip);
+ABSSCPI_API int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle,
+                                      const char* target_ip);
 
 /**
  * @brief Open a serial connection to one or many ABSes.
@@ -265,8 +269,9 @@ int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle, const char* target_ip);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
-                             unsigned int device_id);
+ABSSCPI_API int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle,
+                                         const char* com_port,
+                                         unsigned int device_id);
 
 /**
  * @brief Open a UDP multicast socket for broadcasting to many ABSes.
@@ -276,8 +281,8 @@ int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
-                                   const char* interface_ip);
+ABSSCPI_API int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
+                                               const char* interface_ip);
 
 /**
  * @brief Close the client connection.
@@ -286,7 +291,7 @@ int AbsScpiClient_OpenUdpMulticast(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_Close(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_Close(AbsScpiClientHandle handle);
 
 /**
  * @brief Set the target device ID for communication. Only applies to RS-485
@@ -298,8 +303,8 @@ int AbsScpiClient_Close(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetTargetDeviceId(AbsScpiClientHandle handle,
-                                    unsigned int device_id);
+ABSSCPI_API int AbsScpiClient_SetTargetDeviceId(AbsScpiClientHandle handle,
+                                                unsigned int device_id);
 
 /**
  * @brief Get the target device ID for communication. Only relevant for RS-485
@@ -310,8 +315,8 @@ int AbsScpiClient_SetTargetDeviceId(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetTargetDeviceId(AbsScpiClientHandle handle,
-                                    unsigned int* device_id_out);
+ABSSCPI_API int AbsScpiClient_GetTargetDeviceId(AbsScpiClientHandle handle,
+                                                unsigned int* device_id_out);
 
 /**
  * @defgroup CSystem System Control
@@ -328,8 +333,8 @@ int AbsScpiClient_GetTargetDeviceId(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetDeviceInfo(AbsScpiClientHandle handle,
-                                AbsDeviceInfo* info_out);
+ABSSCPI_API int AbsScpiClient_GetDeviceInfo(AbsScpiClientHandle handle,
+                                            AbsDeviceInfo* info_out);
 
 /**
  * @brief Query the ABS's device ID.
@@ -339,7 +344,8 @@ int AbsScpiClient_GetDeviceInfo(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out);
+ABSSCPI_API int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle,
+                                          uint8_t* id_out);
 
 /**
  * @brief Query the device's IP address and subnet mask.
@@ -350,8 +356,8 @@ int AbsScpiClient_GetDeviceId(AbsScpiClientHandle handle, uint8_t* id_out);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetIPAddress(AbsScpiClientHandle handle,
-                               AbsEthernetConfig* addr_out);
+ABSSCPI_API int AbsScpiClient_GetIPAddress(AbsScpiClientHandle handle,
+                                           AbsEthernetConfig* addr_out);
 
 /**
  * @brief Set the device's IP address and subnet mask.
@@ -365,8 +371,8 @@ int AbsScpiClient_GetIPAddress(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
-                               const AbsEthernetConfig* addr);
+ABSSCPI_API int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
+                                           const AbsEthernetConfig* addr);
 
 /**
  * @brief Get the device's calibration date.
@@ -381,8 +387,8 @@ int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle, char buf[],
-                                     unsigned int len);
+ABSSCPI_API int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle,
+                                                 char buf[], unsigned int len);
 
 /**
  * @brief Query the number of error's in the device's error queue.
@@ -392,7 +398,8 @@ int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle, char buf[],
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetErrorCount(AbsScpiClientHandle handle, int* count_out);
+ABSSCPI_API int AbsScpiClient_GetErrorCount(AbsScpiClientHandle handle,
+                                            int* count_out);
 
 /**
  * @brief Query the next error from the device's error queue.
@@ -408,9 +415,10 @@ int AbsScpiClient_GetErrorCount(AbsScpiClientHandle handle, int* count_out);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetNextError(AbsScpiClientHandle handle,
-                               int16_t* err_code_out, char msg_buf[],
-                               unsigned int msg_buf_len);
+ABSSCPI_API int AbsScpiClient_GetNextError(AbsScpiClientHandle handle,
+                                           int16_t* err_code_out,
+                                           char msg_buf[],
+                                           unsigned int msg_buf_len);
 
 /**
  * @brief Clear the device's error queue.
@@ -419,7 +427,7 @@ int AbsScpiClient_GetNextError(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_ClearErrors(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_ClearErrors(AbsScpiClientHandle handle);
 
 /**
  * @brief Query the alarms raised on the device.
@@ -429,7 +437,8 @@ int AbsScpiClient_ClearErrors(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAlarms(AbsScpiClientHandle handle, uint32_t* alarms_out);
+ABSSCPI_API int AbsScpiClient_GetAlarms(AbsScpiClientHandle handle,
+                                        uint32_t* alarms_out);
 
 /**
  * @brief Query the system interlock state. When in interlock, the unit will be
@@ -441,8 +450,8 @@ int AbsScpiClient_GetAlarms(AbsScpiClientHandle handle, uint32_t* alarms_out);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetInterlockState(AbsScpiClientHandle handle,
-                                    bool* interlock_out);
+ABSSCPI_API int AbsScpiClient_GetInterlockState(AbsScpiClientHandle handle,
+                                                bool* interlock_out);
 
 /**
  * @brief Assert the software interlock (a recoverable alarm).
@@ -453,7 +462,8 @@ int AbsScpiClient_GetInterlockState(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_AssertSoftwareInterlock(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_AssertSoftwareInterlock(
+    AbsScpiClientHandle handle);
 
 /**
  * @brief Clear recoverable alarms. This also clears a software interlock.
@@ -462,7 +472,8 @@ int AbsScpiClient_AssertSoftwareInterlock(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_ClearRecoverableAlarms(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_ClearRecoverableAlarms(
+    AbsScpiClientHandle handle);
 
 /**
  * @brief Reboot the device, resetting it to its POR state.
@@ -474,7 +485,7 @@ int AbsScpiClient_ClearRecoverableAlarms(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_Reboot(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_Reboot(AbsScpiClientHandle handle);
 
 /** @} */
 
@@ -493,8 +504,8 @@ int AbsScpiClient_Reboot(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_EnableCell(AbsScpiClientHandle handle, unsigned int cell,
-                             bool en);
+ABSSCPI_API int AbsScpiClient_EnableCell(AbsScpiClientHandle handle,
+                                         unsigned int cell, bool en);
 
 /**
  * @brief Enable or disable multiple cells at once.
@@ -506,8 +517,8 @@ int AbsScpiClient_EnableCell(AbsScpiClientHandle handle, unsigned int cell,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_EnableCellsMasked(AbsScpiClientHandle handle,
-                                    unsigned int cells, bool en);
+ABSSCPI_API int AbsScpiClient_EnableCellsMasked(AbsScpiClientHandle handle,
+                                                unsigned int cells, bool en);
 
 /**
  * @brief Query whether a cell is enabled.
@@ -518,8 +529,8 @@ int AbsScpiClient_EnableCellsMasked(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellEnabled(AbsScpiClientHandle handle, unsigned int cell,
-                                 bool* en_out);
+ABSSCPI_API int AbsScpiClient_GetCellEnabled(AbsScpiClientHandle handle,
+                                             unsigned int cell, bool* en_out);
 
 /**
  * @brief Query the enable state of all cells.
@@ -530,8 +541,8 @@ int AbsScpiClient_GetCellEnabled(AbsScpiClientHandle handle, unsigned int cell,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellsEnabledMasked(AbsScpiClientHandle handle,
-                                        unsigned int* cells_out);
+ABSSCPI_API int AbsScpiClient_GetCellsEnabledMasked(AbsScpiClientHandle handle,
+                                                    unsigned int* cells_out);
 
 /**
  * @brief Set a single cell's target voltage.
@@ -542,8 +553,8 @@ int AbsScpiClient_GetCellsEnabledMasked(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetCellVoltage(AbsScpiClientHandle handle, unsigned int cell,
-                                 float voltage);
+ABSSCPI_API int AbsScpiClient_SetCellVoltage(AbsScpiClientHandle handle,
+                                             unsigned int cell, float voltage);
 
 /**
  * @brief Set many cells' target voltages.
@@ -555,9 +566,9 @@ int AbsScpiClient_SetCellVoltage(AbsScpiClientHandle handle, unsigned int cell,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllCellVoltages(AbsScpiClientHandle handle,
-                                     const float voltages[],
-                                     unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllCellVoltages(AbsScpiClientHandle handle,
+                                                 const float voltages[],
+                                                 unsigned int count);
 
 /**
  * @brief Set multiple cells to the same voltage.
@@ -568,8 +579,8 @@ int AbsScpiClient_SetAllCellVoltages(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetMultipleCellVoltages(AbsScpiClientHandle handle,
-                                          unsigned int cells, float voltage);
+ABSSCPI_API int AbsScpiClient_SetMultipleCellVoltages(
+    AbsScpiClientHandle handle, unsigned int cells, float voltage);
 
 /**
  * @brief Query a cell's target voltage.
@@ -580,8 +591,9 @@ int AbsScpiClient_SetMultipleCellVoltages(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
-                                       unsigned int cell, float* voltage_out);
+ABSSCPI_API int AbsScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
+                                                   unsigned int cell,
+                                                   float* voltage_out);
 
 /**
  * @brief Query many cells' target voltages.
@@ -593,9 +605,8 @@ int AbsScpiClient_GetCellVoltageTarget(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllCellVoltageTargets(AbsScpiClientHandle handle,
-                                           float voltages_out[],
-                                           unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllCellVoltageTargets(
+    AbsScpiClientHandle handle, float voltages_out[], unsigned int count);
 
 /**
  * @brief Set a single cell's current sourcing limit.
@@ -606,8 +617,8 @@ int AbsScpiClient_GetAllCellVoltageTargets(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetCellSourcing(AbsScpiClientHandle handle, unsigned int cell,
-                                  float limit);
+ABSSCPI_API int AbsScpiClient_SetCellSourcing(AbsScpiClientHandle handle,
+                                              unsigned int cell, float limit);
 
 /**
  * @brief Set many cells' sourcing limits.
@@ -619,8 +630,9 @@ int AbsScpiClient_SetCellSourcing(AbsScpiClientHandle handle, unsigned int cell,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle,
-                                     const float limits[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle,
+                                                 const float limits[],
+                                                 unsigned int count);
 
 /**
  * @brief Set multiple cells to the same sourcing limit.
@@ -631,8 +643,8 @@ int AbsScpiClient_SetAllCellSourcing(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetMultipleCellSourcing(AbsScpiClientHandle handle,
-                                          unsigned int cells, float limit);
+ABSSCPI_API int AbsScpiClient_SetMultipleCellSourcing(
+    AbsScpiClientHandle handle, unsigned int cells, float limit);
 
 /**
  * @brief Query a single cell's sourcing limit.
@@ -643,8 +655,9 @@ int AbsScpiClient_SetMultipleCellSourcing(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle,
-                                       unsigned int cell, float* limit_out);
+ABSSCPI_API int AbsScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle,
+                                                   unsigned int cell,
+                                                   float* limit_out);
 
 /**
  * @brief Query many cells' sourcing limits.
@@ -656,9 +669,8 @@ int AbsScpiClient_GetCellSourcingLimit(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllCellSourcingLimits(AbsScpiClientHandle handle,
-                                           float limits_out[],
-                                           unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllCellSourcingLimits(
+    AbsScpiClientHandle handle, float limits_out[], unsigned int count);
 
 /**
  * @brief Set a single cell's current sinking limit.
@@ -669,8 +681,8 @@ int AbsScpiClient_GetAllCellSourcingLimits(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetCellSinking(AbsScpiClientHandle handle, unsigned int cell,
-                                 float limit);
+ABSSCPI_API int AbsScpiClient_SetCellSinking(AbsScpiClientHandle handle,
+                                             unsigned int cell, float limit);
 
 /**
  * @brief Set many cells' sinking limits.
@@ -682,8 +694,9 @@ int AbsScpiClient_SetCellSinking(AbsScpiClientHandle handle, unsigned int cell,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle,
-                                    const float limits[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle,
+                                                const float limits[],
+                                                unsigned int count);
 
 /**
  * @brief Set multiple cells to the same sinking limit.
@@ -694,8 +707,9 @@ int AbsScpiClient_SetAllCellSinking(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetMultipleCellSinking(AbsScpiClientHandle handle,
-                                         unsigned int cells, float limit);
+ABSSCPI_API int AbsScpiClient_SetMultipleCellSinking(AbsScpiClientHandle handle,
+                                                     unsigned int cells,
+                                                     float limit);
 
 /**
  * @brief Query a single cell's sinking limit.
@@ -706,8 +720,9 @@ int AbsScpiClient_SetMultipleCellSinking(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle,
-                                      unsigned int cell, float* limit_out);
+ABSSCPI_API int AbsScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle,
+                                                  unsigned int cell,
+                                                  float* limit_out);
 
 /**
  * @brief Query many cells' sinking limits.
@@ -719,9 +734,8 @@ int AbsScpiClient_GetCellSinkingLimit(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllCellSinkingLimits(AbsScpiClientHandle handle,
-                                          float limits_out[],
-                                          unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllCellSinkingLimits(
+    AbsScpiClientHandle handle, float limits_out[], unsigned int count);
 
 /**
  * @brief Set a single cell's fault state.
@@ -732,8 +746,8 @@ int AbsScpiClient_GetAllCellSinkingLimits(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetCellFault(AbsScpiClientHandle handle, unsigned int cell,
-                               int fault);
+ABSSCPI_API int AbsScpiClient_SetCellFault(AbsScpiClientHandle handle,
+                                           unsigned int cell, int fault);
 
 /**
  * @brief Set many cells' fault states
@@ -745,8 +759,9 @@ int AbsScpiClient_SetCellFault(AbsScpiClientHandle handle, unsigned int cell,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllCellFaults(AbsScpiClientHandle handle,
-                                   const int faults[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllCellFaults(AbsScpiClientHandle handle,
+                                               const int faults[],
+                                               unsigned int count);
 
 /**
  * @brief Set multiple cells to the same fault state.
@@ -757,8 +772,9 @@ int AbsScpiClient_SetAllCellFaults(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetMultipleCellFaults(AbsScpiClientHandle handle,
-                                        unsigned int cells, int fault);
+ABSSCPI_API int AbsScpiClient_SetMultipleCellFaults(AbsScpiClientHandle handle,
+                                                    unsigned int cells,
+                                                    int fault);
 
 /**
  * @brief Query a single cell's fault state.
@@ -769,8 +785,8 @@ int AbsScpiClient_SetMultipleCellFaults(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellFault(AbsScpiClientHandle handle, unsigned int cell,
-                               int* fault_out);
+ABSSCPI_API int AbsScpiClient_GetCellFault(AbsScpiClientHandle handle,
+                                           unsigned int cell, int* fault_out);
 
 /**
  * @brief Query many cells' fault states.
@@ -782,8 +798,9 @@ int AbsScpiClient_GetCellFault(AbsScpiClientHandle handle, unsigned int cell,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllCellFaults(AbsScpiClientHandle handle, int faults_out[],
-                                   unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllCellFaults(AbsScpiClientHandle handle,
+                                               int faults_out[],
+                                               unsigned int count);
 
 /**
  * @brief Set a single cell's current sense range.
@@ -797,8 +814,8 @@ int AbsScpiClient_GetAllCellFaults(AbsScpiClientHandle handle, int faults_out[],
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetCellSenseRange(AbsScpiClientHandle handle,
-                                    unsigned int cell, int range);
+ABSSCPI_API int AbsScpiClient_SetCellSenseRange(AbsScpiClientHandle handle,
+                                                unsigned int cell, int range);
 
 /**
  * @brief Set many cells' current sense ranges.
@@ -813,8 +830,9 @@ int AbsScpiClient_SetCellSenseRange(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllCellSenseRanges(AbsScpiClientHandle handle,
-                                        const int ranges[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllCellSenseRanges(AbsScpiClientHandle handle,
+                                                    const int ranges[],
+                                                    unsigned int count);
 
 /**
  * @brief Query a single cell's current sense range.
@@ -825,8 +843,9 @@ int AbsScpiClient_SetAllCellSenseRanges(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellSenseRange(AbsScpiClientHandle handle,
-                                    unsigned int cell, int* range_out);
+ABSSCPI_API int AbsScpiClient_GetCellSenseRange(AbsScpiClientHandle handle,
+                                                unsigned int cell,
+                                                int* range_out);
 
 /**
  * @brief Query many cells' current sense ranges.
@@ -838,8 +857,9 @@ int AbsScpiClient_GetCellSenseRange(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllCellSenseRanges(AbsScpiClientHandle handle,
-                                        int ranges_out[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllCellSenseRanges(AbsScpiClientHandle handle,
+                                                    int ranges_out[],
+                                                    unsigned int count);
 
 /**
  * @brief Enable or disable the cell 50/60Hz noise filter.
@@ -852,7 +872,8 @@ int AbsScpiClient_GetAllCellSenseRanges(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_EnableCellNoiseFilter(AbsScpiClientHandle handle, bool en);
+ABSSCPI_API int AbsScpiClient_EnableCellNoiseFilter(AbsScpiClientHandle handle,
+                                                    bool en);
 
 /**
  * @brief Query the enable state of the cell 50/60Hz noise filter.
@@ -862,8 +883,8 @@ int AbsScpiClient_EnableCellNoiseFilter(AbsScpiClientHandle handle, bool en);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellNoiseFilterEnabled(AbsScpiClientHandle handle,
-                                            bool* en_out);
+ABSSCPI_API int AbsScpiClient_GetCellNoiseFilterEnabled(
+    AbsScpiClientHandle handle, bool* en_out);
 
 /**
  * @brief Measure a cell's voltage.
@@ -874,8 +895,9 @@ int AbsScpiClient_GetCellNoiseFilterEnabled(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,
-                                     unsigned int cell, float* voltage_out);
+ABSSCPI_API int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,
+                                                 unsigned int cell,
+                                                 float* voltage_out);
 
 /**
  * @brief Measure many cells' voltages.
@@ -886,9 +908,9 @@ int AbsScpiClient_MeasureCellVoltage(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAllCellVoltages(AbsScpiClientHandle handle,
-                                         float voltages_out[],
-                                         unsigned int count);
+ABSSCPI_API int AbsScpiClient_MeasureAllCellVoltages(AbsScpiClientHandle handle,
+                                                     float voltages_out[],
+                                                     unsigned int count);
 
 /**
  * @brief Measure a cell's current.
@@ -899,8 +921,9 @@ int AbsScpiClient_MeasureAllCellVoltages(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureCellCurrent(AbsScpiClientHandle handle,
-                                     unsigned int cell, float* current_out);
+ABSSCPI_API int AbsScpiClient_MeasureCellCurrent(AbsScpiClientHandle handle,
+                                                 unsigned int cell,
+                                                 float* current_out);
 
 /**
  * @brief Measure many cells' currents.
@@ -911,9 +934,9 @@ int AbsScpiClient_MeasureCellCurrent(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAllCellCurrents(AbsScpiClientHandle handle,
-                                         float currents_out[],
-                                         unsigned int count);
+ABSSCPI_API int AbsScpiClient_MeasureAllCellCurrents(AbsScpiClientHandle handle,
+                                                     float currents_out[],
+                                                     unsigned int count);
 
 /**
  * @brief Retrieve the rolling average of the last 10 voltage measurements for
@@ -933,9 +956,8 @@ int AbsScpiClient_MeasureAllCellCurrents(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAverageCellVoltage(AbsScpiClientHandle handle,
-                                            unsigned int cell,
-                                            float* voltage_out);
+ABSSCPI_API int AbsScpiClient_MeasureAverageCellVoltage(
+    AbsScpiClientHandle handle, unsigned int cell, float* voltage_out);
 
 /**
  * @brief Retrieve the rolling average of the last 10 voltage measurements for
@@ -956,9 +978,8 @@ int AbsScpiClient_MeasureAverageCellVoltage(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAllAverageCellVoltages(AbsScpiClientHandle handle,
-                                                float voltages_out[],
-                                                unsigned int count);
+ABSSCPI_API int AbsScpiClient_MeasureAllAverageCellVoltages(
+    AbsScpiClientHandle handle, float voltages_out[], unsigned int count);
 
 /**
  * @brief Retrieve the rolling average of the last 10 current measurements for
@@ -978,9 +999,8 @@ int AbsScpiClient_MeasureAllAverageCellVoltages(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAverageCellCurrent(AbsScpiClientHandle handle,
-                                            unsigned int cell,
-                                            float* current_out);
+ABSSCPI_API int AbsScpiClient_MeasureAverageCellCurrent(
+    AbsScpiClientHandle handle, unsigned int cell, float* current_out);
 
 /**
  * @brief Retrieve the rolling average of the last 10 current measurements for
@@ -1001,9 +1021,8 @@ int AbsScpiClient_MeasureAverageCellCurrent(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAllAverageCellCurrents(AbsScpiClientHandle handle,
-                                                float currents_out[],
-                                                unsigned int count);
+ABSSCPI_API int AbsScpiClient_MeasureAllAverageCellCurrents(
+    AbsScpiClientHandle handle, float currents_out[], unsigned int count);
 
 /**
  * @brief Query a cell's operating mode (constant voltage or current-limited).
@@ -1014,8 +1033,9 @@ int AbsScpiClient_MeasureAllAverageCellCurrents(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
-                                       unsigned int cell, int* mode_out);
+ABSSCPI_API int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
+                                                   unsigned int cell,
+                                                   int* mode_out);
 
 /**
  * @brief Query many cells' operating modes (constant voltage or
@@ -1028,8 +1048,8 @@ int AbsScpiClient_GetCellOperatingMode(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllCellOperatingModes(AbsScpiClientHandle handle,
-                                           int modes_out[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllCellOperatingModes(
+    AbsScpiClientHandle handle, int modes_out[], unsigned int count);
 
 /** @} */
 
@@ -1048,8 +1068,9 @@ int AbsScpiClient_GetAllCellOperatingModes(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
-                                  unsigned int channel, float voltage);
+ABSSCPI_API int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
+                                              unsigned int channel,
+                                              float voltage);
 
 /**
  * @brief Set many analog outputs.
@@ -1061,9 +1082,9 @@ int AbsScpiClient_SetAnalogOutput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllAnalogOutputs(AbsScpiClientHandle handle,
-                                      const float voltages[],
-                                      unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllAnalogOutputs(AbsScpiClientHandle handle,
+                                                  const float voltages[],
+                                                  unsigned int count);
 
 /**
  * @brief Set multiple analog outputs to the same value.
@@ -1074,9 +1095,8 @@ int AbsScpiClient_SetAllAnalogOutputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetMultipleAnalogOutputs(AbsScpiClientHandle handle,
-                                           unsigned int channels,
-                                           float voltage);
+ABSSCPI_API int AbsScpiClient_SetMultipleAnalogOutputs(
+    AbsScpiClientHandle handle, unsigned int channels, float voltage);
 
 /**
  * @brief Query on analog output's set point.
@@ -1087,8 +1107,9 @@ int AbsScpiClient_SetMultipleAnalogOutputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
-                                  unsigned int channel, float* voltage_out);
+ABSSCPI_API int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
+                                              unsigned int channel,
+                                              float* voltage_out);
 
 /**
  * @brief Query many analog outputs' set points.
@@ -1101,8 +1122,9 @@ int AbsScpiClient_GetAnalogOutput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllAnalogOutputs(AbsScpiClientHandle handle,
-                                      float voltages_out[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllAnalogOutputs(AbsScpiClientHandle handle,
+                                                  float voltages_out[],
+                                                  unsigned int count);
 
 /**
  * @brief Set a single digital output.
@@ -1113,8 +1135,9 @@ int AbsScpiClient_GetAllAnalogOutputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetDigitalOutput(AbsScpiClientHandle handle,
-                                   unsigned int channel, bool level);
+ABSSCPI_API int AbsScpiClient_SetDigitalOutput(AbsScpiClientHandle handle,
+                                               unsigned int channel,
+                                               bool level);
 
 /**
  * @brief Set all digital outputs.
@@ -1124,8 +1147,8 @@ int AbsScpiClient_SetDigitalOutput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllDigitalOutputs(AbsScpiClientHandle handle,
-                                       unsigned int levels_mask);
+ABSSCPI_API int AbsScpiClient_SetAllDigitalOutputs(AbsScpiClientHandle handle,
+                                                   unsigned int levels_mask);
 
 /**
  * @brief Query the state of a digital output.
@@ -1136,8 +1159,9 @@ int AbsScpiClient_SetAllDigitalOutputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetDigitalOutput(AbsScpiClientHandle handle,
-                                   unsigned int channel, bool* level_out);
+ABSSCPI_API int AbsScpiClient_GetDigitalOutput(AbsScpiClientHandle handle,
+                                               unsigned int channel,
+                                               bool* level_out);
 
 /**
  * @brief Query the states of all digital outputs.
@@ -1148,8 +1172,8 @@ int AbsScpiClient_GetDigitalOutput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllDigitalOutputs(AbsScpiClientHandle handle,
-                                       unsigned int* levels_out);
+ABSSCPI_API int AbsScpiClient_GetAllDigitalOutputs(AbsScpiClientHandle handle,
+                                                   unsigned int* levels_out);
 
 /**
  * @brief Measure a single analog input.
@@ -1160,8 +1184,9 @@ int AbsScpiClient_GetAllDigitalOutputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAnalogInput(AbsScpiClientHandle handle,
-                                     unsigned int channel, float* voltage_out);
+ABSSCPI_API int AbsScpiClient_MeasureAnalogInput(AbsScpiClientHandle handle,
+                                                 unsigned int channel,
+                                                 float* voltage_out);
 
 /**
  * @brief Measure many analog inputs.
@@ -1173,9 +1198,9 @@ int AbsScpiClient_MeasureAnalogInput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAllAnalogInputs(AbsScpiClientHandle handle,
-                                         float voltages_out[],
-                                         unsigned int count);
+ABSSCPI_API int AbsScpiClient_MeasureAllAnalogInputs(AbsScpiClientHandle handle,
+                                                     float voltages_out[],
+                                                     unsigned int count);
 
 /**
  * @brief Measure a single digital input.
@@ -1186,8 +1211,9 @@ int AbsScpiClient_MeasureAllAnalogInputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
-                                      unsigned int channel, bool* level_out);
+ABSSCPI_API int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
+                                                  unsigned int channel,
+                                                  bool* level_out);
 
 /**
  * @brief Measure all digital inputs.
@@ -1197,8 +1223,8 @@ int AbsScpiClient_MeasureDigitalInput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MeasureAllDigitalInputs(AbsScpiClientHandle handle,
-                                          unsigned int* levels_out);
+ABSSCPI_API int AbsScpiClient_MeasureAllDigitalInputs(
+    AbsScpiClientHandle handle, unsigned int* levels_out);
 
 /** @} */
 
@@ -1218,8 +1244,8 @@ int AbsScpiClient_MeasureAllDigitalInputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetModelStatus(AbsScpiClientHandle handle,
-                                 uint8_t* status_out);
+ABSSCPI_API int AbsScpiClient_GetModelStatus(AbsScpiClientHandle handle,
+                                             uint8_t* status_out);
 
 /**
  * @brief Query the elapsed model time in milliseconds.
@@ -1234,8 +1260,8 @@ int AbsScpiClient_GetModelStatus(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetElapsedModelTime(AbsScpiClientHandle handle,
-                                      int64_t* ms_out);
+ABSSCPI_API int AbsScpiClient_GetElapsedModelTime(AbsScpiClientHandle handle,
+                                                  int64_t* ms_out);
 
 /**
  * @brief Load the model configuration on the device.
@@ -1244,7 +1270,7 @@ int AbsScpiClient_GetElapsedModelTime(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_LoadModel(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_LoadModel(AbsScpiClientHandle handle);
 
 /**
  * @brief Start modeling.
@@ -1253,7 +1279,7 @@ int AbsScpiClient_LoadModel(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_StartModel(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_StartModel(AbsScpiClientHandle handle);
 
 /**
  * @brief Stop modeling.
@@ -1262,7 +1288,7 @@ int AbsScpiClient_StartModel(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_StopModel(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_StopModel(AbsScpiClientHandle handle);
 
 /**
  * @brief Unload the model configuration.
@@ -1271,7 +1297,7 @@ int AbsScpiClient_StopModel(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_UnloadModel(AbsScpiClientHandle handle);
+ABSSCPI_API int AbsScpiClient_UnloadModel(AbsScpiClientHandle handle);
 
 /**
  * @brief Query information about the loaded model.
@@ -1281,8 +1307,8 @@ int AbsScpiClient_UnloadModel(AbsScpiClientHandle handle);
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetModelInfo(AbsScpiClientHandle handle,
-                               AbsModelInfo* model_info_out);
+ABSSCPI_API int AbsScpiClient_GetModelInfo(AbsScpiClientHandle handle,
+                                           AbsModelInfo* model_info_out);
 
 /**
  * @brief Query the ID of the currently loaded model. This ID is user-defined
@@ -1294,8 +1320,8 @@ int AbsScpiClient_GetModelInfo(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetModelId(AbsScpiClientHandle handle, char id_buf[],
-                             unsigned int buf_len);
+ABSSCPI_API int AbsScpiClient_GetModelId(AbsScpiClientHandle handle,
+                                         char id_buf[], unsigned int buf_len);
 
 /**
  * @brief Set a single global model input. Particularly useful with multicast to
@@ -1307,8 +1333,9 @@ int AbsScpiClient_GetModelId(AbsScpiClientHandle handle, char id_buf[],
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetGlobalModelInput(AbsScpiClientHandle handle,
-                                      unsigned int index, float value);
+ABSSCPI_API int AbsScpiClient_SetGlobalModelInput(AbsScpiClientHandle handle,
+                                                  unsigned int index,
+                                                  float value);
 
 /**
  * @brief Set multiple global model inputs. Particularly useful with multicast
@@ -1321,9 +1348,8 @@ int AbsScpiClient_SetGlobalModelInput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllGlobalModelInputs(AbsScpiClientHandle handle,
-                                          const float values[],
-                                          unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllGlobalModelInputs(
+    AbsScpiClientHandle handle, const float values[], unsigned int count);
 
 /**
  * @brief Query the value of a single global model input.
@@ -1334,8 +1360,9 @@ int AbsScpiClient_SetAllGlobalModelInputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetGlobalModelInput(AbsScpiClientHandle handle,
-                                      unsigned int index, float* value_out);
+ABSSCPI_API int AbsScpiClient_GetGlobalModelInput(AbsScpiClientHandle handle,
+                                                  unsigned int index,
+                                                  float* value_out);
 
 /**
  * @brief Query the values of multiple global model inputs.
@@ -1347,9 +1374,8 @@ int AbsScpiClient_GetGlobalModelInput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllGlobalModelInputs(AbsScpiClientHandle handle,
-                                          float values_out[],
-                                          unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllGlobalModelInputs(
+    AbsScpiClientHandle handle, float values_out[], unsigned int count);
 
 /**
  * @brief Set a single local model input.
@@ -1360,8 +1386,9 @@ int AbsScpiClient_GetAllGlobalModelInputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetLocalModelInput(AbsScpiClientHandle handle,
-                                     unsigned int index, float value);
+ABSSCPI_API int AbsScpiClient_SetLocalModelInput(AbsScpiClientHandle handle,
+                                                 unsigned int index,
+                                                 float value);
 
 /**
  * @brief Set multiple local model inputs.
@@ -1373,9 +1400,9 @@ int AbsScpiClient_SetLocalModelInput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SetAllLocalModelInputs(AbsScpiClientHandle handle,
-                                         const float values[],
-                                         unsigned int count);
+ABSSCPI_API int AbsScpiClient_SetAllLocalModelInputs(AbsScpiClientHandle handle,
+                                                     const float values[],
+                                                     unsigned int count);
 
 /**
  * @brief Query the value of a single local model input.
@@ -1386,8 +1413,9 @@ int AbsScpiClient_SetAllLocalModelInputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetLocalModelInput(AbsScpiClientHandle handle,
-                                     unsigned int index, float* value_out);
+ABSSCPI_API int AbsScpiClient_GetLocalModelInput(AbsScpiClientHandle handle,
+                                                 unsigned int index,
+                                                 float* value_out);
 
 /**
  * @brief Query the values of multiple local model inputs.
@@ -1399,9 +1427,9 @@ int AbsScpiClient_GetLocalModelInput(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllLocalModelInputs(AbsScpiClientHandle handle,
-                                         float values_out[],
-                                         unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllLocalModelInputs(AbsScpiClientHandle handle,
+                                                     float values_out[],
+                                                     unsigned int count);
 
 /**
  * @brief Query a single model output.
@@ -1412,8 +1440,9 @@ int AbsScpiClient_GetAllLocalModelInputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetModelOutput(AbsScpiClientHandle handle, unsigned int index,
-                                 float* value_out);
+ABSSCPI_API int AbsScpiClient_GetModelOutput(AbsScpiClientHandle handle,
+                                             unsigned int index,
+                                             float* value_out);
 
 /**
  * @brief Query multiple model outputs.
@@ -1425,8 +1454,9 @@ int AbsScpiClient_GetModelOutput(AbsScpiClientHandle handle, unsigned int index,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_GetAllModelOutputs(AbsScpiClientHandle handle,
-                                     float values_out[], unsigned int count);
+ABSSCPI_API int AbsScpiClient_GetAllModelOutputs(AbsScpiClientHandle handle,
+                                                 float values_out[],
+                                                 unsigned int count);
 
 /** @} */
 
@@ -1452,9 +1482,9 @@ int AbsScpiClient_GetAllModelOutputs(AbsScpiClientHandle handle,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
-                                     AbsEthernetDiscoveryResult results_out[],
-                                     unsigned int* count);
+ABSSCPI_API int AbsScpiClient_MulticastDiscovery(
+    const char* interface_ip, AbsEthernetDiscoveryResult results_out[],
+    unsigned int* count);
 
 /**
  * @brief Use RS-485 to discover ABSes on the bus.
@@ -1480,10 +1510,9 @@ int AbsScpiClient_MulticastDiscovery(const char* interface_ip,
  *
  * @return 0 on success or a negative error code.
  */
-int AbsScpiClient_SerialDiscovery(const char* port, uint8_t first_id,
-                                  uint8_t last_id,
-                                  AbsSerialDiscoveryResult results_out[],
-                                  unsigned int* count);
+ABSSCPI_API int AbsScpiClient_SerialDiscovery(
+    const char* port, uint8_t first_id, uint8_t last_id,
+    AbsSerialDiscoveryResult results_out[], unsigned int* count);
 
 /** @} */
 

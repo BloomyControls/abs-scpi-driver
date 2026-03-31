@@ -14,6 +14,9 @@ on:
         type: boolean
         default: true
 
+permissions:
+  contents: write
+
 jobs:
   windows:
     runs-on: windows-latest
@@ -27,10 +30,12 @@ jobs:
         arch: [x86, x64]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
+    # we have to use a specific hash here to refer to a PR that upgrades the
+    # action for Node 24
     - name: Enable Developer Command Prompt
-      uses: ilammy/msvc-dev-cmd@v1.13.0
+      uses: ilammy/msvc-dev-cmd@138b1c783b65ec697d8342918306b7b2db4e88f1
       with:
         arch: ${{ matrix.arch == 'x86' && 'amd64_x86' || 'amd64' }}
 
@@ -51,7 +56,7 @@ jobs:
         cd build
         cpack -G ZIP
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: windows-${{ matrix.arch }}
         if-no-files-found: error
@@ -66,7 +71,7 @@ jobs:
     if: contains(inputs.platforms, 'linux')
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Configure CMake
       run: |
@@ -81,7 +86,7 @@ jobs:
         cd build
         cpack -G ZIP
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: linux-64
         if-no-files-found: error
@@ -95,10 +100,10 @@ jobs:
     if: inputs.release
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Merge built artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         path: dist
         merge-multiple: true
