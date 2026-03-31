@@ -63,7 +63,7 @@ endif()
 option(FASTFLOAT_INSTALL "" OFF)
 FetchContent_Declare(fast_float
   GIT_REPOSITORY https://github.com/fastfloat/fast_float.git
-  GIT_TAG v6.1.1
+  GIT_TAG v8.2.4
   GIT_SHALLOW TRUE
 )
 message(STATUS "Fetch fast_float")
