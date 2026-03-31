@@ -71,8 +71,6 @@ FetchContent_MakeAvailable(fast_float)
 
 find_package(Doxygen 1.9.8 OPTIONAL_COMPONENTS dot)
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
-
 add_library(absscpi ${ABSSCPI_LIB_TYPE}
   src/TcpDriver.cpp
   src/UdpDriver.cpp
@@ -94,7 +92,17 @@ set_target_properties(absscpi PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${PROJECT_VERSION_MAJOR}
   POSITION_INDEPENDENT_CODE ON
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN TRUE
 )
+
+include(GenerateExportHeader)
+generate_export_header(absscpi
+  EXPORT_MACRO_NAME ABSSCPI_API
+)
+if(${ABSSCPI_LIB_TYPE} STREQUAL STATIC)
+  target_compile_definitions(absscpi PRIVATE ABSSCPI_STATIC_DEFINE)
+endif()
 
 target_compile_features(absscpi PUBLIC cxx_std_20)
 
@@ -117,6 +125,7 @@ endif()
 
 target_include_directories(absscpi PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
@@ -140,6 +149,10 @@ if(ABSSCPI_INSTALL AND BUILD_SHARED_LIBS)
 
   install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/bci"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT devel)
+
+  install(FILES "${PROJECT_BINARY_DIR}/absscpi_export.h"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bci/abs
     COMPONENT devel)
 
   install(TARGETS absscpi

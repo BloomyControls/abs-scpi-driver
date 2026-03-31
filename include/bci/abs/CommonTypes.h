@@ -16,6 +16,7 @@
 #include <string>
 #include <utility>
 
+#include "absscpi_export.h"
 #include "util/expected.hpp"
 
 namespace bci::abs {
@@ -181,7 +182,7 @@ using Result = tl::expected<T, ErrorCode>;
  *
  * @return Error message.
  */
-const char* ErrorMessage(ErrorCode ec) noexcept;
+ABSSCPI_API const char* ErrorMessage(ErrorCode ec) noexcept;
 
 }  // namespace bci::abs
 

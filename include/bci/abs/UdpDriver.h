@@ -17,6 +17,7 @@
 
 #include "CommDriver.h"
 #include "CommonTypes.h"
+#include "absscpi_export.h"
 
 namespace bci::abs::drivers {
 
@@ -26,10 +27,10 @@ namespace bci::abs::drivers {
 class UdpDriver final : public CommDriver {
  public:
   /// CTOR.
-  UdpDriver();
+  ABSSCPI_API UdpDriver();
 
   /// DTOR.
-  ~UdpDriver();
+  ABSSCPI_API ~UdpDriver();
 
   /**
    * @brief Open a socket for communication with the ABS.
@@ -38,7 +39,7 @@ class UdpDriver final : public CommDriver {
    *
    * @return An error code.
    */
-  ErrorCode Open(std::string_view ip);
+  ABSSCPI_API ErrorCode Open(std::string_view ip);
 
   /**
    * @brief Open a socket for communication with the ABS bound to a specific
@@ -49,10 +50,11 @@ class UdpDriver final : public CommDriver {
    *
    * @return An error code.
    */
-  ErrorCode Open(std::string_view local_ip, std::string_view target_ip);
+  ABSSCPI_API ErrorCode Open(std::string_view local_ip,
+                             std::string_view target_ip);
 
   /// Close the socket.
-  void Close() noexcept;
+  ABSSCPI_API void Close() noexcept;
 
   /**
    * @brief Send data over UDP.
@@ -62,7 +64,8 @@ class UdpDriver final : public CommDriver {
    *
    * @return An error code.
    */
-  ErrorCode Write(std::string_view data, unsigned int timeout_ms) const;
+  ABSSCPI_API ErrorCode Write(std::string_view data,
+                              unsigned int timeout_ms) const;
 
   /**
    * @brief Read a line over UDP.
@@ -71,7 +74,7 @@ class UdpDriver final : public CommDriver {
    *
    * @return Result containing the line read or an error code.
    */
-  Result<std::string> ReadLine(unsigned int timeout_ms) const;
+  ABSSCPI_API Result<std::string> ReadLine(unsigned int timeout_ms) const;
 
  private:
   struct Impl;

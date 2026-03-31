@@ -17,6 +17,7 @@
 
 #include "CommDriver.h"
 #include "CommonTypes.h"
+#include "absscpi_export.h"
 
 namespace bci::abs::drivers {
 
@@ -34,10 +35,10 @@ class UdpMcastDriver final : public CommDriver {
   };
 
   /// CTOR.
-  UdpMcastDriver();
+  ABSSCPI_API UdpMcastDriver();
 
   /// DTOR.
-  ~UdpMcastDriver();
+  ABSSCPI_API ~UdpMcastDriver();
 
   /**
    * @brief Open a socket for communication with the ABS.
@@ -46,10 +47,10 @@ class UdpMcastDriver final : public CommDriver {
    *
    * @return An error code.
    */
-  ErrorCode Open(std::string_view interface_ip);
+  ABSSCPI_API ErrorCode Open(std::string_view interface_ip);
 
   /// Close the socket.
-  void Close() noexcept;
+  ABSSCPI_API void Close() noexcept;
 
   /**
    * @brief Send data over UDP multicast.
@@ -59,7 +60,8 @@ class UdpMcastDriver final : public CommDriver {
    *
    * @return An error code.
    */
-  ErrorCode Write(std::string_view data, unsigned int timeout_ms) const;
+  ABSSCPI_API ErrorCode Write(std::string_view data,
+                              unsigned int timeout_ms) const;
 
   /**
    * @brief Read a line over UDP multicast. This is not a very useful function
@@ -70,7 +72,7 @@ class UdpMcastDriver final : public CommDriver {
    *
    * @return Result containing the line read or an error code.
    */
-  Result<std::string> ReadLine(unsigned int timeout_ms) const;
+  ABSSCPI_API Result<std::string> ReadLine(unsigned int timeout_ms) const;
 
   /**
    * @brief Read a line over UDP multicast, returning the line and the sender's
@@ -80,7 +82,8 @@ class UdpMcastDriver final : public CommDriver {
    *
    * @return Result containing the response or an error code.
    */
-  Result<AddressedResponse> ReadLineFrom(unsigned int timeout_ms) const;
+  ABSSCPI_API Result<AddressedResponse> ReadLineFrom(
+      unsigned int timeout_ms) const;
 
   /**
    * @brief Whether the device is send-only in the general case. Always true for
