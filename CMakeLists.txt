@@ -24,11 +24,11 @@ endif()
 
 set(FMT_SYSTEM_HEADERS TRUE)
 set(FMT_INSTALL OFF)
-find_package(fmt 10.2.1 QUIET)
+find_package(fmt 12.1.0 QUIET)
 if(NOT fmt_FOUND)
   FetchContent_Declare(fmt
     GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-    GIT_TAG 10.2.1
+    GIT_TAG 12.1.0
     GIT_SHALLOW TRUE
   )
   FetchContent_GetProperties(fmt)
