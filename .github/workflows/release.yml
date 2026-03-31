@@ -39,6 +39,11 @@ jobs:
       with:
         arch: ${{ matrix.arch == 'x86' && 'amd64_x86' || 'amd64' }}
 
+    - name: Install WiX v4
+      run: |
+        dotnet tool install --global wix --version 4.0.4
+        wix extension add --global WixToolset.UI.wixext/4.0.4
+
     - name: Configure CMake
       run: |
         cmake -B build --preset ${{ matrix.arch }}-release
