@@ -168,7 +168,7 @@ fetch and build them as part of the build. The build dependencies are:
 
 - fmt v12.1.0
 - Boost v1.88.0
-- FastFloat v6.1.1
+- FastFloat v8.2.4
 
 These are all linked statically, regardless of the build configuration.
 
