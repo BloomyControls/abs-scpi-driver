@@ -17,6 +17,7 @@
 
 #include "CommDriver.h"
 #include "CommonTypes.h"
+#include "absscpi_export.h"
 
 namespace bci::abs::drivers {
 
@@ -29,10 +30,10 @@ namespace bci::abs::drivers {
 class TcpDriver final : public CommDriver {
  public:
   /// CTOR.
-  TcpDriver();
+  ABSSCPI_API TcpDriver();
 
   /// DTOR. Closes any ongoing connection.
-  ~TcpDriver();
+  ABSSCPI_API ~TcpDriver();
 
   /**
    * @brief Connect to the ABS.
@@ -42,10 +43,10 @@ class TcpDriver final : public CommDriver {
    *
    * @return An error code.
    */
-  ErrorCode Connect(std::string_view ip, unsigned int timeout_ms);
+  ABSSCPI_API ErrorCode Connect(std::string_view ip, unsigned int timeout_ms);
 
   /// Close the connection to the ABS.
-  void Close() noexcept;
+  ABSSCPI_API void Close() noexcept;
 
   /**
    * @brief Send data over TCP.
@@ -55,7 +56,8 @@ class TcpDriver final : public CommDriver {
    *
    * @return An error code.
    */
-  ErrorCode Write(std::string_view data, unsigned int timeout_ms) const;
+  ABSSCPI_API ErrorCode Write(std::string_view data,
+                              unsigned int timeout_ms) const;
 
   /**
    * @brief Read a line over TCP.
@@ -64,7 +66,7 @@ class TcpDriver final : public CommDriver {
    *
    * @return Result containing the line read or an error code.
    */
-  Result<std::string> ReadLine(unsigned int timeout_ms) const;
+  ABSSCPI_API Result<std::string> ReadLine(unsigned int timeout_ms) const;
 
  private:
   struct Impl;

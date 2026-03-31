@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "CommonTypes.h"
+#include "absscpi_export.h"
 
 namespace bci::abs {
 
@@ -49,7 +50,8 @@ using SerialDeviceList = std::vector<SerialDevice>;
  *
  * @return Result containing a list of devices or an error code.
  */
-Result<EthernetDeviceList> MulticastDiscovery(std::string_view interface_ip);
+ABSSCPI_API Result<EthernetDeviceList> MulticastDiscovery(
+    std::string_view interface_ip);
 
 /**
  * @brief Discover any units on a serial bus.
@@ -63,9 +65,9 @@ Result<EthernetDeviceList> MulticastDiscovery(std::string_view interface_ip);
  *
  * @return Result containing a list of devices or an error code.
  */
-Result<SerialDeviceList> SerialDiscovery(std::string_view port,
-                                         std::uint8_t first_id,
-                                         std::uint8_t last_id);
+ABSSCPI_API Result<SerialDeviceList> SerialDiscovery(std::string_view port,
+                                                     std::uint8_t first_id,
+                                                     std::uint8_t last_id);
 
 }  // namespace bci::abs
 
