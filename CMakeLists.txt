@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project(absscpi
-  VERSION 1.2.1
+  VERSION 1.3.0
   DESCRIPTION "ABS SCPI driver library"
   HOMEPAGE_URL "https://github.com/BloomyControls/abs-scpi-driver"
 )
