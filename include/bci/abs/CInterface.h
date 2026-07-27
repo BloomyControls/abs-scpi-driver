@@ -85,6 +85,8 @@ extern "C" {
 #define ABS_SCPI_ERR_ALLOCATION_FAILED (-23)
 /// Unexpected exception
 #define ABS_SCPI_ERR_UNEXPECTED_EXCEPTION (-24)
+/// Invalid baud rate
+#define ABS_SCPI_ERR_INVALID_BAUD (-25)
 /** @} */
 
 /**
@@ -262,6 +264,9 @@ ABSSCPI_API int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle,
 /**
  * @brief Open a serial connection to one or many ABSes.
  *
+ * Equivalent to
+ * `AbsScpiClient_OpenSerialWithBaud(handle, com_port, device_id, 115200)`.
+ *
  * @param[in] handle SCPI client
  * @param[in] com_port the serial port to open, such as COM1 or /dev/ttyS0
  * @param[in] device_id target device ID, 0-31, or 32+ to broadcast to all
@@ -272,6 +277,29 @@ ABSSCPI_API int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle,
 ABSSCPI_API int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle,
                                          const char* com_port,
                                          unsigned int device_id);
+
+/**
+ * @brief Open a serial connection to one or many ABSes with a specific baud
+ * rate.
+ *
+ * @note Use of a baud other than 115200 requires ABS firmware v1.5.0 or newer.
+ * On older versions, the baud rate is always 115200. To configure the device's
+ * baud rate, use AbsScpiClient_SetSerialBaud().
+ *
+ * @since v1.4.0
+ *
+ * @param[in] handle SCPI client
+ * @param[in] com_port the serial port to open, such as COM1 or /dev/ttyS0
+ * @param[in] device_id target device ID, 0-31, or 32+ to broadcast to all
+ * units on the bus
+ * @param[in] baud serial baud rate (115200 is the default)
+ *
+ * @return 0 on success or a negative error code.
+ */
+ABSSCPI_API int AbsScpiClient_OpenSerialWithBaud(AbsScpiClientHandle handle,
+                                                 const char* com_port,
+                                                 unsigned int device_id,
+                                                 unsigned int baud);
 
 /**
  * @brief Open a UDP multicast socket for broadcasting to many ABSes.
@@ -373,6 +401,61 @@ ABSSCPI_API int AbsScpiClient_GetIPAddress(AbsScpiClientHandle handle,
  */
 ABSSCPI_API int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
                                            const AbsEthernetConfig* addr);
+
+/**
+ * @brief Set the device's RS-485 baud rate.
+ *
+ * The ABS supports a limited set of baud rates:
+ *
+ *   - 115200
+ *   - 230400
+ *   - 460800
+ *   - 500000
+ *   - 576000
+ *   - 921600
+ *   - 1000000
+ *   - 1152000
+ *   - 1500000
+ *   - 2000000
+ *   - 2500000
+ *   - 3000000
+ *   - 3500000
+ *   - 4000000
+ *
+ * Keep in mind that while the ABS supports all the bauds listed above, higher
+ * bauds may require shorter wire lengths and proper termination.
+ *
+ * @note The change is applied immediately. If the device is currently
+ * connected over RS-485, you may have to disconnect and reconnect.
+ *
+ * @since v1.4.0
+ *
+ * @par Requires
+ * Firmware v1.5.0
+ *
+ * @param[in] handle SCPI client
+ * @param[in] baud the new baud rate to set
+ *
+ * @return An error code.
+ */
+ABSSCPI_API int AbsScpiClient_SetSerialBaud(AbsScpiClientHandle handle,
+                                            unsigned int baud);
+
+/**
+ * @brief Query the device's configured RS-485 baud rate.
+ *
+ * @since v1.4.0
+ *
+ * @par Requires
+ * Firmware v1.5.0
+ *
+ * @param[in] handle SCPI client
+ * @param[out] handle_out pointer to store the returned baud rate
+ *
+ * @return An error code.
+ */
+ABSSCPI_API int AbsScpiClient_GetSerialBaud(AbsScpiClientHandle handle,
+                                            unsigned int* baud_out);
 
 /**
  * @brief Get the device's calibration date.
