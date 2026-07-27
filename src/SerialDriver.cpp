@@ -45,11 +45,14 @@ struct SerialDriver::Impl {
 
   bool IsBroadcast() const;
 
+  ErrorCode SetBaud(unsigned int baud);
+
  private:
   boost::asio::io_context io_context_;
   boost::asio::serial_port port_;
   boost::asio::streambuf input_buffer_;
   unsigned int dev_id_;
+  unsigned int baud_;
 
   bool Run(unsigned int timeout_ms);
 };
@@ -79,11 +82,16 @@ unsigned int SerialDriver::GetDeviceID() const { return impl_->GetDeviceID(); }
 
 bool SerialDriver::IsSendOnly() const { return impl_->IsBroadcast(); }
 
+ErrorCode SerialDriver::SetBaud(unsigned int baud) {
+  return impl_->SetBaud(baud);
+}
+
 SerialDriver::Impl::Impl()
     : io_context_(),
       port_(io_context_),
       input_buffer_(),
-      dev_id_{} { }
+      dev_id_{},
+      baud_{kDefaultSerialBaud} { }
 
 SerialDriver::Impl::~Impl() { Close(); }
 
@@ -101,7 +109,7 @@ ErrorCode SerialDriver::Impl::Open(const std::string& port) {
 
   using boost::asio::serial_port;
 
-  port_.set_option(serial_port::baud_rate(115200), ec);
+  port_.set_option(serial_port::baud_rate(baud_), ec);
   if (ec) {
     return ErrorCode::kFailedToConfigurePort;
   }
@@ -195,6 +203,25 @@ void SerialDriver::Impl::SetDeviceID(unsigned int id) {
 unsigned int SerialDriver::Impl::GetDeviceID() const { return dev_id_; }
 
 bool SerialDriver::Impl::IsBroadcast() const { return dev_id_ > 31; }
+
+ErrorCode SerialDriver::Impl::SetBaud(unsigned int baud) {
+  if (!util::IsValidBaud(baud)) {
+    return ErrorCode::kInvalidBaud;
+  }
+
+  boost::system::error_code ec;
+
+  using boost::asio::serial_port;
+
+  port_.set_option(serial_port::baud_rate(baud), ec);
+  if (ec) {
+    return ErrorCode::kFailedToConfigurePort;
+  }
+
+  baud_ = baud;
+
+  return ErrorCode::kSuccess;
+}
 
 bool SerialDriver::Impl::Run(unsigned int timeout_ms) {
   io_context_.restart();
