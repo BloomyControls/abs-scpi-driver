@@ -186,6 +186,56 @@ class ScpiClient {
                                      std::string_view netmask) const;
 
   /**
+   * @brief Set the device's RS-485 baud rate.
+   *
+   * The ABS supports a limited set of baud rates:
+   *
+   *   - 115200
+   *   - 230400
+   *   - 460800
+   *   - 500000
+   *   - 576000
+   *   - 921600
+   *   - 1000000
+   *   - 1152000
+   *   - 1500000
+   *   - 2000000
+   *   - 2500000
+   *   - 3000000
+   *   - 3500000
+   *   - 4000000
+   *
+   * Keep in mind that while the ABS supports all the bauds listed above, higher
+   * bauds may require shorter wire lengths and proper termination.
+   *
+   * @note The change is applied immediately. If the device is currently
+   * connected over RS-485, use GetDriver() and call
+   * drivers::SerialDriver::SetBaud() to reconfigure the host port to match.
+   *
+   * @since v1.4.0
+   *
+   * @par Requires
+   * Firmware v1.5.0
+   *
+   * @param[in] baud the new baud rate to set
+   *
+   * @return An error code.
+   */
+  ABSSCPI_API ErrorCode SetSerialBaud(unsigned int baud) const;
+
+  /**
+   * @brief Query the device's configured RS-485 baud rate.
+   *
+   * @since v1.4.0
+   *
+   * @par Requires
+   * Firmware v1.5.0
+   *
+   * @return Result containing the baud rate or an error code.
+   */
+  ABSSCPI_API Result<unsigned int> GetSerialBaud() const;
+
+  /**
    * @brief Query the device's calibration date.
    *
    * @return Result containing the calibration date or an error code.
