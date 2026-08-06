@@ -61,6 +61,8 @@ const char* ErrorMessage(ErrorCode ec) noexcept {
       return "Allocation failed";
     case ErrorCode::kUnexpectedException:
       return "Unexpected exception";
+    case ErrorCode::kInvalidBaud:
+      return "Invalid baud rate";
   }
 
   return "Unknown error";

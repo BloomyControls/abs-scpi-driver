@@ -67,6 +67,22 @@ ErrorCode ScpiClient::SetIPAddress(std::string_view ip,
   return Send(buf);
 }
 
+ErrorCode ScpiClient::SetSerialBaud(unsigned int baud) const {
+  if (!util::IsValidBaud(baud)) {
+    return ec::kInvalidBaud;
+  }
+
+  char buf[32]{};
+  fmt::format_to_n(buf, sizeof(buf) - 1, "CONF:COMM:SER:BAUD {}\r\n", baud);
+
+  return Send(buf);
+}
+
+Result<unsigned int> ScpiClient::GetSerialBaud() const {
+  return SendAndRecv("CONF:COMM:SER:BAUD?\r\n")
+      .and_then(scpi::ParseIntResponse<unsigned int>);
+}
+
 Result<std::string> ScpiClient::GetCalibrationDate() const {
   return SendAndRecv("CAL:DATE?\r\n").and_then(scpi::ParseStringResponse);
 }

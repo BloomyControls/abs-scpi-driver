@@ -19,6 +19,28 @@ inline constexpr auto Err(T&& val) {
   return tl::unexpected(std::forward<T>(val));
 }
 
+inline constexpr bool IsValidBaud(unsigned int baud) {
+  switch (baud) {
+    case 115200:
+    case 230400:
+    case 460800:
+    case 500000:
+    case 576000:
+    case 921600:
+    case 1000000:
+    case 1152000:
+    case 1500000:
+    case 2000000:
+    case 2500000:
+    case 3000000:
+    case 3500000:
+    case 4000000:
+      return true;
+  }
+
+  return false;
+}
+
 }  // namespace bci::abs::util
 
 #endif  /* ABS_SCPI_DRIVER_SRC_UTIL_H */
