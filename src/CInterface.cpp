@@ -23,6 +23,8 @@
 #include <span>
 #include <type_traits>
 
+#include "Util.h"
+
 using namespace bci::abs;
 using ec = bci::abs::ErrorCode;
 using sc = bci::abs::ScpiClient;
@@ -166,18 +168,33 @@ int AbsScpiClient_OpenTcp(AbsScpiClientHandle handle,
 }
 
 int AbsScpiClient_OpenSerial(AbsScpiClientHandle handle, const char* com_port,
-                             unsigned int device_id) try {
+                             unsigned int device_id) {
+  return AbsScpiClient_OpenSerialWithBaud(handle, com_port, device_id,
+                                          kDefaultSerialBaud);
+}
+
+int AbsScpiClient_OpenSerialWithBaud(AbsScpiClientHandle handle,
+                                     const char* com_port,
+                                     unsigned int device_id,
+                                     unsigned int baud) try {
   if (!handle || !com_port) {
     return static_cast<int>(ec::kInvalidArgument);
+  }
+
+  if (!util::IsValidBaud(baud)) {
+    return static_cast<int>(ec::kInvalidBaud);
   }
 
   GetClient(handle).SetDriver(nullptr);
 
   auto driver = std::make_shared<drivers::SerialDriver>();
-  ec ret = driver->Open(com_port);
+  ec ret = driver->SetBaud(baud);
   if (ret == ec::kSuccess) {
-    driver->SetDeviceID(device_id);
-    GetClient(handle).SetDriver(driver);
+    ret = driver->Open(com_port);
+    if (ret == ec::kSuccess) {
+      driver->SetDeviceID(device_id);
+      GetClient(handle).SetDriver(driver);
+    }
   }
 
   return static_cast<int>(ret);
@@ -309,6 +326,16 @@ int AbsScpiClient_SetIPAddress(AbsScpiClientHandle handle,
 
   return WrapSet(&sc::SetIPAddress, handle, CharsView(addr->ip),
                  CharsView(addr->netmask));
+}
+
+int AbsScpiClient_SetSerialBaud(AbsScpiClientHandle handle,
+                                unsigned int baud) {
+  return WrapSet(&sc::SetSerialBaud, handle, baud);
+}
+
+int AbsScpiClient_GetSerialBaud(AbsScpiClientHandle handle,
+                                unsigned int* baud_out) {
+  return WrapGet(&sc::GetSerialBaud, handle, baud_out);
 }
 
 int AbsScpiClient_GetCalibrationDate(AbsScpiClientHandle handle, char buf[],

@@ -38,6 +38,9 @@ inline constexpr unsigned int kLocalModelInputCount = 8U;
 /// Total model output count.
 inline constexpr unsigned int kModelOutputCount = 36U;
 
+/// Default RS-485 baud rate.
+inline constexpr unsigned int kDefaultSerialBaud = 115200U;
+
 /// Cell fault states.
 enum class CellFault : int {
   kNone,          ///< No fault
@@ -161,6 +164,7 @@ enum class ErrorCode : int {
   kBufferTooSmall = -22,           ///< Buffer too small
   kAllocationFailed = -23,         ///< Allocation failed (C only)
   kUnexpectedException = -24,      ///< Unexpected exception (C only)
+  kInvalidBaud = -25,              ///< Invalid baud rate
 };
 
 /**

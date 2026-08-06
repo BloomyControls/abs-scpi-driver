@@ -88,6 +88,16 @@ class SerialDriver final : public CommDriver {
    */
   ABSSCPI_API bool IsSendOnly() const;
 
+  /**
+   * @brief Set the baud rate for the serial driver. Default is 115200. Must
+   * match that of the target ABS.
+   *
+   * @param[in] baud new baud rate to set
+   *
+   * @return An error code.
+   */
+  ABSSCPI_API ErrorCode SetBaud(unsigned int baud);
+
  private:
   struct Impl;
   std::shared_ptr<Impl> impl_;
